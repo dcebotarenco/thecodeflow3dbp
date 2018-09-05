@@ -1,7 +1,7 @@
 package com.codeflow.domain.algorithm;
 
-import com.codeflow.domain.article.Article;
-import com.codeflow.domain.container.Container;
+import com.codeflow.domain.boxes.Article;
+import com.codeflow.domain.boxes.Container;
 
 import java.util.List;
 
