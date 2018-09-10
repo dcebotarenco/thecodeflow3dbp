@@ -1,6 +1,5 @@
-package com.codeflow.domain.orientation;
+package com.codeflow.domain.boxes;
 
-import com.codeflow.domain.boxes.Dimensions3D;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -11,7 +10,7 @@ public class Orientation {
         this.dimensions3D = dimensions3D;
     }
 
-    public Dimensions3D getDimensions3D() {
+    public Dimensions3D getDimensions() {
         return dimensions3D;
     }
 
@@ -34,4 +33,18 @@ public class Orientation {
                 .append(dimensions3D)
                 .toHashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Orientation{" +
+                "dimensions3D=" + dimensions3D +
+                '}';
+    }
+
+    public boolean fit(Orientation orientation) {
+        return this.getDimensions().getWidth() >= orientation.getDimensions().getWidth() &&
+                this.getDimensions().getHeight() >= orientation.getDimensions().getHeight() &&
+                this.getDimensions().getLength() >= orientation.getDimensions().getLength();
+    }
+
 }

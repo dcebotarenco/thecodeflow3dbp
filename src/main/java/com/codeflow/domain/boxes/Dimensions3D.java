@@ -4,25 +4,25 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
+import java.util.Set;
 
 public class Dimensions3D {
 
     private Map<Dimension, Double> dimensionDoubleMap;
 
-    Dimensions3D(Map<Dimension, Double> dimensionDoubleMap) {
+    Dimensions3D(Map<Dimension, Double> dimensionDoubleMap, Set<Double> dimensions) {
         this.dimensionDoubleMap = dimensionDoubleMap;
     }
 
-
-    Double getWidth() {
+    public Double getWidth() {
         return dimensionDoubleMap.get(Dimension.WIDTH);
     }
 
-    Double getLength() {
+    public Double getLength() {
         return dimensionDoubleMap.get(Dimension.LENGTH);
     }
 
-    Double getHeight() {
+    public Double getHeight() {
         return dimensionDoubleMap.get(Dimension.HEIGHT);
     }
 
@@ -44,5 +44,12 @@ public class Dimensions3D {
         return new HashCodeBuilder(17, 37)
                 .append(dimensionDoubleMap)
                 .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Dimensions3D{" +
+                "dimensionDoubleMap=" + dimensionDoubleMap +
+                '}';
     }
 }

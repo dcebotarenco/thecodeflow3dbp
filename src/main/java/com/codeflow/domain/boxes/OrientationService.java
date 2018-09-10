@@ -1,9 +1,8 @@
 package com.codeflow.domain.boxes;
 
-import com.codeflow.domain.orientation.Orientation;
-import com.codeflow.domain.orientation.OrientationFactory;
-
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class OrientationService {
@@ -14,8 +13,8 @@ public class OrientationService {
         this.orientationFactory = orientationFactory;
     }
 
-    Set<Orientation> calculateOrientations(Dimensions3D dimensions3D) {
-        Set<Orientation> orientations = new HashSet<>();
+    List<Orientation> calculateOrientations(Dimensions3D dimensions3D) {
+        List<Orientation> orientations = new ArrayList<>();
         /*As it is*/
         orientations.add(orientationFactory.create(dimensions3D.getWidth(), dimensions3D.getHeight(), dimensions3D.getLength()));
         /*Rotate on X*/
