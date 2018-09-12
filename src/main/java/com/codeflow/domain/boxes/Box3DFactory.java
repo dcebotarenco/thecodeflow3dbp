@@ -1,7 +1,6 @@
 package com.codeflow.domain.boxes;
 
 import java.util.List;
-import java.util.Set;
 
 public abstract class Box3DFactory<E extends Box3D> {
 
@@ -16,8 +15,9 @@ public abstract class Box3DFactory<E extends Box3D> {
     public E create(Long id, Double width, Double height, Double length) {
         Dimensions3D dimensions3D = dimensions3DFactory.create(width, height, length);
         List<Orientation> orientations = orientationService.calculateOrientations(dimensions3D);
-        return create(id, dimensions3D, orientations);
+        BoxType boxType = new BoxType(dimensions3D, orientations);
+        return create(id, boxType);
     }
 
-    abstract E create(Long id, Dimensions3D dimensions3D, List<Orientation> orientations);
+    abstract E create(Long id, BoxType boxType);
 }

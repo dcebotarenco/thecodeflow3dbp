@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AlgorithmService {
 
-    public Result execute(Algorithm algorithm, Container container, List<Article> articles) {
-        return algorithm.run(container, articles);
+    public Result execute(Algorithm algorithm) {
+        return algorithm.run();
     }
 }

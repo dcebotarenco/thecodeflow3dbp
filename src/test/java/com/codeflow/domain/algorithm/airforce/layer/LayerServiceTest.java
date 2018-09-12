@@ -4,19 +4,23 @@ import com.codeflow.domain.SharedTest;
 import com.codeflow.domain.boxes.Article;
 import com.codeflow.domain.boxes.Container;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LayerServiceTest extends SharedTest {
 
+
+
     @Test
     public void listCandidatesBookExample() {
         Container container = container(104, 96, 84);
-        List<Article> articles = articles(70, 104, 24, 4);
-        articles.addAll(articles(14, 104, 48, 2));
-        articles.addAll(articles(40, 52, 36, 3));
-        List<Layer> layers = layerService.listCandidates(container.getOrientations().get(0), articles);
+        articles(70, 104, 24, 4);
+        articles(14, 104, 48, 2);
+        articles(40, 52, 36, 3);
+        List<Layer> layers = layerService.listCandidates(container.getOrientations().get(0), articleRepository.receivedArticles());
         Assert.assertEquals(7, layers.size());
         layerAssert(layers, 0, 24, 56);
         layerAssert(layers, 1, 36, 72);
@@ -31,9 +35,9 @@ public class LayerServiceTest extends SharedTest {
     @Test
     public void listCandidatesDpp01() {
         Container container = container(104, 96, 84);
-        List<Article> articles = articles(70, 104, 24, 4);
-        articles.addAll(articles(14, 104, 48, 2));
-        List<Layer> layers = layerService.listCandidates(container.getOrientations().get(0), articles);
+        articles(70, 104, 24, 4);
+        articles(14, 104, 48, 2);
+        List<Layer> layers = layerService.listCandidates(container.getOrientations().get(0), articleRepository.receivedArticles());
         Assert.assertEquals(4, layers.size());
         layerAssert(layers, 0, 24, 20);
         layerAssert(layers, 1, 14, 40);

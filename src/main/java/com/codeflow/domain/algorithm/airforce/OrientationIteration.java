@@ -25,9 +25,9 @@ public class OrientationIteration implements Runnable {
         packedVolumePerIteration = 0.;
         packedHeightPerIteration = 0.;
         this.packedItemCount = 0L;
-        remaingHeight = containerOrientation.getDimensions().getHeight();
-        remaingLenght = containerOrientation.getDimensions().getLength();
-        topViewTopology = new TopViewTopology(new Corner(containerOrientation.getDimensions().getWidth(), 0.));
+        remaingHeight = containerOrientation.getHeight();
+        remaingLenght = containerOrientation.getLength();
+        topViewTopology = new TopViewTopology(new Corner(containerOrientation.getWidth(), 0.));
     }
 
     @Override

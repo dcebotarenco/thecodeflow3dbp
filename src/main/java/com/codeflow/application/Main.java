@@ -2,9 +2,9 @@ package com.codeflow.application;
 
 import com.codeflow.domain.algorithm.AlgorithmService;
 import com.codeflow.domain.algorithm.airforce.AirForceAlgorithm;
+import com.codeflow.domain.algorithm.airforce.actions.ActionRepository;
+import com.codeflow.domain.algorithm.airforce.actions.ActionService;
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
-import com.codeflow.domain.algorithm.airforce.packing.ActionRepository;
-import com.codeflow.domain.algorithm.airforce.packing.PackingService;
 import com.codeflow.domain.algorithm.airforce.topology.TopologyService;
 import com.codeflow.domain.algorithm.airforce.topology.situations.TopologySituationRepository;
 import com.codeflow.domain.boxes.*;
@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -32,22 +30,27 @@ public class Main {
         OrientationService orientationService = new OrientationService(new OrientationFactory(dimensions3DFactory));
         ArticleFactory articleFactory = new ArticleFactory(dimensions3DFactory, orientationService);
         TopologyService topologyService = new TopologyService(new TopologySituationRepository());
-        PackingService packingService = new PackingService(new ActionRepository());
+        ActionService actionService = new ActionService(new ActionRepository());
+        ArticleRepository articleRepository = new ArticleRepository();
+        ContainerRepository containerRepository = new ContainerRepository();
 
         ContainerFactory containerFactory = new ContainerFactory(dimensions3DFactory, orientationService);
 
-        List<Article> articles = inputDTO.getArticleDTOList().stream().map(dto -> articleFactory.create(dto.getId(),
+        inputDTO.getArticleDTOList().stream().map(dto -> articleFactory.create(dto.getId(),
                 dto.getWidth(),
                 dto.getLength(),
-                dto.getHeight())).collect(Collectors.toList());
+                dto.getHeight()))
+                .forEach(a -> articleRepository.saveReceived(a));
+
         Container container = containerFactory.create(inputDTO.getContainerDTO().getId(),
                 inputDTO.getContainerDTO().getWidth(),
                 inputDTO.getContainerDTO().getLength(),
                 inputDTO.getContainerDTO().getHeight());
+        containerRepository.save(container);
 
         AlgorithmService algorithmService = new AlgorithmService();
-        LOGGER.info("Executing with {} and {}", container, articles);
-        algorithmService.execute(new AirForceAlgorithm(layerService, topologyService, packingService), container, articles);
+        LOGGER.info("Executing with {} and {}", container, articleRepository.receivedArticles());
+        algorithmService.execute(new AirForceAlgorithm(layerService, topologyService, actionService, articleRepository, containerRepository));
 
 
     }

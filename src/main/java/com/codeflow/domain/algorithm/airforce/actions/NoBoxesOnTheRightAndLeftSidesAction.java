@@ -1,11 +1,10 @@
-package com.codeflow.domain.algorithm.airforce.packing;
+package com.codeflow.domain.algorithm.airforce.actions;
 
 public class NoBoxesOnTheRightAndLeftSidesAction implements Runnable{
 
 
     @Override
     public void run() {
-        //*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
 //                lenx = smallestZ.CumX;
 //                lpz = remainpz - smallestZ.CumZ;
 //

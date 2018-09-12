@@ -57,7 +57,7 @@ public class LayerService {
                         Double smallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions = getSmallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions(orientationOfCurrentArticle, otherArticle);
                         evaluationValue = evaluationValue + smallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions;
                     }
-                    layers.add(new Layer(orientationOfCurrentArticle.getDimensions().getHeight(), evaluationValue));
+                    layers.add(new Layer(orientationOfCurrentArticle.getHeight(), evaluationValue));
                 }
             }
         }
@@ -70,8 +70,7 @@ public class LayerService {
      * Having up to 6 possible {@link Orientation} we try to run through all of them to see if current {@link Article} have an {@link Orientation}
      * that might fit in empty {@link Container}.
      *
-     * @param container Container passed as input
-     * @param a         Current {@link Article} checked
+     * @param a Current {@link Article} checked
      * @return list of {@link Orientation} of in what current {@link Article} can fil the {@link Container}
      */
     List<Orientation> getOrientationsOfArticleThatFixTheContainer(Orientation containerOrientation, Article a) {
@@ -80,9 +79,9 @@ public class LayerService {
 
     Double getSmallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions(Orientation orientationOfCurrentArticle, Article otherArticle) {
         Double smallestDiff;
-        Double orientationHeightDiffAgainstArticleWidth = Math.abs(orientationOfCurrentArticle.getDimensions().getHeight() - otherArticle.getDimensions().getWidth());
-        Double orientationHeightDiffAgainstArticleHeight = Math.abs(orientationOfCurrentArticle.getDimensions().getHeight() - otherArticle.getDimensions().getHeight());
-        Double orientationHeightDiffAgainstArticleLength = Math.abs(orientationOfCurrentArticle.getDimensions().getHeight() - otherArticle.getDimensions().getLength());
+        Double orientationHeightDiffAgainstArticleWidth = Math.abs(orientationOfCurrentArticle.getHeight() - otherArticle.getDimensions().getWidth());
+        Double orientationHeightDiffAgainstArticleHeight = Math.abs(orientationOfCurrentArticle.getHeight() - otherArticle.getDimensions().getHeight());
+        Double orientationHeightDiffAgainstArticleLength = Math.abs(orientationOfCurrentArticle.getHeight() - otherArticle.getDimensions().getLength());
         smallestDiff = orientationHeightDiffAgainstArticleWidth;
         if (orientationHeightDiffAgainstArticleHeight < smallestDiff) {
             smallestDiff = orientationHeightDiffAgainstArticleHeight;

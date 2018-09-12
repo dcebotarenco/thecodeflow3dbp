@@ -2,13 +2,14 @@ package com.codeflow.domain.algorithm.airforce;
 
 import com.codeflow.domain.algorithm.Algorithm;
 import com.codeflow.domain.algorithm.Result;
+import com.codeflow.domain.algorithm.airforce.actions.ActionService;
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
-import com.codeflow.domain.algorithm.airforce.packing.PackingService;
 import com.codeflow.domain.algorithm.airforce.topology.TopViewTopology;
 import com.codeflow.domain.algorithm.airforce.topology.TopologyService;
 import com.codeflow.domain.boxes.Article;
-import com.codeflow.domain.boxes.Container;
+import com.codeflow.domain.boxes.ArticleRepository;
+import com.codeflow.domain.boxes.ContainerRepository;
 import com.codeflow.domain.boxes.Orientation;
 
 import java.util.ArrayList;
@@ -40,23 +41,31 @@ public class AirForceAlgorithm implements Algorithm {
     private TopViewTopology topViewTopology;
     private LayerService layerService;
     private final TopologyService topologyService;
-    private final PackingService packingService;
+    private final ActionService actionService;
+    private final ArticleRepository articleRepository;
+    private final ContainerRepository containerRepository;
 
     List<Article> packedArticles = new ArrayList<>();
 
 
-    public AirForceAlgorithm(LayerService layerService, TopologyService topologyService, PackingService packingService) {
+    public AirForceAlgorithm(LayerService layerService,
+                             TopologyService topologyService,
+                             ActionService actionService,
+                             ArticleRepository articleRepository,
+                             ContainerRepository containerRepository) {
         this.layerService = layerService;
         this.topologyService = topologyService;
-        this.packingService = packingService;
+        this.actionService = actionService;
+        this.articleRepository = articleRepository;
+        this.containerRepository = containerRepository;
     }
 
     @Override
-    public Result run(Container container, List<Article> articles) {
+    public Result run() {
 
         // Initialize
-        totalContainerVolume = container.getWidth() * container.getHeight() * container.getHeight();
-        totalItemVolume = articles.stream().map(article -> article.getWidth() * article.getHeight() * article.getLength())
+        totalContainerVolume = containerRepository.container().getWidth() * containerRepository.container().getHeight() * containerRepository.container().getHeight();
+        totalItemVolume = articleRepository.receivedArticles().stream().map(article -> article.getWidth() * article.getHeight() * article.getLength())
                 .reduce((v1, v2) -> v1 + v2).orElseThrow(() -> new IllegalStateException("Cannot calculate total volume of Items"));
         bestVolume = 0.0;
         packingBest = false;
@@ -66,11 +75,11 @@ public class AirForceAlgorithm implements Algorithm {
 
 
         List<OrientationIteration> orientationIterations = new ArrayList<>();
-        for (Orientation containerOrientation : container.getOrientations()) {
-            List<Layer> layers = layerService.listCandidates(containerOrientation, articles);
+        for (Orientation containerOrientation : containerRepository.container().getOrientations()) {
+            List<Layer> layers = layerService.listCandidates(containerOrientation, articleRepository.receivedArticles());
             List<LayerIteration> layerIterations = new ArrayList<>();
             for (Layer layer : layers) {
-                layerIterations.add(new LayerIteration(layer, topologyService, packingService));
+                layerIterations.add(new LayerIteration(layer, topologyService, actionService));
             }
             orientationIterations.add(new OrientationIteration(containerOrientation, layerIterations));
         }

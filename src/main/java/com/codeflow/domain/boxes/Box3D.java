@@ -4,7 +4,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A Box has 3D dimensions.It also has Orientations based on its dimensions
@@ -14,38 +13,39 @@ import java.util.Set;
 public abstract class Box3D {
 
     private Long id;
-    private final Dimensions3D dimensions;
-    private final List<Orientation> orientations;
+    private BoxType boxType;
 
-    Box3D(Long id, Dimensions3D dimensions3D, List<Orientation> orientations) {
+    public Box3D(Long id, BoxType boxType) {
         this.id = id;
-        this.dimensions = dimensions3D;
-        this.orientations = orientations;
+        this.boxType = boxType;
     }
-
 
     public Long getId() {
         return id;
     }
 
     public Dimensions3D getDimensions() {
-        return dimensions;
+        return boxType.getDimensions();
     }
 
     public Double getWidth() {
-        return dimensions.getWidth();
+        return boxType.getDimensions().getWidth();
     }
 
     public Double getLength() {
-        return dimensions.getLength();
+        return boxType.getDimensions().getLength();
     }
 
     public Double getHeight() {
-        return dimensions.getHeight();
+        return boxType.getDimensions().getHeight();
     }
 
     public List<Orientation> getOrientations() {
-        return orientations;
+        return boxType.getOrientations();
+    }
+
+    public BoxType getBoxType() {
+        return boxType;
     }
 
     @Override
@@ -58,8 +58,7 @@ public abstract class Box3D {
 
         return new EqualsBuilder()
                 .append(id, box3D.id)
-                .append(dimensions, box3D.dimensions)
-                .append(orientations, box3D.orientations)
+                .append(boxType, box3D.boxType)
                 .isEquals();
     }
 
@@ -67,8 +66,7 @@ public abstract class Box3D {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
-                .append(dimensions)
-                .append(orientations)
+                .append(boxType)
                 .toHashCode();
     }
 
@@ -76,8 +74,7 @@ public abstract class Box3D {
     public String toString() {
         return "Box3D{" +
                 "id=" + id +
-                ", dimensions=" + dimensions +
-                ", orientations=" + orientations +
+                ", boxType=" + boxType +
                 '}';
     }
 }

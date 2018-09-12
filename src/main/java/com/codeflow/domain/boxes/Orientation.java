@@ -4,15 +4,29 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Orientation {
-    Dimensions3D dimensions3D;
+
+    private Dimensions3D dimensions3D;
 
     Orientation(Dimensions3D dimensions3D) {
         this.dimensions3D = dimensions3D;
     }
 
-    public Dimensions3D getDimensions() {
+    Dimensions3D getDimensions() {
         return dimensions3D;
     }
+
+    public Double getWidth() {
+        return getDimensions().getWidth();
+    }
+
+    public Double getLength() {
+        return getDimensions().getLength();
+    }
+
+    public Double getHeight() {
+        return getDimensions().getHeight();
+    }
+
 
     @Override
     public boolean equals(Object o) {

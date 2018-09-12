@@ -1,12 +1,12 @@
-package com.codeflow.domain.algorithm.airforce.packing;
+package com.codeflow.domain.algorithm.airforce.actions;
 
 import com.codeflow.domain.algorithm.airforce.Situation;
 
-public class PackingService {
+public class ActionService {
 
     private ActionRepository actionRepository;
 
-    public PackingService(ActionRepository actionRepository) {
+    public ActionService(ActionRepository actionRepository) {
         this.actionRepository = actionRepository;
     }
 

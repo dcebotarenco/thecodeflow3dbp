@@ -1,11 +1,13 @@
 package com.codeflow.domain;
 
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
+import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.boxes.*;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SharedTest {
 
@@ -13,8 +15,19 @@ public class SharedTest {
     public static OrientationFactory orientationFactory;
     public static OrientationService orientationService;
     public static ContainerFactory containerFactory;
+    public static GapFactory gapFactory;
     public static LayerService layerService;
     public static ArticleFactory articleFactory;
+    public static ArticleRepository articleRepository;
+    public static ContainerRepository containerRepository;
+    public static BoxTypeRepository boxTypeRepository;
+    public static SearchingService searchingService;
+
+    @Before
+    public void clearRepos() {
+        articleRepository.clear();
+        containerRepository.clear();
+    }
 
     @BeforeClass
     public static void beforeClass() {
@@ -23,23 +36,49 @@ public class SharedTest {
         orientationService = new OrientationService(orientationFactory);
         containerFactory = new ContainerFactory(dimensions3DFactory, orientationService);
         articleFactory = new ArticleFactory(dimensions3DFactory, orientationService);
+        gapFactory = new GapFactory(dimensions3DFactory, orientationService);
+        containerRepository = new ContainerRepository();
         layerService = new LayerService();
+        articleRepository = new ArticleRepository();
+        boxTypeRepository = new BoxTypeRepository(articleRepository);
+        searchingService = new SearchingService(boxTypeRepository);
     }
 
     public static Container container(Integer id, Integer w, Integer h, Integer l) {
-        return containerFactory.create(id.longValue(), w.doubleValue(), h.doubleValue(), l.doubleValue());
+        Container container = containerFactory.create(id.longValue(), w.doubleValue(), h.doubleValue(), l.doubleValue());
+        containerRepository.save(container);
+        return containerRepository.container();
     }
 
     public static Container container(Integer w, Integer h, Integer l) {
-        return containerFactory.create(1L, w.doubleValue(), h.doubleValue(), l.doubleValue());
+        Random r = new Random();
+        int random = r.nextInt(100 + 1);
+        Long id = (long) random;
+        Container container = containerFactory.create(id, w.doubleValue(), h.doubleValue(), l.doubleValue());
+        containerRepository.save(container);
+        return containerRepository.container();
+
     }
 
-    public static List<Article> articles(Integer w, Integer h, Integer l, Integer size) {
-        ArrayList<Article> articles = new ArrayList<>();
-        for (Integer i = 0; i < size; i++) {
+    public static List<Article> articles(Integer w, Integer h, Integer l, Integer number) {
+        for (Integer i = 0; i < number; i++) {
             Article article = articleFactory.create(i.longValue(), w.doubleValue(), h.doubleValue(), l.doubleValue());
-            articles.add(article);
+            articleRepository.saveReceived(article);
         }
-        return articles;
+        return articleRepository.receivedArticles();
+    }
+
+    public static Gap gap(Integer w, Integer h, Integer l) {
+        Random r = new Random();
+        int random = r.nextInt(100 + 1);
+        Long id = (long) random;
+        return gapFactory.create(id, w.doubleValue(), h.doubleValue(), l.doubleValue());
+    }
+
+    public static Gap gap(Double w, Double h, Double l) {
+        Random r = new Random();
+        int random = r.nextInt(100 + 1);
+        Long id = (long) random;
+        return gapFactory.create(id, w, h, l);
     }
 }

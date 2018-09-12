@@ -1,4 +1,4 @@
-package com.codeflow.domain.algorithm.airforce.packing;
+package com.codeflow.domain.algorithm.airforce.actions;
 
 public class ThereAreBoxesOnBothSidesAndNotEqualAction implements Runnable {
     @Override
