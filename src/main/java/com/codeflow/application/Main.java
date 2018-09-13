@@ -40,8 +40,7 @@ public class Main {
                 config.getActionService(),
                 config.getArticleRepository(),
                 config.getContainerRepository(),
-                config.getCornerFactory(),
-                config.getTopViewTopologyFactory()));
+                config.getArticleService()));
 
 
     }

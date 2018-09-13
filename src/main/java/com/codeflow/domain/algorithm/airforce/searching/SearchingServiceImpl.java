@@ -65,10 +65,8 @@ class SearchingServiceImpl implements SearchingService {
                 .sorted(Comparator.comparingDouble((Orientation o) -> Math.abs(o.getHeight() - requiredGap.getHeight()))
                         .thenComparingDouble((Orientation o) -> Math.abs(o.getWidth() - requiredGap.getWidth()))
                         .thenComparingDouble((Orientation o) -> Math.abs(requiredGap.getLength() - o.getLength()))).collect(Collectors.toList());
-
         ArticleOrientation biggerThenRequiredGap = sortedBiggerThenRequiredGapHeight.get(0);
-        Position biggerThenRequiredGapPosition = calculatePositionForBiggerThenHeight(requiredGap, biggerThenRequiredGap);
-        searchResult.addBestFitBiggerThenRequired(biggerThenRequiredGap, biggerThenRequiredGapPosition);
+        searchResult.addBestFitBiggerThenRequired(biggerThenRequiredGap);
     }
 
     private void searchSmallerAndClosestToRequiredHeight(Gap requiredGap, SearchResult searchResult, List<ArticleOrientation> smallerThenRequiredGapHeight) {
@@ -78,22 +76,6 @@ class SearchingServiceImpl implements SearchingService {
                         .thenComparingDouble((Orientation o) -> Math.abs(requiredGap.getLength() - o.getLength())))
                 .collect(Collectors.toList());
         ArticleOrientation bestFitInRequiredGap = sortedSmallerThenRequiredGapHeight.get(0);
-        Position bestFitPosition = calculatePositionForSmallerThenHeight(requiredGap, bestFitInRequiredGap);
-        searchResult.addBestFitInRequired(bestFitInRequiredGap, bestFitPosition);
+        searchResult.addBestFitInRequired(bestFitInRequiredGap);
     }
-
-    private Position calculatePositionForSmallerThenHeight(Gap gapImpl, ArticleOrientation orientation) {
-        double x = gapImpl.getWidth() - orientation.getWidth();
-        double y = gapImpl.getHeight() - orientation.getHeight();
-        double z = Math.abs(gapImpl.getLength() - orientation.getLength());
-        return new Position(x, y, z);
-    }
-
-    private Position calculatePositionForBiggerThenHeight(Gap gapImpl, ArticleOrientation orientation) {
-        double x = gapImpl.getWidth() - orientation.getWidth();
-        double y = orientation.getHeight() - gapImpl.getHeight();
-        double z = Math.abs(gapImpl.getLength() - orientation.getLength());
-        return new Position(x, y, z);
-    }
-
 }

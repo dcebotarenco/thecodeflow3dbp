@@ -77,6 +77,11 @@ class ContainerOrientationImpl implements ContainerOrientation {
     }
 
     @Override
+    public boolean allVolumePacked() {
+        return (getVolume() - packedVolume) == 0D;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 

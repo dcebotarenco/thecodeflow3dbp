@@ -5,11 +5,9 @@ import com.codeflow.domain.algorithm.Result;
 import com.codeflow.domain.algorithm.airforce.actions.ActionService;
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
-import com.codeflow.domain.algorithm.airforce.topology.TopViewTopology;
-import com.codeflow.domain.algorithm.airforce.topology.TopViewTopologyFactory;
 import com.codeflow.domain.algorithm.airforce.topology.TopologyService;
-import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactory;
 import com.codeflow.domain.article.ArticleRepository;
+import com.codeflow.domain.article.ArticleService;
 import com.codeflow.domain.container.ContainerRepository;
 import com.codeflow.domain.container.orientation.ContainerOrientation;
 
@@ -31,22 +29,15 @@ import java.util.List;
  */
 public class AirForceAlgorithm implements Algorithm {
 
-    private Double totalContainerVolume;
-    private Double totalItemVolume;
-
     private Double bestVolume;
     private Boolean packingBest;
-    private Boolean hundredPercentPacked;
-    private Long iterationsCount;
-    private Boolean quit;
-    private TopViewTopology topViewTopology;
+
     private LayerService layerService;
     private final TopologyService topologyService;
     private final ActionService actionService;
     private final ArticleRepository articleRepository;
     private final ContainerRepository containerRepository;
-    private CornerFactory cornerFactory;
-    private TopViewTopologyFactory topViewTopologyFactory;
+    private ArticleService articleService;
 
 
     public AirForceAlgorithm(LayerService layerService,
@@ -54,40 +45,31 @@ public class AirForceAlgorithm implements Algorithm {
                              ActionService actionService,
                              ArticleRepository articleRepository,
                              ContainerRepository containerRepository,
-                             CornerFactory cornerFactory,
-                             TopViewTopologyFactory topViewTopologyFactory) {
+                             ArticleService articleService) {
         this.layerService = layerService;
         this.topologyService = topologyService;
         this.actionService = actionService;
         this.articleRepository = articleRepository;
         this.containerRepository = containerRepository;
-        this.cornerFactory = cornerFactory;
-        this.topViewTopologyFactory = topViewTopologyFactory;
+        this.articleService = articleService;
     }
 
     @Override
     public Result run() {
 
         // Initialize
-        totalContainerVolume = containerRepository.container().getWidth() * containerRepository.container().getHeight() * containerRepository.container().getHeight();
-        totalItemVolume = articleRepository.receivedArticles().stream().map(article -> article.getWidth() * article.getHeight() * article.getLength())
-                .reduce((v1, v2) -> v1 + v2).orElseThrow(() -> new IllegalStateException("Cannot calculate total volume of Items"));
         bestVolume = 0.0;
         packingBest = false;
-        hundredPercentPacked = false;
-        iterationsCount = 0L;
-        quit = false;
-
 
         List<OrientationIteration> orientationIterations = new ArrayList<>();
         for (ContainerOrientation containerOrientation : containerRepository.container().getOrientations()) {
+            topologyService.initializeTopology(containerOrientation.getWidth(), 0.);
             List<Layer> layers = layerService.listCandidates(containerOrientation, articleRepository.receivedArticles());
             List<LayerIteration> layerIterations = new ArrayList<>();
             for (Layer layer : layers) {
-                layerIterations.add(new LayerIteration(layer, topologyService, actionService));
+                layerIterations.add(new LayerIteration(layer, topologyService, actionService, articleService));
             }
-            TopViewTopology topViewTopology = topViewTopologyFactory.create(cornerFactory.create(containerOrientation.getWidth(), 0.));
-            orientationIterations.add(new OrientationIteration(containerOrientation, layerIterations, topViewTopology));
+            orientationIterations.add(new OrientationIteration(containerOrientation, layerIterations, articleService));
         }
 
         for (OrientationIteration orientationIteration : orientationIterations) {

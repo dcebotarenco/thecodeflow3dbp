@@ -1,30 +1,34 @@
 package com.codeflow.domain.algorithm.airforce;
 
-import com.codeflow.domain.algorithm.airforce.topology.TopViewTopology;
+import com.codeflow.domain.article.ArticleService;
 import com.codeflow.domain.container.orientation.ContainerOrientation;
 
 import java.util.List;
+import java.util.ListIterator;
 
 public class OrientationIteration implements Runnable {
 
-
+    private Long iterationsCount;
     private ContainerOrientation containerOrientation;
+    private ArticleService articleService;
     private List<LayerIteration> layerIterations;
-    private TopViewTopology topViewTopology;
 
 
     OrientationIteration(ContainerOrientation containerOrientation,
                          List<LayerIteration> layerIterations,
-                         TopViewTopology topViewTopology) {
+                         ArticleService articleService) {
         this.layerIterations = layerIterations;
         this.containerOrientation = containerOrientation;
-        this.topViewTopology = topViewTopology;
+        this.articleService = articleService;
+        iterationsCount = 0L;
     }
 
     @Override
     public void run() {
-        for (LayerIteration layerIteration : layerIterations) {
-            layerIteration.run(this);
+
+        ListIterator<LayerIteration> iterator = layerIterations.listIterator();
+        while (iterator.hasNext() || !containerOrientation.allVolumePacked() || !articleService.allPacked()) {
+            iterator.next().run(containerOrientation);
         }
     }
 

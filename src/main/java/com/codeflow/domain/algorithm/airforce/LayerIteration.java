@@ -5,7 +5,9 @@ import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.topology.TopologyService;
 import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
 import com.codeflow.domain.algorithm.airforce.topology.situations.Situation;
+import com.codeflow.domain.article.ArticleService;
 import com.codeflow.domain.container.Container;
+import com.codeflow.domain.container.orientation.ContainerOrientation;
 import com.codeflow.domain.dimension.Dimension;
 import com.codeflow.domain.orientation.Orientation;
 
@@ -33,56 +35,41 @@ public class LayerIteration {
     private Double layerThickness;
     private TopologyService topologyService;
     private ActionService actionService;
+    private ArticleService articleService;
     private Double layerinlayer;
-    private Boolean layerDone;
     private Boolean packing;
 
 
     LayerIteration(Layer layer,
                    TopologyService topologyService,
-                   ActionService actionService) {
+                   ActionService actionService,
+                   ArticleService articleService) {
         this.layer = layer;
         this.layerThickness = layer.getDimension();
         this.topologyService = topologyService;
         this.actionService = actionService;
+        this.articleService = articleService;
     }
 
-    void run(OrientationIteration orientationIteration) {
+    void run(ContainerOrientation containerOrientation) {
         packing = true;
-        while (packing) {
+        while (!containerOrientation.allVolumePacked() || !articleService.allPacked()) {
             layerinlayer = 0.;
-            layerDone = false;
-
-            double lenx;
-            double lenz;
-            double lpz;
-
-            if (layerThickness == 0) {
-                packing = false;
-                return;
-            }
-
-            do {
+            while (!layer.isDone() || !containerOrientation.allVolumePacked() || !articleService.allPacked()) {
                 Corner cornerWithSmallestLength = topologyService.findCornerWithSmallestLength();
                 Situation topologySituation = topologyService.analyzeTopology(cornerWithSmallestLength);
-                actionService.act(
-                        topologySituation,
-                        cornerWithSmallestLength,
-                        orientationIteration.getContainerOrientation(),
-                        layer);
-//                if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume) {
-//                    packing = false;
-//                    hundredPercentPacked = true;
-//
-//                }
-//                VolumeCheck();
+                actionService.act(topologySituation, cornerWithSmallestLength, containerOrientation, layer);
 
-            } while (layer.isDone());
+                if (layerThickness == 0) {
+                    packing = false;
+                    return;
+                }
+
+            }
 
 
         }
 
-//            orientationIteration.setPackedHeightPerIteration(orientationIteration.getPackedHeightPerIteration() + layerThickness);
         //remainpy = py - packedy;
 
 //            if (layerinlayer != 0 && !quit) {

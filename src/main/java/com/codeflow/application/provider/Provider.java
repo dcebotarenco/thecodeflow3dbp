@@ -11,6 +11,7 @@ import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceProducer
 import com.codeflow.domain.article.ArticleFactory;
 import com.codeflow.domain.article.ArticleFactoryProducer;
 import com.codeflow.domain.article.ArticleRepository;
+import com.codeflow.domain.article.ArticleService;
 import com.codeflow.domain.article.orientation.ArticleOrientationFactory;
 import com.codeflow.domain.article.orientation.ArticleOrientationFactoryProducer;
 import com.codeflow.domain.box.Box3DFactory;
@@ -63,11 +64,13 @@ public class Provider {
 
     public static ActionService createActionService(OrientationFactory<Orientation> orientationFactory,
                                                     BoxTypeFactory<BoxType> boxTypeBoxTypeFactory,
-                                                    DimensionsFactory dimensionsFactory, ArticleRepository articleRepository) {
+                                                    DimensionsFactory dimensionsFactory,
+                                                    ArticleRepository articleRepository,
+                                                    ArticleService articleService) {
         BoxTypeRepository boxTypeRepository = new BoxTypeRepositoryProducer(articleRepository).defaultRepository();
         GapFactory gapFactory = Provider.createGapFactory(orientationFactory, boxTypeBoxTypeFactory, dimensionsFactory);
         SearchingService searchingService = new SearchingServiceProducer(boxTypeRepository).defaultService();
-        PackingService packingService = new PackingServiceProducer().defaultService();
+        PackingService packingService = new PackingServiceProducer(boxTypeRepository, articleService).defaultService();
         ActionRepository actionRepository = new ActionRepositoryProducer(searchingService, gapFactory, packingService).defaultRepository();
 
         return new ActionServiceProducer(actionRepository).defaultService();

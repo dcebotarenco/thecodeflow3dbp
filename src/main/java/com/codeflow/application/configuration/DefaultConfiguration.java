@@ -15,9 +15,7 @@ import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactory;
 import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactoryProducer;
 import com.codeflow.domain.algorithm.airforce.topology.situations.TopologySituationRepository;
 import com.codeflow.domain.algorithm.airforce.topology.situations.TopologySituationRepositoryProvider;
-import com.codeflow.domain.article.ArticleFactory;
-import com.codeflow.domain.article.ArticleRepository;
-import com.codeflow.domain.article.ArticleRepositoryProducer;
+import com.codeflow.domain.article.*;
 import com.codeflow.domain.boxtype.*;
 import com.codeflow.domain.container.ContainerFactory;
 import com.codeflow.domain.container.ContainerRepository;
@@ -30,23 +28,24 @@ import com.codeflow.domain.orientation.*;
 public class DefaultConfiguration {
 
 
-    DimensionsFactory dimensionsFactory;
-    OrientationFactory<Orientation> orientationFactory;
-    BoxTypeFactory<BoxType> boxTypeBoxTypeFactory;
-    BoxTypeRepository boxTypeRepository;
-    ArticleFactory articleFactory;
-    LayerService layerService;
-    TopologySituationRepository topologySituationRepository;
-    CornerFactory<Corner> cornerFactory;
-    TopologyService topologyService;
-    ArticleRepository articleRepository;
-    ActionService actionService;
-    ContainerRepository containerRepository;
-    TopViewTopologyFactory topViewTopologyFactory;
-    ContainerFactory containerFactory;
-    GapFactory gapFactory;
-    SearchingService searchingService;
-    OrientationService orientationService;
+    private DimensionsFactory dimensionsFactory;
+    private OrientationFactory<Orientation> orientationFactory;
+    private BoxTypeFactory<BoxType> boxTypeBoxTypeFactory;
+    private BoxTypeRepository boxTypeRepository;
+    private ArticleFactory articleFactory;
+    private LayerService layerService;
+    private TopologySituationRepository topologySituationRepository;
+    private CornerFactory<Corner> cornerFactory;
+    private TopologyService topologyService;
+    private ArticleRepository articleRepository;
+    private ActionService actionService;
+    private ContainerRepository containerRepository;
+    private TopViewTopologyFactory topViewTopologyFactory;
+    private ContainerFactory containerFactory;
+    private GapFactory gapFactory;
+    private SearchingService searchingService;
+    private OrientationService orientationService;
+    private ArticleService articleService;
 
     public DefaultConfiguration() {
         dimensionsFactory = new DimensionsFactoryProducer().defaultFactory();
@@ -58,7 +57,8 @@ public class DefaultConfiguration {
         cornerFactory = new CornerFactoryProducer().defaultFactory();
         topologyService = new TopologyServiceProducer(topologySituationRepository, cornerFactory).defaultService();
         articleRepository = new ArticleRepositoryProducer().defaultRepository();
-        actionService = Provider.createActionService(orientationFactory, boxTypeBoxTypeFactory, dimensionsFactory, articleRepository);
+        articleService = new ArticleServiceProducer(articleRepository).defaultService();
+        actionService = Provider.createActionService(orientationFactory, boxTypeBoxTypeFactory, dimensionsFactory, articleRepository, articleService);
         containerRepository = new ContainerRepositoryProducer().defaultRepository();
         topViewTopologyFactory = new TopViewTopologyFactoryProducer().defaultFactory();
         containerFactory = Provider.createContainerFactory(orientationFactory, boxTypeBoxTypeFactory, dimensionsFactory);
@@ -134,5 +134,9 @@ public class DefaultConfiguration {
 
     public OrientationService getOrientationService() {
         return orientationService;
+    }
+
+    public ArticleService getArticleService() {
+        return articleService;
     }
 }

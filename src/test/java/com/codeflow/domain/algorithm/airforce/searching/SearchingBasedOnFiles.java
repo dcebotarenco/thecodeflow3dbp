@@ -76,7 +76,6 @@ public class SearchingBasedOnFiles extends SharedTest {
             List<Double> thenValues = Arrays.stream(s.split(",")).map(Double::valueOf).collect(Collectors.toList());
             Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
             assertBestFitBiggerThenReq(searchResult, thenValues.get(0), thenValues.get(1), thenValues.get(2));
-            assertBestFitMaxPosition(searchResult, thenValues.get(3), thenValues.get(4), thenValues.get(5));
         }
     }
 
@@ -87,7 +86,6 @@ public class SearchingBasedOnFiles extends SharedTest {
             List<Double> thenValues = Arrays.stream(s.split(",")).map(Double::valueOf).collect(Collectors.toList());
             Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
             assertBestFitRequired(searchResult, thenValues.get(0), thenValues.get(1), thenValues.get(2));
-            assertBestFitPosition(searchResult, thenValues.get(3), thenValues.get(4), thenValues.get(5));
         }
 
     }
@@ -105,24 +103,14 @@ public class SearchingBasedOnFiles extends SharedTest {
     }
 
 
-    private void assertBestFitMaxPosition(SearchResult searchResult, Double x, Double y, Double z) {
-        BestFitBiggerThenRequired bestFitBiggerThenRequired = searchResult.getBestFitBiggerThenRequired().get();
-        assertPosition(bestFitBiggerThenRequired.getPosition(), x, y, z);
-    }
 
     private void assertBestFitBiggerThenReq(SearchResult searchResult, Double w, Double h, Double l) {
-        BestFitBiggerThenRequired bestFitBiggerThenRequired = searchResult.getBestFitBiggerThenRequired().get();
-        assertOrientation(bestFitBiggerThenRequired.getOrientation(), w, h, l);
+        assertOrientation(searchResult.getBestFitBiggerThenRequired().get(), w, h, l);
     }
 
-    private void assertBestFitPosition(SearchResult searchResult, Double x, Double y, Double z) {
-        BestFitInRequired bestFitInRequired = searchResult.getBestFitInRequired().get();
-        assertPosition(bestFitInRequired.getPosition(), x, y, z);
-    }
 
     private void assertBestFitRequired(SearchResult searchResult, Double w, Double h, Double l) {
-        BestFitInRequired bestFitInRequired = searchResult.getBestFitInRequired().get();
-        assertOrientation(bestFitInRequired.getOrientation(), w, h, l);
+        assertOrientation(searchResult.getBestFitInRequired().get(), w, h, l);
     }
 
     private void assertOrientation(Orientation orientation, Double w, Double h, Double l) {
@@ -134,14 +122,5 @@ public class SearchingBasedOnFiles extends SharedTest {
         Assert.assertEquals(l, length);
     }
 
-    private void assertPosition(Position position, Double x, Double y, Double z) {
-        Double x1 = position.getX();
-        Double y1 = position.getY();
-        Double z1 = position.getZ();
-        Assert.assertEquals(x, x1);
-        Assert.assertEquals(y, y1);
-        Assert.assertEquals(z, z1);
-
-    }
 
 }

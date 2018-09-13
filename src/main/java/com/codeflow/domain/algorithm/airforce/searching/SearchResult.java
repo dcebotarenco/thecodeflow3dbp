@@ -7,29 +7,23 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.Optional;
 
 public class SearchResult {
-    private Optional<BestFitInRequired> bestFitInRequired;
-    private Optional<BestFitBiggerThenRequired> bestFitBiggerThenRequired;
+    private ArticleOrientation bestFitInRequired;
+    private ArticleOrientation bestFitBiggerThenRequired;
 
-    SearchResult() {
-        bestFitInRequired = Optional.empty();
-        bestFitBiggerThenRequired = Optional.empty();
-
+    void addBestFitInRequired(ArticleOrientation orientation) {
+        bestFitInRequired = orientation;
     }
 
-    void addBestFitInRequired(ArticleOrientation orientation, Position position) {
-        bestFitInRequired = Optional.of(new BestFitInRequired(orientation, position));
+    void addBestFitBiggerThenRequired(ArticleOrientation orientation) {
+        bestFitBiggerThenRequired = orientation;
     }
 
-    void addBestFitBiggerThenRequired(ArticleOrientation orientation, Position position) {
-        bestFitBiggerThenRequired = Optional.of(new BestFitBiggerThenRequired(orientation, position));
+    public Optional<ArticleOrientation> getBestFitInRequired() {
+        return Optional.ofNullable(bestFitInRequired);
     }
 
-    public Optional<BestFitInRequired> getBestFitInRequired() {
-        return bestFitInRequired;
-    }
-
-    public Optional<BestFitBiggerThenRequired> getBestFitBiggerThenRequired() {
-        return bestFitBiggerThenRequired;
+    public Optional<ArticleOrientation> getBestFitBiggerThenRequired() {
+        return Optional.ofNullable(bestFitBiggerThenRequired);
     }
 
     @Override

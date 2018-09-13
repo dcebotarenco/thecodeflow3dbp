@@ -15,4 +15,6 @@ public interface ContainerOrientation extends Orientation {
 
     void pack(ArticleOrientation articleOrientation);
 
+    boolean allVolumePacked();
+
 }
