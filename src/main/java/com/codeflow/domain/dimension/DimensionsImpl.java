@@ -4,13 +4,12 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
-import java.util.Set;
 
 class DimensionsImpl implements Dimensions {
 
     private Map<Dimension, Double> dimensionDoubleMap;
 
-    DimensionsImpl(Map<Dimension, Double> dimensionDoubleMap, Set<Double> dimensions) {
+    DimensionsImpl(Map<Dimension, Double> dimensionDoubleMap) {
         this.dimensionDoubleMap = dimensionDoubleMap;
     }
 
@@ -27,6 +26,11 @@ class DimensionsImpl implements Dimensions {
     @Override
     public Double getHeight() {
         return dimensionDoubleMap.get(Dimension.HEIGHT);
+    }
+
+    @Override
+    public Double getVolume() {
+        return getWidth() * getHeight() * getLength();
     }
 
     @Override

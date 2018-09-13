@@ -12,6 +12,6 @@ public class OrientationServiceProducer implements ServiceProducer<OrientationSe
 
     @Override
     public OrientationService defaultService() {
-        return new OrientationServiceImpl(orientationFactory);
+        return new OrientationServiceImp(orientationFactory);
     }
 }

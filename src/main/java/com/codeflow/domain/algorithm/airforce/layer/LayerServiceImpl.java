@@ -1,7 +1,9 @@
 package com.codeflow.domain.algorithm.airforce.layer;
 
 import com.codeflow.domain.article.Article;
+import com.codeflow.domain.article.orientation.ArticleOrientation;
 import com.codeflow.domain.container.Container;
+import com.codeflow.domain.container.orientation.ContainerOrientation;
 import com.codeflow.domain.orientation.Orientation;
 
 import java.util.*;
@@ -46,12 +48,12 @@ import static java.util.Collections.reverseOrder;
 class LayerServiceImpl implements LayerService {
 
     @Override
-    public List<Layer> listCandidates(Orientation containerOrientation, List<Article> articleImpls) {
+    public List<Layer> listCandidates(ContainerOrientation containerOrientation, List<Article> articles) {
         Set<Layer> layers = new HashSet<>();
-        for (Article currentArticle : articleImpls) {
-            List<Orientation> orientationsOfArticleThatFixTheContainer = getOrientationsOfArticleThatFixTheContainer(containerOrientation, currentArticle);
+        for (Article currentArticle : articles) {
+            List<ArticleOrientation> orientationsOfArticleThatFixTheContainer = getOrientationsOfArticleThatFixTheContainer(containerOrientation, currentArticle);
             if (orientationsOfArticleThatFixTheContainer.size() > 0) {
-                List<Article> otherArticlesExceptCurrent = articleImpls.stream().filter(otherArticle -> !otherArticle.equals(currentArticle)).collect(Collectors.toList());
+                List<Article> otherArticlesExceptCurrent = articles.stream().filter(otherArticle -> !otherArticle.equals(currentArticle)).collect(Collectors.toList());
                 for (Orientation orientationOfCurrentArticle : orientationsOfArticleThatFixTheContainer) {
                     Double evaluationValue = 0.;
                     for (Article otherArticle : otherArticlesExceptCurrent) {
@@ -74,7 +76,7 @@ class LayerServiceImpl implements LayerService {
      * @param a Current {@link Article} checked
      * @return list of {@link Orientation} of in what current {@link Article} can fil the {@link Container}
      */
-    private List<Orientation> getOrientationsOfArticleThatFixTheContainer(Orientation containerOrientation, Article a) {
+    private List<ArticleOrientation> getOrientationsOfArticleThatFixTheContainer(ContainerOrientation containerOrientation, Article a) {
         return a.getOrientations().stream().filter(containerOrientation::fit).collect(Collectors.toList());
     }
 

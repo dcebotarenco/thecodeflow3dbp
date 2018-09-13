@@ -11,6 +11,8 @@ public interface Orientation {
 
     Double getHeight();
 
+    Double getVolume();
+
     boolean fit(Orientation orientation);
 
 }

@@ -9,14 +9,13 @@ import java.util.List;
 
 public class LayerServiceTest extends SharedTest {
 
-
     @Test
     public void listCandidatesBookExample() {
         Container container = container(104, 96, 84);
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
         articles(40, 52, 36, 3);
-        List<Layer> layers = layerService.listCandidates(container.getOrientations().get(0), articleRepository.receivedArticles());
+        List<Layer> layers = config.getLayerService().listCandidates(container.getOrientations().get(0), config.getArticleRepository().receivedArticles());
         Assert.assertEquals(7, layers.size());
         layerAssert(layers, 0, 24, 56);
         layerAssert(layers, 1, 36, 72);
@@ -33,7 +32,7 @@ public class LayerServiceTest extends SharedTest {
         Container container = container(104, 96, 84);
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
-        List<Layer> layers = layerService.listCandidates(container.getOrientations().get(0), articleRepository.receivedArticles());
+        List<Layer> layers = config.getLayerService().listCandidates(container.getOrientations().get(0), config.getArticleRepository().receivedArticles());
         Assert.assertEquals(4, layers.size());
         layerAssert(layers, 0, 24, 20);
         layerAssert(layers, 1, 14, 40);

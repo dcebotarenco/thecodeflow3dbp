@@ -5,8 +5,8 @@ import com.codeflow.domain.orientation.Orientation;
 
 import java.util.List;
 
-public interface BoxType {
+public interface BoxType<E extends Orientation> {
     Dimensions getDimensions();
 
-    List<Orientation> getOrientations();
+    List<E> getOrientations();
 }

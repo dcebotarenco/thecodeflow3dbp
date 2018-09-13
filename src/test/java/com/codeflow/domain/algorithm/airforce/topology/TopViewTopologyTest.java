@@ -9,19 +9,19 @@ public class TopViewTopologyTest extends SharedTest {
 
     @Test
     public void findWithSmallestLength() {
-        Corner firstCorner = cornerFactory.create(100D, 0D);
+        Corner firstCorner = config.getCornerFactory().create(100D, 0D);
         TopViewTopologyImpl topViewTopology = new TopViewTopologyImpl(firstCorner);
         Corner withSmallestLength = topViewTopology.findWithSmallestLength();
         Assert.assertEquals(firstCorner, withSmallestLength);
-        topViewTopology.addLast(cornerFactory.create(50D, 1D));
+        topViewTopology.addLast(config.getCornerFactory().create(50D, 1D));
         Corner withSmallestLength1 = topViewTopology.findWithSmallestLength();
         Assert.assertEquals(firstCorner, withSmallestLength1);
     }
 
     @Test
     public void appendCorner() {
-        Corner firstCorner = cornerFactory.create(100., 0.);
-        Corner toAppend = cornerFactory.create(50D, 1D);
+        Corner firstCorner = config.getCornerFactory().create(100., 0.);
+        Corner toAppend = config.getCornerFactory().create(50D, 1D);
         TopViewTopologyImpl topViewTopology = new TopViewTopologyImpl(firstCorner);
         topViewTopology.addLast(toAppend);
         Assert.assertEquals(2, topViewTopology.getRightCorners().size());
@@ -32,8 +32,8 @@ public class TopViewTopologyTest extends SharedTest {
 
     @Test
     public void hasCornerOnLeft() {
-        Corner firstCorner = cornerFactory.create(100D, 0D);
-        Corner toAppend = cornerFactory.create(50D, 1D);
+        Corner firstCorner = config.getCornerFactory().create(100D, 0D);
+        Corner toAppend = config.getCornerFactory().create(50D, 1D);
         TopViewTopologyImpl topViewTopology = new TopViewTopologyImpl(firstCorner);
         Assert.assertFalse(topViewTopology.hasCornerOnLeft(firstCorner));
         topViewTopology.addFirst(toAppend);
@@ -43,8 +43,8 @@ public class TopViewTopologyTest extends SharedTest {
 
     @Test
     public void hasCornerOnRight() {
-        Corner firstCorner = cornerFactory.create(100D, 0D);
-        Corner toAppend = cornerFactory.create(50D, 1D);
+        Corner firstCorner = config.getCornerFactory().create(100D, 0D);
+        Corner toAppend = config.getCornerFactory().create(50D, 1D);
         TopViewTopologyImpl topViewTopology = new TopViewTopologyImpl(firstCorner);
         Assert.assertFalse(topViewTopology.hasCornerOnRight(firstCorner));
         topViewTopology.addLast(toAppend);
@@ -53,8 +53,8 @@ public class TopViewTopologyTest extends SharedTest {
 
     @Test
     public void getRightCorner() {
-        Corner firstCorner = cornerFactory.create(100D, 0D);
-        Corner toAppend = cornerFactory.create(50D, 1D);
+        Corner firstCorner = config.getCornerFactory().create(100D, 0D);
+        Corner toAppend = config.getCornerFactory().create(50D, 1D);
         TopViewTopologyImpl topViewTopology = new TopViewTopologyImpl(firstCorner);
         topViewTopology.addLast(toAppend);
         Corner rightCorner = topViewTopology.getRightCorner(firstCorner);
@@ -63,8 +63,8 @@ public class TopViewTopologyTest extends SharedTest {
 
     @Test
     public void getLeftCorner() {
-        Corner firstCorner = cornerFactory.create(100D, 0D);
-        Corner toAppend = cornerFactory.create(50D, 1D);
+        Corner firstCorner = config.getCornerFactory().create(100D, 0D);
+        Corner toAppend = config.getCornerFactory().create(50D, 1D);
         TopViewTopologyImpl topViewTopology = new TopViewTopologyImpl(firstCorner);
         topViewTopology.addLast(toAppend);
         Corner leftCorner = topViewTopology.getLeftCorner(toAppend);

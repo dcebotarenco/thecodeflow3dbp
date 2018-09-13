@@ -32,6 +32,11 @@ class OrientationImpl implements Orientation {
         return getDimensions().getHeight();
     }
 
+    @Override
+    public Double getVolume() {
+        return getDimensions().getVolume();
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -6,4 +6,6 @@ public interface Dimensions {
     Double getLength();
 
     Double getHeight();
+
+    Double getVolume();
 }

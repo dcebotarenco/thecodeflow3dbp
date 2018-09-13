@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
-class BoxTypeImpl implements BoxType {
+class BoxTypeImpl implements BoxType<Orientation> {
 
     private final Dimensions dimensions;
     private final List<Orientation> orientations;

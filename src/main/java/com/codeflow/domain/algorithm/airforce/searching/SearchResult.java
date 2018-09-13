@@ -1,6 +1,6 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
-import com.codeflow.domain.orientation.Orientation;
+import com.codeflow.domain.article.orientation.ArticleOrientation;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -16,11 +16,11 @@ public class SearchResult {
 
     }
 
-    void addBestFitInRequired(Orientation orientation, Position position) {
+    void addBestFitInRequired(ArticleOrientation orientation, Position position) {
         bestFitInRequired = Optional.of(new BestFitInRequired(orientation, position));
     }
 
-    void addBestFitBiggerThenRequired(Orientation orientation, Position position) {
+    void addBestFitBiggerThenRequired(ArticleOrientation orientation, Position position) {
         bestFitBiggerThenRequired = Optional.of(new BestFitBiggerThenRequired(orientation, position));
     }
 

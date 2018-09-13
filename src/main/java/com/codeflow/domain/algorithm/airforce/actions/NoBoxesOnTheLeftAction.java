@@ -2,6 +2,7 @@ package com.codeflow.domain.algorithm.airforce.actions;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+import com.codeflow.domain.container.orientation.ContainerOrientation;
 
 public class NoBoxesOnTheLeftAction implements Action {
 
@@ -58,7 +59,7 @@ public class NoBoxesOnTheLeftAction implements Action {
 
 
     @Override
-    public void act(Corner cornerWithSmallestLength, Double remainingHeight, Double remainingLength, Layer layer) {
+    public void act(Corner cornerWithSmallestLength, ContainerOrientation containerOrientation, Layer layer) {
 
     }
 }

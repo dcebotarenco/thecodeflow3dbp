@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-class OrientationServiceImpl implements OrientationService<Orientation> {
+class OrientationServiceImp implements OrientationService<Orientation> {
 
-    private OrientationFactory orientationFactory;
+    private OrientationFactory<Orientation> orientationFactory;
 
-    OrientationServiceImpl(OrientationFactory orientationFactory) {
+    OrientationServiceImp(OrientationFactory<Orientation> orientationFactory) {
         this.orientationFactory = orientationFactory;
     }
 

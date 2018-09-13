@@ -2,6 +2,7 @@ package com.codeflow.domain.algorithm.airforce.actions;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+import com.codeflow.domain.container.orientation.ContainerOrientation;
 
 public class ThereAreBoxesOnBothSidesAndNotEqualAction implements Action {
 //        System.out.println("SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER");
@@ -51,7 +52,7 @@ public class ThereAreBoxesOnBothSidesAndNotEqualAction implements Action {
 //        }
 
     @Override
-    public void act(Corner cornerWithSmallestLength, Double remainingHeight, Double remainingLength, Layer layer) {
+    public void act(Corner cornerWithSmallestLength, ContainerOrientation containerOrientation, Layer layer) {
 
     }
 }

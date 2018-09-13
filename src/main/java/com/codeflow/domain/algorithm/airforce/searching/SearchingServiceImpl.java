@@ -1,5 +1,6 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
+import com.codeflow.domain.article.orientation.ArticleOrientation;
 import com.codeflow.domain.boxtype.BoxType;
 import com.codeflow.domain.boxtype.BoxTypeRepository;
 import com.codeflow.domain.gap.Gap;
@@ -17,9 +18,9 @@ class SearchingServiceImpl implements SearchingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchingServiceImpl.class);
 
-    private BoxTypeRepository<BoxType> boxTypeRepository;
+    private BoxTypeRepository<BoxType<ArticleOrientation>> boxTypeRepository;
 
-    SearchingServiceImpl(BoxTypeRepository<BoxType> boxTypeRepository) {
+    SearchingServiceImpl(BoxTypeRepository<BoxType<ArticleOrientation>> boxTypeRepository) {
         this.boxTypeRepository = boxTypeRepository;
     }
 
@@ -39,14 +40,14 @@ class SearchingServiceImpl implements SearchingService {
     public SearchResult findBoxTypes(Gap requiredGap, Gap maxGap) {
         LOGGER.info("Searching box for requiredGap[{}] and maxGap [{}]", requiredGap, maxGap);
         SearchResult searchResult = new SearchResult();
-        List<BoxType> boxTypes = boxTypeRepository.boxTypes();
-        List<Orientation> allOrientationsOfAllBoxTypes = boxTypes.stream().map(BoxType::getOrientations).flatMap(Collection::stream).collect(Collectors.toList());
+        List<BoxType<ArticleOrientation>> boxTypes = boxTypeRepository.boxTypes();
+        List<ArticleOrientation> allOrientationsOfAllBoxTypes = boxTypes.stream().map(BoxType::getOrientations).flatMap(Collection::stream).collect(Collectors.toList());
 
         //Filter orientations that does not fit in maximum gap;
-        List<Orientation> orientationsFitsMaxGap = allOrientationsOfAllBoxTypes.stream().filter(maxGap::fit).collect(Collectors.toList());
+        List<ArticleOrientation> orientationsFitsMaxGap = allOrientationsOfAllBoxTypes.stream().filter(maxGap::fit).collect(Collectors.toList());
 
-        List<Orientation> smallerThenRequiredGapHeight = orientationsFitsMaxGap.stream().filter(requiredGap::smallerThenHeight).collect(Collectors.toList());
-        ArrayList<Orientation> biggerThenRequiredGapHeight = new ArrayList<>(orientationsFitsMaxGap);
+        List<ArticleOrientation> smallerThenRequiredGapHeight = orientationsFitsMaxGap.stream().filter(requiredGap::smallerThenHeight).collect(Collectors.toList());
+        ArrayList<ArticleOrientation> biggerThenRequiredGapHeight = new ArrayList<>(orientationsFitsMaxGap);
         biggerThenRequiredGapHeight.removeAll(smallerThenRequiredGapHeight);
 
         if (smallerThenRequiredGapHeight.size() > 0) {
@@ -59,36 +60,36 @@ class SearchingServiceImpl implements SearchingService {
         return searchResult;
     }
 
-    private void searchBiggerAndClosestToRequiredHeight(Gap requiredGap, SearchResult searchResult, ArrayList<Orientation> biggerThenRequiredGapHeight) {
-        List<Orientation> sortedBiggerThenRequiredGapHeight = biggerThenRequiredGapHeight.stream()
+    private void searchBiggerAndClosestToRequiredHeight(Gap requiredGap, SearchResult searchResult, ArrayList<ArticleOrientation> biggerThenRequiredGapHeight) {
+        List<ArticleOrientation> sortedBiggerThenRequiredGapHeight = biggerThenRequiredGapHeight.stream()
                 .sorted(Comparator.comparingDouble((Orientation o) -> Math.abs(o.getHeight() - requiredGap.getHeight()))
                         .thenComparingDouble((Orientation o) -> Math.abs(o.getWidth() - requiredGap.getWidth()))
                         .thenComparingDouble((Orientation o) -> Math.abs(requiredGap.getLength() - o.getLength()))).collect(Collectors.toList());
 
-        Orientation biggerThenRequiredGap = sortedBiggerThenRequiredGapHeight.get(0);
+        ArticleOrientation biggerThenRequiredGap = sortedBiggerThenRequiredGapHeight.get(0);
         Position biggerThenRequiredGapPosition = calculatePositionForBiggerThenHeight(requiredGap, biggerThenRequiredGap);
         searchResult.addBestFitBiggerThenRequired(biggerThenRequiredGap, biggerThenRequiredGapPosition);
     }
 
-    private void searchSmallerAndClosestToRequiredHeight(Gap requiredGap, SearchResult searchResult, List<Orientation> smallerThenRequiredGapHeight) {
-        List<Orientation> sortedSmallerThenRequiredGapHeight = smallerThenRequiredGapHeight.stream()
+    private void searchSmallerAndClosestToRequiredHeight(Gap requiredGap, SearchResult searchResult, List<ArticleOrientation> smallerThenRequiredGapHeight) {
+        List<ArticleOrientation> sortedSmallerThenRequiredGapHeight = smallerThenRequiredGapHeight.stream()
                 .sorted(Comparator.comparingDouble((Orientation o) -> Math.abs(requiredGap.getHeight() - o.getHeight()))
                         .thenComparingDouble((Orientation o) -> Math.abs(requiredGap.getWidth() - o.getWidth()))
                         .thenComparingDouble((Orientation o) -> Math.abs(requiredGap.getLength() - o.getLength())))
                 .collect(Collectors.toList());
-        Orientation bestFitInRequiredGap = sortedSmallerThenRequiredGapHeight.get(0);
+        ArticleOrientation bestFitInRequiredGap = sortedSmallerThenRequiredGapHeight.get(0);
         Position bestFitPosition = calculatePositionForSmallerThenHeight(requiredGap, bestFitInRequiredGap);
         searchResult.addBestFitInRequired(bestFitInRequiredGap, bestFitPosition);
     }
 
-    private Position calculatePositionForSmallerThenHeight(Gap gapImpl, Orientation orientation) {
+    private Position calculatePositionForSmallerThenHeight(Gap gapImpl, ArticleOrientation orientation) {
         double x = gapImpl.getWidth() - orientation.getWidth();
         double y = gapImpl.getHeight() - orientation.getHeight();
         double z = Math.abs(gapImpl.getLength() - orientation.getLength());
         return new Position(x, y, z);
     }
 
-    private Position calculatePositionForBiggerThenHeight(Gap gapImpl, Orientation orientation) {
+    private Position calculatePositionForBiggerThenHeight(Gap gapImpl, ArticleOrientation orientation) {
         double x = gapImpl.getWidth() - orientation.getWidth();
         double y = orientation.getHeight() - gapImpl.getHeight();
         double z = Math.abs(gapImpl.getLength() - orientation.getLength());

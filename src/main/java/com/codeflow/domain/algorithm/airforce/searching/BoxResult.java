@@ -1,20 +1,20 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
-import com.codeflow.domain.orientation.Orientation;
+import com.codeflow.domain.article.orientation.ArticleOrientation;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 abstract class BoxResult {
-    private Orientation orientation;
+    private ArticleOrientation orientation;
     private Position position;
 
-    BoxResult(Orientation orientation, Position position) {
+    BoxResult(ArticleOrientation orientation, Position position) {
         this.orientation = orientation;
         this.position = position;
     }
 
 
-    public Orientation getOrientation() {
+    public ArticleOrientation getOrientation() {
         return orientation;
     }
 

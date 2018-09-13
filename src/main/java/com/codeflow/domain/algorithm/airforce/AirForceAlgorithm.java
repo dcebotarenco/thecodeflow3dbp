@@ -11,7 +11,7 @@ import com.codeflow.domain.algorithm.airforce.topology.TopologyService;
 import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactory;
 import com.codeflow.domain.article.ArticleRepository;
 import com.codeflow.domain.container.ContainerRepository;
-import com.codeflow.domain.orientation.Orientation;
+import com.codeflow.domain.container.orientation.ContainerOrientation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class AirForceAlgorithm implements Algorithm {
 
 
         List<OrientationIteration> orientationIterations = new ArrayList<>();
-        for (Orientation containerOrientation : containerRepository.container().getOrientations()) {
+        for (ContainerOrientation containerOrientation : containerRepository.container().getOrientations()) {
             List<Layer> layers = layerService.listCandidates(containerOrientation, articleRepository.receivedArticles());
             List<LayerIteration> layerIterations = new ArrayList<>();
             for (Layer layer : layers) {

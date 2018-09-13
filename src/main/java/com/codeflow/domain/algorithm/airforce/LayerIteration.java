@@ -68,8 +68,7 @@ public class LayerIteration {
                 actionService.act(
                         topologySituation,
                         cornerWithSmallestLength,
-                        orientationIteration.getRemainHeight(),
-                        orientationIteration.getRemainLength(),
+                        orientationIteration.getContainerOrientation(),
                         layer);
 //                if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume) {
 //                    packing = false;

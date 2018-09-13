@@ -11,7 +11,7 @@ public class Box3DFactoryProducer implements FactoryProducer<Box3DFactory> {
     private DimensionsFactory dimensionsFactory;
     private OrientationService<Orientation> orientationService;
 
-    public Box3DFactoryProducer(BoxTypeFactory boxTypeFactory, DimensionsFactory dimensionsFactory, OrientationService<Orientation> orientationService) {
+    public Box3DFactoryProducer(BoxTypeFactory boxTypeFactory, DimensionsFactory dimensionsFactory, OrientationService orientationService) {
         this.boxTypeFactory = boxTypeFactory;
         this.dimensionsFactory = dimensionsFactory;
         this.orientationService = orientationService;

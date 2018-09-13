@@ -2,8 +2,8 @@ package com.codeflow.domain.container;
 
 import com.codeflow.domain.box.Box3D;
 import com.codeflow.domain.boxtype.BoxType;
+import com.codeflow.domain.container.orientation.ContainerOrientation;
 import com.codeflow.domain.dimension.Dimensions;
-import com.codeflow.domain.orientation.Orientation;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -14,9 +14,9 @@ import java.util.List;
  */
 class ContainerImpl implements Container {
 
-    private Box3D box3D;
+    private Box3D<ContainerOrientation> box3D;
 
-    ContainerImpl(Box3D box3D) {
+    ContainerImpl(Box3D<ContainerOrientation> box3D) {
         this.box3D = box3D;
     }
 
@@ -46,12 +46,12 @@ class ContainerImpl implements Container {
     }
 
     @Override
-    public List<Orientation> getOrientations() {
+    public List<ContainerOrientation> getOrientations() {
         return box3D.getOrientations();
     }
 
     @Override
-    public BoxType getBoxType() {
+    public BoxType<ContainerOrientation> getBoxType() {
         return box3D.getBoxType();
     }
 

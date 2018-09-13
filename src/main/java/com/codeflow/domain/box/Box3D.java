@@ -6,7 +6,7 @@ import com.codeflow.domain.orientation.Orientation;
 
 import java.util.List;
 
-public interface Box3D {
+public interface Box3D<E extends Orientation> {
     Long getId();
 
     Dimensions getDimensions();
@@ -17,7 +17,7 @@ public interface Box3D {
 
     Double getHeight();
 
-    List<Orientation> getOrientations();
+    List<E> getOrientations();
 
-    BoxType getBoxType();
+    BoxType<E> getBoxType();
 }

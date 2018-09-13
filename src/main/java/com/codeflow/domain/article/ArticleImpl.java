@@ -1,9 +1,9 @@
 package com.codeflow.domain.article;
 
+import com.codeflow.domain.article.orientation.ArticleOrientation;
 import com.codeflow.domain.box.Box3D;
 import com.codeflow.domain.boxtype.BoxType;
 import com.codeflow.domain.dimension.Dimensions;
-import com.codeflow.domain.orientation.Orientation;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -13,9 +13,9 @@ import java.util.List;
  * Article that has to be packed
  */
 class ArticleImpl implements Article {
-    private Box3D box3D;
+    private Box3D<ArticleOrientation> box3D;
 
-    ArticleImpl(Box3D box3D) {
+    ArticleImpl(Box3D<ArticleOrientation> box3D) {
         this.box3D = box3D;
     }
 
@@ -45,12 +45,12 @@ class ArticleImpl implements Article {
     }
 
     @Override
-    public List<Orientation> getOrientations() {
+    public List<ArticleOrientation> getOrientations() {
         return box3D.getOrientations();
     }
 
     @Override
-    public BoxType getBoxType() {
+    public BoxType<ArticleOrientation> getBoxType() {
         return box3D.getBoxType();
     }
 
