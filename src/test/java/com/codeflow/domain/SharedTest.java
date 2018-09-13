@@ -1,8 +1,22 @@
 package com.codeflow.domain;
 
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
+import com.codeflow.domain.algorithm.airforce.layer.LayerServiceProducer;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
-import com.codeflow.domain.boxes.*;
+import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceProducer;
+import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactory;
+import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactoryProducer;
+import com.codeflow.domain.article.*;
+import com.codeflow.domain.box.Box3DFactory;
+import com.codeflow.domain.box.Box3DFactoryProducer;
+import com.codeflow.domain.boxtype.*;
+import com.codeflow.domain.container.*;
+import com.codeflow.domain.dimension.DimensionsFactory;
+import com.codeflow.domain.dimension.DimensionsFactoryProducer;
+import com.codeflow.domain.gap.Gap;
+import com.codeflow.domain.gap.GapFactory;
+import com.codeflow.domain.gap.GapFactoryProducer;
+import com.codeflow.domain.orientation.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -11,17 +25,18 @@ import java.util.Random;
 
 public class SharedTest {
 
-    public static Dimensions3DFactory dimensions3DFactory;
-    public static OrientationFactory orientationFactory;
-    public static OrientationService orientationService;
-    public static ContainerFactory containerFactory;
-    public static GapFactory gapFactory;
-    public static LayerService layerService;
-    public static ArticleFactory articleFactory;
-    public static ArticleRepository articleRepository;
-    public static ContainerRepository containerRepository;
-    public static BoxTypeRepository boxTypeRepository;
-    public static SearchingService searchingService;
+    protected static DimensionsFactory dimensionsFactory;
+    protected static OrientationFactory orientationFactory;
+    protected static OrientationService<Orientation> orientationService;
+    protected static ContainerFactory containerFactory;
+    protected static GapFactory gapFactory;
+    protected static LayerService layerService;
+    protected static ArticleFactory articleFactory;
+    protected static ArticleRepository articleRepository;
+    protected static ContainerRepository containerRepository;
+    protected static BoxTypeRepository boxTypeRepository;
+    protected static SearchingService searchingService;
+    protected static CornerFactory cornerFactory;
 
     @Before
     public void clearRepos() {
@@ -31,17 +46,20 @@ public class SharedTest {
 
     @BeforeClass
     public static void beforeClass() {
-        dimensions3DFactory = new Dimensions3DFactory();
-        orientationFactory = new OrientationFactory(dimensions3DFactory);
-        orientationService = new OrientationService(orientationFactory);
-        containerFactory = new ContainerFactory(dimensions3DFactory, orientationService);
-        articleFactory = new ArticleFactory(dimensions3DFactory, orientationService);
-        gapFactory = new GapFactory(dimensions3DFactory, orientationService);
-        containerRepository = new ContainerRepository();
-        layerService = new LayerService();
-        articleRepository = new ArticleRepository();
-        boxTypeRepository = new BoxTypeRepository(articleRepository);
-        searchingService = new SearchingService(boxTypeRepository);
+        BoxTypeFactory<BoxType> boxTypeBoxTypeFactory = new BoxTypeFactoryProducer().defaultFactory();
+        dimensionsFactory = new DimensionsFactoryProducer().defaultFactory();
+        orientationFactory = new OrientationFactoryProducer(dimensionsFactory).defaultFactory();
+        orientationService = new OrientationServiceProducer(orientationFactory).defaultService();
+        Box3DFactory box3DFactory = new Box3DFactoryProducer(boxTypeBoxTypeFactory, dimensionsFactory, orientationService).defaultFactory();
+        containerFactory = new ContainerFactoryProducer(box3DFactory).defaultFactory();
+        articleFactory = new ArticleFactoryProducer(box3DFactory).defaultFactory();
+        gapFactory = new GapFactoryProducer(box3DFactory).defaultFactory();
+        containerRepository = new ContainerRepositoryProducer().defaultRepository();
+        layerService = new LayerServiceProducer().defaultService();
+        articleRepository = new ArticleRepositoryProducer().defaultRepository();
+        boxTypeRepository = new BoxTypeRepositoryProducer(articleRepository).defaultRepository();
+        searchingService = new SearchingServiceProducer(boxTypeRepository).defaultService();
+        cornerFactory = new CornerFactoryProducer().defaultFactory();
     }
 
     public static Container container(Integer id, Integer w, Integer h, Integer l) {

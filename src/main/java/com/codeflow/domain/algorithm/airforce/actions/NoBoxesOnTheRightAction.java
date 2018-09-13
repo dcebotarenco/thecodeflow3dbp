@@ -1,8 +1,9 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
-public class NoBoxesOnTheRightAction implements Runnable {
-    @Override
-    public void run() {
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+
+public class NoBoxesOnTheRightAction implements Action {
         //*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
 //
 //                lenx = smallestZ.CumX - smallestZ.Pre.CumX;
@@ -44,5 +45,10 @@ public class NoBoxesOnTheRightAction implements Runnable {
 //                    }
 //                }
 //                //System.out.println("S3 Volumecheck");
+
+
+    @Override
+    public void act(Corner cornerWithSmallestLength, Double remainingHeight, Double remainingLength, Layer layer) {
+
     }
 }

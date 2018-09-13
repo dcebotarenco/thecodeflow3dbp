@@ -1,9 +1,11 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
-public class NoBoxesOnTheLeftAction implements Runnable {
-    @Override
-    public void run() {
-        //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+
+public class NoBoxesOnTheLeftAction implements Action {
+
+    //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
 //                System.out.println("SITUATION-2: NO BOXES ON THE LEFT SIDE");
 //                lenx = smallestZ.CumX;
 //                lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
@@ -53,5 +55,10 @@ public class NoBoxesOnTheLeftAction implements Runnable {
 //                    }
 //                }
 //                //System.out.println("S2 Volumecheck");
+
+
+    @Override
+    public void act(Corner cornerWithSmallestLength, Double remainingHeight, Double remainingLength, Layer layer) {
+
     }
 }

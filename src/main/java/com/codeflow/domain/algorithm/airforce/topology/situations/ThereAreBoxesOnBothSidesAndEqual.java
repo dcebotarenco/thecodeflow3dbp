@@ -1,14 +1,12 @@
 package com.codeflow.domain.algorithm.airforce.topology.situations;
 
-import com.codeflow.domain.algorithm.airforce.Situation;
-import com.codeflow.domain.algorithm.airforce.topology.Corner;
 import com.codeflow.domain.algorithm.airforce.topology.TopViewTopology;
-import com.codeflow.domain.algorithm.airforce.topology.TopologySituation;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
 
-public class ThereAreBoxesOnBothSidesAndEqual extends TopologySituation {
+public class ThereAreBoxesOnBothSidesAndEqual implements TopologySituation {
 
     @Override
-    protected boolean match(Corner corner, TopViewTopology topViewTopology) {
+    public boolean match(Corner corner, TopViewTopology topViewTopology) {
         return topViewTopology.hasCornerOnRight(corner) && topViewTopology.hasCornerOnLeft(corner)
                 && topViewTopology.getRightCorner(corner).equals(topViewTopology.getLeftCorner(corner));
     }

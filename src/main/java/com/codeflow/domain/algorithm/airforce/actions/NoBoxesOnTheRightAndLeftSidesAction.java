@@ -1,14 +1,47 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
-public class NoBoxesOnTheRightAndLeftSidesAction implements Runnable{
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.packing.PackingService;
+import com.codeflow.domain.algorithm.airforce.searching.BestFitInRequired;
+import com.codeflow.domain.algorithm.airforce.searching.SearchResult;
+import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+import com.codeflow.domain.gap.Gap;
+import com.codeflow.domain.gap.GapFactory;
 
+public class NoBoxesOnTheRightAndLeftSidesAction extends AbstractAction implements Action {
+
+
+    private final PackingService packingService;
+
+    NoBoxesOnTheRightAndLeftSidesAction(SearchingService searchingService,
+                                        GapFactory gapFactory,
+                                        PackingService packingService) {
+        super(searchingService, gapFactory);
+        this.packingService = packingService;
+    }
 
     @Override
-    public void run() {
-//                lenx = smallestZ.CumX;
-//                lpz = remainpz - smallestZ.CumZ;
-//
-//                FindBox(lenx, layerThickness, remainpy, lpz, lpz);
+    public void act(Corner cornerWithSmallestLength,
+                    Double remainingHeight,
+                    Double remainingLength,
+                    Layer layer) {
+
+        double maxAndRequiredLength = remainingLength - cornerWithSmallestLength.getLength();
+        double requiredWidth = cornerWithSmallestLength.getWidth();
+        Gap requiredGapImpl = getGapFactoryImpl().create(requiredWidth, layer.getDimension(), maxAndRequiredLength);
+        Gap maxGapImpl = getGapFactoryImpl().create(requiredWidth, remainingHeight, maxAndRequiredLength);
+        SearchResult searchResult = getSearchingService().findBoxTypes(requiredGapImpl, maxGapImpl);
+
+        if (searchResult.getBestFitInRequired().isPresent()) {
+            BestFitInRequired bestFitInRequired = searchResult.getBestFitInRequired().get();
+            packingService.pack(bestFitInRequired.getOrientation(), bestFitInRequired.getPosition());
+        } else if (searchResult.getBestFitBiggerThenRequired().isPresent()) {
+
+        } else {
+            layer.done();
+        }
+
 //                CheckFound();
 //
 //                if (layerDone) {

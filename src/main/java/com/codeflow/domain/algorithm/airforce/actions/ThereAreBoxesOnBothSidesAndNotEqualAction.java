@@ -1,8 +1,9 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
-public class ThereAreBoxesOnBothSidesAndNotEqualAction implements Runnable {
-    @Override
-    public void run() {
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+
+public class ThereAreBoxesOnBothSidesAndNotEqualAction implements Action {
 //        System.out.println("SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER");
 //        //*** SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER ***
 //
@@ -48,5 +49,9 @@ public class ThereAreBoxesOnBothSidesAndNotEqualAction implements Runnable {
 //                smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
 //            }
 //        }
+
+    @Override
+    public void act(Corner cornerWithSmallestLength, Double remainingHeight, Double remainingLength, Layer layer) {
+
     }
 }

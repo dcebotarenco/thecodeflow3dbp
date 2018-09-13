@@ -1,9 +1,9 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
-import com.codeflow.domain.boxes.Orientation;
+import com.codeflow.domain.orientation.Orientation;
 
-public class BestFitBiggerThenRequired extends BoxResult {
-    public BestFitBiggerThenRequired(Orientation orientation, Position position) {
+class BestFitBiggerThenRequired extends BoxResult {
+    BestFitBiggerThenRequired(Orientation orientation, Position position) {
         super(orientation, position);
     }
 }

@@ -1,17 +1,15 @@
 package com.codeflow.domain.algorithm.airforce.topology.situations;
 
-import com.codeflow.domain.algorithm.airforce.Situation;
-import com.codeflow.domain.algorithm.airforce.topology.Corner;
 import com.codeflow.domain.algorithm.airforce.topology.TopViewTopology;
-import com.codeflow.domain.algorithm.airforce.topology.TopologySituation;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
 
-import static com.codeflow.domain.algorithm.airforce.Situation.NO_BOXES_ON_THE_LEFT_SIDE;
+import static com.codeflow.domain.algorithm.airforce.topology.situations.Situation.NO_BOXES_ON_THE_LEFT_SIDE;
 
-public class NoBoxesOnTheLeft extends TopologySituation {
+public class NoBoxesOnTheLeft implements TopologySituation {
 
 
     @Override
-    protected boolean match(Corner corner, TopViewTopology topViewTopology) {
+    public boolean match(Corner corner, TopViewTopology topViewTopology) {
         return !topViewTopology.hasCornerOnLeft(corner) && topViewTopology.hasCornerOnRight(corner);
     }
 

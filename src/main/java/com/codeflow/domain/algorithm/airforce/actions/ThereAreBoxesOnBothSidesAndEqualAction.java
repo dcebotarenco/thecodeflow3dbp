@@ -1,8 +1,14 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
-public class ThereAreBoxesOnBothSidesAndEqualAction implements Runnable {
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+
+public class ThereAreBoxesOnBothSidesAndEqualAction implements Action {
     @Override
-    public void run() {
+    public void act(Corner cornerWithSmallestLength, Double remainingHeight, Double remainingLength, Layer layer) {
+
+    }
+
 //        System.out.println("SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER");
 //        //*** SITUATION-4: THERE ARE BOXES ON BOTH OF THE SIDES ***
 //
@@ -71,5 +77,4 @@ public class ThereAreBoxesOnBothSidesAndEqualAction implements Runnable {
 //            }
 //        }
         //System.out.println("S4A Volumecheck");
-    }
 }

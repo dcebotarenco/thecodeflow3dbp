@@ -1,8 +1,8 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
 import com.codeflow.domain.SharedTest;
-import com.codeflow.domain.boxes.Gap;
-import com.codeflow.domain.boxes.Orientation;
+import com.codeflow.domain.gap.Gap;
+import com.codeflow.domain.orientation.Orientation;
 import org.junit.Assert;
 import org.junit.Test;
 

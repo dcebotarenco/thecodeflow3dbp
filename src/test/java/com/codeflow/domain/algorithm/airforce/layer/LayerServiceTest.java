@@ -1,17 +1,13 @@
 package com.codeflow.domain.algorithm.airforce.layer;
 
 import com.codeflow.domain.SharedTest;
-import com.codeflow.domain.boxes.Article;
-import com.codeflow.domain.boxes.Container;
+import com.codeflow.domain.container.Container;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LayerServiceTest extends SharedTest {
-
 
 
     @Test
@@ -45,7 +41,7 @@ public class LayerServiceTest extends SharedTest {
         layerAssert(layers, 3, 48, 88);
     }
 
-    public void layerAssert(List<Layer> layers, Integer index, Integer dimension, Integer evaluationValue) {
+    private void layerAssert(List<Layer> layers, Integer index, Integer dimension, Integer evaluationValue) {
         Layer layer = layers.get(index);
         Assert.assertEquals(new Double(dimension), layer.getDimension());
         Assert.assertEquals(new Double(evaluationValue), layer.getEvaluationValue());
