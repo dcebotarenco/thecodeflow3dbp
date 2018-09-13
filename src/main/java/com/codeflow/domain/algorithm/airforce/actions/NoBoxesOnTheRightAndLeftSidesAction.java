@@ -9,17 +9,22 @@ import com.codeflow.domain.article.orientation.ArticleOrientation;
 import com.codeflow.domain.container.orientation.ContainerOrientation;
 import com.codeflow.domain.gap.Gap;
 import com.codeflow.domain.gap.GapFactory;
+import com.codeflow.domain.position.Position;
+import com.codeflow.domain.position.PositionFactory;
 
 public class NoBoxesOnTheRightAndLeftSidesAction extends AbstractAction implements Action {
 
 
     private final PackingService packingService;
+    private PositionFactory<Position> positionFactory;
 
     NoBoxesOnTheRightAndLeftSidesAction(SearchingService searchingService,
                                         GapFactory gapFactory,
-                                        PackingService packingService) {
+                                        PackingService packingService,
+                                        PositionFactory<Position> positionFactory) {
         super(searchingService, gapFactory);
         this.packingService = packingService;
+        this.positionFactory = positionFactory;
     }
 
     @Override
@@ -35,7 +40,8 @@ public class NoBoxesOnTheRightAndLeftSidesAction extends AbstractAction implemen
 
         if (searchResult.getBestFitInRequired().isPresent()) {
             ArticleOrientation articleOrientation = searchResult.getBestFitInRequired().get();
-//            packingService.pack(containerOrientation, articleOrientation, bestFitInRequired.getPosition());
+            Position position = positionFactory.create(0D, containerOrientation.getPackedHeight(), cornerWithSmallestLength.getLength());
+            packingService.pack(containerOrientation, articleOrientation, position);
         } else if (searchResult.getBestFitBiggerThenRequired().isPresent()) {
 
         } else {

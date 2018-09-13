@@ -1,7 +1,7 @@
 package com.codeflow.domain.article;
 
-import com.codeflow.domain.algorithm.airforce.searching.Position;
 import com.codeflow.domain.boxtype.BoxType;
+import com.codeflow.domain.position.Position;
 
 import java.util.List;
 

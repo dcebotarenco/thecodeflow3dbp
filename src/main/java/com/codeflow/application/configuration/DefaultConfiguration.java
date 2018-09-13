@@ -24,6 +24,8 @@ import com.codeflow.domain.dimension.DimensionsFactory;
 import com.codeflow.domain.dimension.DimensionsFactoryProducer;
 import com.codeflow.domain.gap.GapFactory;
 import com.codeflow.domain.orientation.*;
+import com.codeflow.domain.position.PositionFactory;
+import com.codeflow.domain.position.PositionFactoryProducer;
 
 public class DefaultConfiguration {
 
@@ -46,6 +48,7 @@ public class DefaultConfiguration {
     private SearchingService searchingService;
     private OrientationService orientationService;
     private ArticleService articleService;
+    private PositionFactory positionFactory;
 
     public DefaultConfiguration() {
         dimensionsFactory = new DimensionsFactoryProducer().defaultFactory();
@@ -66,6 +69,7 @@ public class DefaultConfiguration {
         boxTypeRepository = new BoxTypeRepositoryProducer(articleRepository).defaultRepository();
         searchingService = new SearchingServiceProducer(boxTypeRepository).defaultService();
         orientationService = new OrientationServiceProducer(orientationFactory).defaultService();
+        positionFactory = new PositionFactoryProducer().defaultFactory();
     }
 
     public DimensionsFactory getDimensionsFactory() {
@@ -138,5 +142,9 @@ public class DefaultConfiguration {
 
     public ArticleService getArticleService() {
         return articleService;
+    }
+
+    public PositionFactory getPositionFactory() {
+        return positionFactory;
     }
 }

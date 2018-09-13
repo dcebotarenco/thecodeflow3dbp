@@ -1,27 +1,30 @@
-package com.codeflow.domain.algorithm.airforce.searching;
+package com.codeflow.domain.position;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class Position {
+class PositionImpl implements Position {
     private Double x;
     private Double y;
     private Double z;
 
-    public Position(Double x, Double y, Double z) {
+    PositionImpl(Double x, Double y, Double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
+    @Override
     public Double getX() {
         return x;
     }
 
+    @Override
     public Double getY() {
         return y;
     }
 
+    @Override
     public Double getZ() {
         return z;
     }
@@ -32,7 +35,7 @@ public class Position {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        Position position = (Position) o;
+        PositionImpl position = (PositionImpl) o;
 
         return new EqualsBuilder()
                 .append(x, position.x)
