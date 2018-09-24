@@ -5,6 +5,8 @@ import com.codeflow.domain.article.orientation.ArticleOrientation;
 import com.codeflow.domain.container.Container;
 import com.codeflow.domain.container.orientation.ContainerOrientation;
 import com.codeflow.domain.orientation.Orientation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,43 +14,51 @@ import java.util.stream.Collectors;
 import static java.util.Collections.reverseOrder;
 
 /**
- * Service creates a {@link LayerImpl} thickness list.
+ * Service creates a {@link Layer} thickness list.
  * <p>
- * This {@link List} contains every unique {@link LayerImpl#dimension} of the boxes less than the {@link Container#getHeight()}
- * dimension of the current {@link Orientation} of the {@link Container} with their individual {@link LayerImpl#evaluationValue}.
+ * This {@link List} contains every unique {@link Layer#getHeight()} of the boxes less than the {@link Container#getHeight()}
+ * dimension of the current {@link Orientation} of the {@link Container} with their individual {@link Layer#getEvaluationValue}.
  * The {@link List} is created for each {@link Orientation} of the {@link Container}.
- * Each entry is a possible {@link LayerImpl} thickness value for iterations with the current {@link Orientation}
+ * Each entry is a possible {@link Layer} thickness value for iterations with the current {@link Orientation}
  * of the {@link Container} to start the packing.
  * </p>
- * <p>The {@link LayerImpl#evaluationValue} represents how close all other boxes are to this layer height if we selected
- * this value as a layer thickness for the packing. The model calculates these {@link LayerImpl#evaluationValue} as follows:
+ * <p>The {@link Layer#getEvaluationValue} represents how close all other boxes are to this layer height if we selected
+ * this value as a layer thickness for the packing. The model calculates these {@link Layer#getEvaluationValue} as follows:
  * </p>
  * <p>
  * Retrieve an {@link Article} and one of its dimensions.
  * </p>
  * <p>
- * Examine the previously set {@link LayerImpl#dimension} values in the {@link List}.
+ * Examine the previously set {@link Layer#getHeight} values in the {@link List}.
  * If this is a different length and less than the {@link Container#getHeight()} dimension of
- * the current {@link Orientation} of the {@link Container}, store the length in a new {@link LayerImpl} in the {@link List}.
+ * the current {@link Orientation} of the {@link Container}, store the length in a new {@link Layer} in the {@link List}.
  * </p>
  * <p>
- * Then it goes through every other {@link Article} retrieving its dimension closest to the {@link LayerImpl#dimension}
+ * Then it goes through every other {@link Article} retrieving its dimension closest to the {@link Layer#getHeight}
  * value, and adds up the absolute value of the differences between that dimension and the
- * {@link LayerImpl#dimension}. {@link LayerImpl#dimension} with the smallest {@link LayerImpl#evaluationValue} is the most
+ * {@link Layer#getHeight}. {@link Layer#getHeight} with the smallest {@link Layer#getEvaluationValue} is the most
  * suitable layer thickness value.
  * </p>
- * <p>Since the smallest {@link LayerImpl#evaluationValue} value potentially may be the most suitable layer
+ * <p>Since the smallest {@link Layer#getEvaluationValue} value potentially may be the most suitable layer
  * thickness value, having that list sorted and starting to act from the most promising layer
  * thickness values would be an important factor to reduce the solution time, especially if
  * we consider packing a large number of different {@link Article} types. However, this greedy
- * approach does not always hold. Sometimes an iteration starting with a larger {@link LayerImpl#dimension}
+ * approach does not always hold. Sometimes an iteration starting with a larger {@link Layer#getHeight}
  * value yields the best solution.
  * </p>
  */
 class LayerServiceImpl implements LayerService {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(LayerServiceImpl.class);
+    private LayerFactory<Layer> layerFactory;
+
+    LayerServiceImpl(LayerFactory<Layer> layerFactory) {
+        this.layerFactory = layerFactory;
+    }
+
     @Override
     public List<Layer> listCandidates(ContainerOrientation containerOrientation, List<Article> articles) {
+        LOGGER.info("List candidates for containerOrientation {} and articles {}", containerOrientation, articles);
         Set<Layer> layers = new HashSet<>();
         for (Article currentArticle : articles) {
             List<ArticleOrientation> orientationsOfArticleThatFixTheContainer = getOrientationsOfArticleThatFixTheContainer(containerOrientation, currentArticle);
@@ -60,12 +70,15 @@ class LayerServiceImpl implements LayerService {
                         Double smallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions = getSmallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions(orientationOfCurrentArticle, otherArticle);
                         evaluationValue = evaluationValue + smallestDifferenceOfCurrentOrientationHeightAgainstArticleDimensions;
                     }
-                    layers.add(new LayerImpl(orientationOfCurrentArticle.getHeight(), evaluationValue));
+                    Layer layer = layerFactory.create(orientationOfCurrentArticle.getHeight(), containerOrientation.getLength(), evaluationValue);
+                    LOGGER.info("layer {}", layer);
+                    layers.add(layer);
                 }
             }
         }
         ArrayList<Layer> list = new ArrayList<>(layers);
-        list.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparing(reverseOrder(Comparator.comparingDouble(Layer::getDimension))));
+        list.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparing(reverseOrder(Comparator.comparingDouble(Layer::getHeight))));
+        LOGGER.info("Size of list {}", list.size());
         return list;
     }
 

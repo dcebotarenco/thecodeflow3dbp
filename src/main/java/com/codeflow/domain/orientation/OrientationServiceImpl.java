@@ -3,9 +3,7 @@ package com.codeflow.domain.orientation;
 import com.codeflow.domain.dimension.Dimensions;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 class OrientationServiceImp implements OrientationService<Orientation> {
 
@@ -17,7 +15,7 @@ class OrientationServiceImp implements OrientationService<Orientation> {
 
     @Override
     public List<Orientation> calculateOrientations(Dimensions dimensions) {
-        Set<Orientation> orientations = new HashSet<>();
+        List<Orientation> orientations = new ArrayList<>();
         /*As it is*/
         orientations.add(orientationFactory.create(dimensions.getWidth(), dimensions.getHeight(), dimensions.getLength()));
         /*Rotate on X*/

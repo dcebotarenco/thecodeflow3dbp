@@ -4,7 +4,7 @@ import com.codeflow.domain.factoryproducer.FactoryProducer;
 
 public class LayerFactoryProducer implements FactoryProducer<LayerFactory> {
     @Override
-    public LayerFactory defaultFactory() {
+    public LayerFactory<Layer> defaultFactory() {
         return new LayerFactoryImpl();
     }
 }

@@ -1,7 +1,10 @@
 package com.codeflow.domain.algorithm.airforce.layer;
 
 public interface Layer {
-    Double getDimension();
+
+    Double getLength();
+
+    Double getHeight();
 
     Double getEvaluationValue();
 

@@ -23,6 +23,16 @@ class CornerImpl implements Corner {
     }
 
     @Override
+    public void updateLength(Double length) {
+        this.length = length;
+    }
+
+    @Override
+    public void updateWidth(Double width) {
+        this.width = width;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 

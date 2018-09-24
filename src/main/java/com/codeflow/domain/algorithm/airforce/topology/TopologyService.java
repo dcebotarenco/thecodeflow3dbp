@@ -9,4 +9,8 @@ public interface TopologyService {
     Situation analyzeTopology(Corner corner);
 
     Corner findCornerWithSmallestLength();
+
+    void addCornerBefore(Corner toAdd);
+
+    void updateSmallestCorner(Corner newSmallestCorner);
 }

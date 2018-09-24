@@ -15,6 +15,7 @@ public class LayerServiceTest extends SharedTest {
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
         articles(40, 52, 36, 3);
+        System.out.println(config.getArticleRepository().receivedArticles().size());
         List<Layer> layers = config.getLayerService().listCandidates(container.getOrientations().get(0), config.getArticleRepository().receivedArticles());
         Assert.assertEquals(7, layers.size());
         layerAssert(layers, 0, 24, 56);
@@ -29,20 +30,23 @@ public class LayerServiceTest extends SharedTest {
 
     @Test
     public void listCandidatesDpp01() {
+        config.getArticleRepository().clear();
         Container container = container(104, 96, 84);
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
+        System.out.println(config.getArticleRepository().receivedArticles().size());
         List<Layer> layers = config.getLayerService().listCandidates(container.getOrientations().get(0), config.getArticleRepository().receivedArticles());
         Assert.assertEquals(4, layers.size());
         layerAssert(layers, 0, 24, 20);
         layerAssert(layers, 1, 14, 40);
         layerAssert(layers, 2, 70, 44);
         layerAssert(layers, 3, 48, 88);
+        config.getArticleRepository().clear();
     }
 
     private void layerAssert(List<Layer> layers, Integer index, Integer dimension, Integer evaluationValue) {
         Layer layer = layers.get(index);
-        Assert.assertEquals(new Double(dimension), layer.getDimension());
+        Assert.assertEquals(new Double(dimension), layer.getHeight());
         Assert.assertEquals(new Double(evaluationValue), layer.getEvaluationValue());
     }
 }

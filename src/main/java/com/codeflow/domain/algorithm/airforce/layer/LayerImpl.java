@@ -13,7 +13,9 @@ class LayerImpl implements Layer {
     /**
      * Each dimension value in this array represents a different layer thickness value with which each iteration can start packing
      */
-    private Double dimension;
+    private Double height;
+
+    private Double length;
     /**
      * Evaluation weight value for the corresponding dimension value
      */
@@ -22,16 +24,22 @@ class LayerImpl implements Layer {
     private boolean isEven;
 
 
-    LayerImpl(Double dimension, Double evaluationValue) {
-        this.dimension = dimension;
+    LayerImpl(Double height, Double length, Double evaluationValue) {
+        this.height = height;
+        this.length = length;
         this.evaluationValue = evaluationValue;
         this.isDone = false;
         this.isEven = false;
     }
 
     @Override
-    public Double getDimension() {
-        return dimension;
+    public Double getHeight() {
+        return height;
+    }
+
+    @Override
+    public Double getLength() {
+        return length;
     }
 
     @Override
@@ -48,7 +56,8 @@ class LayerImpl implements Layer {
         LayerImpl layer = (LayerImpl) o;
 
         return new EqualsBuilder()
-                .append(dimension, layer.dimension)
+                .append(height, layer.height)
+                .append(length, layer.length)
                 .append(evaluationValue, layer.evaluationValue)
                 .isEquals();
     }
@@ -56,7 +65,8 @@ class LayerImpl implements Layer {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(dimension)
+                .append(height)
+                .append(length)
                 .append(evaluationValue)
                 .toHashCode();
     }
@@ -74,5 +84,14 @@ class LayerImpl implements Layer {
     @Override
     public boolean isDone() {
         return isDone;
+    }
+
+    @Override
+    public String toString() {
+        return "LayerImpl{" +
+                "height=" + height +
+                ", length=" + length +
+                ", evaluationValue=" + evaluationValue +
+                '}';
     }
 }

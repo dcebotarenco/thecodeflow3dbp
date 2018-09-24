@@ -4,4 +4,8 @@ public interface Corner {
     Double getWidth();
 
     Double getLength();
+
+    void updateLength(Double length);
+
+    void updateWidth(Double width);
 }

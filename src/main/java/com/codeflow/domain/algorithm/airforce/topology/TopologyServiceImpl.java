@@ -10,7 +10,7 @@ import java.util.Optional;
 
 class TopologyServiceImpl implements TopologyService {
 
-    private TopViewTopologyImpl topViewTopology;
+    private TopViewTopology topViewTopology;
     private TopologySituationRepository topologySituationRepository;
     private CornerFactory<Corner> cornerCornerFactory;
 
@@ -39,6 +39,18 @@ class TopologyServiceImpl implements TopologyService {
     @Override
     public Corner findCornerWithSmallestLength() {
         return topViewTopology.findWithSmallestLength();
+    }
+
+    @Override
+    public void addCornerBefore(Corner toAdd) {
+        topViewTopology.addFirst(toAdd);
+    }
+
+    @Override
+    public void updateSmallestCorner(Corner newSmallestCorner) {
+        Corner cornerWithSmallestLength = findCornerWithSmallestLength();
+        cornerWithSmallestLength.updateLength(newSmallestCorner.getLength());
+        cornerWithSmallestLength.updateWidth(newSmallestCorner.getWidth());
     }
 
 }

@@ -14,4 +14,10 @@ public interface TopViewTopology {
     Corner getRightCorner(Corner corner);
 
     Corner getLeftCorner(Corner corner);
+
+    void addLast(Corner corner);
+
+    void addFirst(Corner corner);
+
+    Corner findWithSmallestLength();
 }

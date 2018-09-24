@@ -4,10 +4,15 @@ import com.codeflow.domain.algorithm.airforce.actions.ActionRepository;
 import com.codeflow.domain.algorithm.airforce.actions.ActionRepositoryProducer;
 import com.codeflow.domain.algorithm.airforce.actions.ActionService;
 import com.codeflow.domain.algorithm.airforce.actions.ActionServiceProducer;
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.layer.LayerFactory;
 import com.codeflow.domain.algorithm.airforce.packing.PackingService;
 import com.codeflow.domain.algorithm.airforce.packing.PackingServiceProducer;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceProducer;
+import com.codeflow.domain.algorithm.airforce.topology.TopologyService;
+import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
+import com.codeflow.domain.algorithm.airforce.topology.corner.CornerFactory;
 import com.codeflow.domain.article.ArticleFactory;
 import com.codeflow.domain.article.ArticleFactoryProducer;
 import com.codeflow.domain.article.ArticleRepository;
@@ -31,6 +36,8 @@ import com.codeflow.domain.orientation.Orientation;
 import com.codeflow.domain.orientation.OrientationFactory;
 import com.codeflow.domain.orientation.OrientationService;
 import com.codeflow.domain.orientation.OrientationServiceProducer;
+import com.codeflow.domain.position.Position;
+import com.codeflow.domain.position.PositionFactory;
 
 public class Provider {
 
@@ -66,12 +73,22 @@ public class Provider {
                                                     BoxTypeFactory<BoxType> boxTypeBoxTypeFactory,
                                                     DimensionsFactory dimensionsFactory,
                                                     ArticleRepository articleRepository,
-                                                    ArticleService articleService) {
+                                                    ArticleService articleService,
+                                                    PositionFactory<Position> positionFactory,
+                                                    TopologyService topologyService,
+                                                    CornerFactory<Corner> cornerFactory,
+                                                    LayerFactory<Layer> layerFactory) {
         BoxTypeRepository boxTypeRepository = new BoxTypeRepositoryProducer(articleRepository).defaultRepository();
         GapFactory gapFactory = Provider.createGapFactory(orientationFactory, boxTypeBoxTypeFactory, dimensionsFactory);
         SearchingService searchingService = new SearchingServiceProducer(boxTypeRepository).defaultService();
         PackingService packingService = new PackingServiceProducer(boxTypeRepository, articleService).defaultService();
-        ActionRepository actionRepository = new ActionRepositoryProducer(searchingService, gapFactory, packingService).defaultRepository();
+        ActionRepository actionRepository = new ActionRepositoryProducer(searchingService,
+                gapFactory,
+                packingService,
+                positionFactory,
+                topologyService,
+                cornerFactory,
+                layerFactory).defaultRepository();
 
         return new ActionServiceProducer(actionRepository).defaultService();
     }

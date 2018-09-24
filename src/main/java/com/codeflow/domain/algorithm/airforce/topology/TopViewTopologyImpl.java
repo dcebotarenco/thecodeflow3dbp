@@ -27,7 +27,8 @@ class TopViewTopologyImpl implements TopViewTopology {
         addLast(firstCorner);
     }
 
-    Corner findWithSmallestLength() {
+    @Override
+    public Corner findWithSmallestLength() {
         rightCorners.sort(Comparator.comparingDouble(Corner::getLength));
         return rightCorners.getFirst();
     }
@@ -37,11 +38,13 @@ class TopViewTopologyImpl implements TopViewTopology {
         return Collections.unmodifiableList(rightCorners);
     }
 
-    void addLast(Corner corner) {
+    @Override
+    public void addLast(Corner corner) {
         rightCorners.addLast(corner);
     }
 
-    void addFirst(Corner corner) {
+    @Override
+    public void addFirst(Corner corner) {
         rightCorners.addFirst(corner);
     }
 

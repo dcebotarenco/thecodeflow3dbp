@@ -45,7 +45,7 @@ public class LayerIteration {
                    ActionService actionService,
                    ArticleService articleService) {
         this.layer = layer;
-        this.layerThickness = layer.getDimension();
+        this.layerThickness = layer.getHeight();
         this.topologyService = topologyService;
         this.actionService = actionService;
         this.articleService = articleService;
