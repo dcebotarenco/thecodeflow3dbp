@@ -7,19 +7,19 @@ import java.util.List;
 
 public class InputDTO {
     ContainerDTO containerDTO;
-    List<ArticleDTO> articleDTOList;
+    List<ArticleTypeDTO> articleTypeDTOList;
 
-    public InputDTO(ContainerDTO containerDTO, List<ArticleDTO> articleDTOList) {
+    public InputDTO(ContainerDTO containerDTO, List<ArticleTypeDTO> articleTypeDTOList) {
         this.containerDTO = containerDTO;
-        this.articleDTOList = articleDTOList;
+        this.articleTypeDTOList = articleTypeDTOList;
     }
 
     public ContainerDTO getContainerDTO() {
         return containerDTO;
     }
 
-    public List<ArticleDTO> getArticleDTOList() {
-        return articleDTOList;
+    public List<ArticleTypeDTO> getArticleTypeDTOList() {
+        return articleTypeDTOList;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class InputDTO {
 
         return new EqualsBuilder()
                 .append(containerDTO, inputDTO.containerDTO)
-                .append(articleDTOList, inputDTO.articleDTOList)
+                .append(articleTypeDTOList, inputDTO.articleTypeDTOList)
                 .isEquals();
     }
 
@@ -40,7 +40,7 @@ public class InputDTO {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(containerDTO)
-                .append(articleDTOList)
+                .append(articleTypeDTOList)
                 .toHashCode();
     }
 
@@ -48,7 +48,7 @@ public class InputDTO {
     public String toString() {
         return "InputDTO{" +
                 "containerDTO=" + containerDTO +
-                ", articleDTOList=" + articleDTOList +
+                ", articleDTOList=" + articleTypeDTOList +
                 '}';
     }
 }

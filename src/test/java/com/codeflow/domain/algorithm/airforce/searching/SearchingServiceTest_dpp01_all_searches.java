@@ -8,13 +8,15 @@ import org.junit.Test;
 
 public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
 
+    protected static SearchingService searchingService;
+
     @Test
     public void findBoxTypes1() {
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 96, 84);
         Gap requiredGap = gap(104, 24, 84);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -27,7 +29,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 96, 14);
         Gap requiredGap = gap(104, 24, 14);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
         assertBestFitMax(searchResult, 104, 48, 14);
@@ -39,7 +41,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 96, 0);
         Gap requiredGap = gap(104, 48, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -50,7 +52,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 70);
         Gap requiredGap = gap(104, 24, 70);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -62,7 +64,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 0);
         Gap requiredGap = gap(104, 24, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -73,7 +75,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 48, 84);
         Gap requiredGap = gap(104, 24, 84);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -86,7 +88,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 48, 14);
         Gap requiredGap = gap(104, 24, 14);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
         assertBestFitMax(searchResult, 104, 48, 14);
@@ -98,7 +100,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 48, 0);
         Gap requiredGap = gap(104, 48, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -109,7 +111,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 70);
         Gap requiredGap = gap(104, 24, 70);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -121,7 +123,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 0);
         Gap requiredGap = gap(104, 24, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -132,7 +134,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 96, 84);
         Gap requiredGap = gap(104, 24, 84);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -145,7 +147,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 96, 14);
         Gap requiredGap = gap(104, 24, 14);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
         assertBestFitMax(searchResult, 104, 48, 14);
@@ -157,7 +159,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 96, 0);
         Gap requiredGap = gap(104, 48, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -168,7 +170,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 70);
         Gap requiredGap = gap(104, 24, 70);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -180,7 +182,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 0);
         Gap requiredGap = gap(104, 24, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -191,7 +193,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 48, 84);
         Gap requiredGap = gap(104, 24, 84);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -204,7 +206,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 48, 14);
         Gap requiredGap = gap(104, 24, 14);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
         assertBestFitMax(searchResult, 104, 48, 14);
@@ -216,7 +218,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 48, 0);
         Gap requiredGap = gap(104, 48, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }
@@ -227,7 +229,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 70);
         Gap requiredGap = gap(104, 24, 70);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 104, 24, 70);
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -239,7 +241,7 @@ public class SearchingServiceTest_dpp01_all_searches extends SharedTest {
         articles(14, 104, 48, 2);
         Gap maxGap = gap(104, 24, 0);
         Gap requiredGap = gap(104, 24, 0);
-        SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGap, maxGap);
         Assert.assertFalse(searchResult.getBestFitInRequired().isPresent());
         Assert.assertFalse(searchResult.getBestFitBiggerThenRequired().isPresent());
     }

@@ -3,12 +3,12 @@ package com.codeflow.domain.position;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-class PositionImpl implements Position {
+public class PositionImpl implements Position {
     private Double x;
     private Double y;
     private Double z;
 
-    PositionImpl(Double x, Double y, Double z) {
+    public PositionImpl(Double x, Double y, Double z) {
         this.x = x;
         this.y = y;
         this.z = z;

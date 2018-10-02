@@ -1,8 +1,7 @@
 package com.codeflow.domain.gap;
 
-import com.codeflow.domain.box.Box3D;
 import com.codeflow.domain.boxtype.BoxType;
-import com.codeflow.domain.dimension.Dimensions;
+import com.codeflow.domain.boxtype.BoxTypeImpl;
 import com.codeflow.domain.orientation.Orientation;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,38 +10,40 @@ import java.util.List;
 
 public class GapImpl implements Gap {
 
-    private Box3D box3D;
+    private BoxType<Orientation> boxType;
 
-    GapImpl(Box3D box3DImpl) {
-        this.box3D = box3DImpl;
+    public GapImpl(Double width, Double height, Double length) {
+        boxType = new BoxTypeImpl<>(width, height, length);
     }
 
-    public Long getId() {
-        return box3D.getId();
-    }
-
-    public Dimensions getDimensions() {
-        return box3D.getDimensions();
-    }
-
+    @Override
     public Double getWidth() {
-        return box3D.getWidth();
+        return boxType.getWidth();
     }
 
+    @Override
     public Double getLength() {
-        return box3D.getLength();
+        return boxType.getLength();
     }
 
+    @Override
     public Double getHeight() {
-        return box3D.getHeight();
+        return boxType.getHeight();
     }
 
+    @Override
+    public Double getVolume() {
+        return boxType.getVolume();
+    }
+
+    @Override
     public List<Orientation> getOrientations() {
-        return box3D.getOrientations();
+        throw new UnsupportedOperationException("No supported");
     }
 
-    public BoxType getBoxType() {
-        return box3D.getBoxType();
+    @Override
+    public void add(Orientation orientation) {
+        throw new UnsupportedOperationException("No supported");
     }
 
     public boolean fit(Orientation orientation) {
@@ -51,7 +52,7 @@ public class GapImpl implements Gap {
     }
 
     public boolean smallerThenHeight(Orientation orientation) {
-        return orientation.getHeight() <= this.getDimensions().getHeight();
+        return orientation.getHeight() <= getHeight();
     }
 
     @Override
@@ -63,21 +64,21 @@ public class GapImpl implements Gap {
         GapImpl gap = (GapImpl) o;
 
         return new EqualsBuilder()
-                .append(box3D, gap.box3D)
+                .append(boxType, gap.boxType)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(box3D)
+                .append(boxType)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
         return "GapImpl{" +
-                "box3D=" + box3D +
+                "boxType=" + boxType +
                 '}';
     }
 }

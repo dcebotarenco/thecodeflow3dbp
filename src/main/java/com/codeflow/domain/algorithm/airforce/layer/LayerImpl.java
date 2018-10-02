@@ -23,6 +23,8 @@ class LayerImpl implements Layer {
     private boolean isDone;
     private boolean isEven;
 
+    private Double layerInLayer;
+
 
     LayerImpl(Double height, Double length, Double evaluationValue) {
         this.height = height;
@@ -60,6 +62,13 @@ class LayerImpl implements Layer {
                 .append(length, layer.length)
                 .append(evaluationValue, layer.evaluationValue)
                 .isEquals();
+    }
+
+    @Override
+    public void increaseLayerThickness(Double articleHeight) {
+        Double heightDiff = articleHeight - this.height;
+        layerInLayer = layerInLayer + heightDiff;
+        this.height = articleHeight;
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.codeflow.domain.orientation;
 
-import com.codeflow.domain.dimension.Dimensions;
-
 public interface Orientation {
-    Dimensions getDimensions();
 
     Double getWidth();
 

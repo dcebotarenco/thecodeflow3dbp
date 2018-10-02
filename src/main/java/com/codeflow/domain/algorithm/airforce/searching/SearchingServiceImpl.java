@@ -1,8 +1,9 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
-import com.codeflow.domain.article.orientation.ArticleOrientation;
+import com.codeflow.domain.articletype.ArticleService;
+import com.codeflow.domain.articletype.ArticleType;
+import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.boxtype.BoxType;
-import com.codeflow.domain.boxtype.BoxTypeRepository;
 import com.codeflow.domain.gap.Gap;
 import com.codeflow.domain.orientation.Orientation;
 import org.slf4j.Logger;
@@ -14,14 +15,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class SearchingServiceImpl implements SearchingService {
+public class SearchingServiceImpl implements SearchingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchingServiceImpl.class);
 
-    private BoxTypeRepository<BoxType<ArticleOrientation>> boxTypeRepository;
+    private ArticleService articleService;
 
-    SearchingServiceImpl(BoxTypeRepository<BoxType<ArticleOrientation>> boxTypeRepository) {
-        this.boxTypeRepository = boxTypeRepository;
+    public SearchingServiceImpl(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
     /**
@@ -38,9 +39,11 @@ class SearchingServiceImpl implements SearchingService {
 
     @Override
     public SearchResult findBoxTypes(Gap requiredGap, Gap maxGap) {
-        LOGGER.info("Searching box for requiredGap[{}] and maxGap [{}]", requiredGap, maxGap);
+        long start = System.nanoTime();
+//        LOGGER.info("FIND_BOX:{},{},{},{},{}", maxGap.getWidth(), maxGap.getHeight(), maxGap.getLength(), requiredGap.getHeight(), requiredGap.getLength());
+//        LOGGER.info("Searching box for requiredGap[{}] and maxGap [{}]", requiredGap, maxGap);
         SearchResult searchResult = new SearchResult();
-        List<BoxType<ArticleOrientation>> boxTypes = boxTypeRepository.boxTypes();
+        List<ArticleType> boxTypes = articleService.unpackedTypes();
         List<ArticleOrientation> allOrientationsOfAllBoxTypes = boxTypes.stream().map(BoxType::getOrientations).flatMap(Collection::stream).collect(Collectors.toList());
 
         //Filter orientations that does not fit in maximum gap;
@@ -56,7 +59,25 @@ class SearchingServiceImpl implements SearchingService {
         if (biggerThenRequiredGapHeight.size() > 0) {
             searchBiggerAndClosestToRequiredHeight(requiredGap, searchResult, biggerThenRequiredGapHeight);
         }
-        LOGGER.info("Search result [{}]", searchResult);
+////        LOGGER.info("Search result [{}]", searchResult);
+//        StringBuilder b = new StringBuilder();
+//        b.append("BOX_FOUND:");
+//        if (searchResult.getBestFitInRequired().isPresent()) {
+//            ArticleOrientation a = searchResult.getBestFitInRequired().get();
+//            b.append("REQ:").append(Stream.of(a.getWidth(), a.getHeight(), a.getLength()).map(Object::toString).collect(Collectors.joining(",")));
+//        } else {
+//            b.append("REQ:").append(Stream.of(0, 0, 0).map(Object::toString).collect(Collectors.joining(",")));
+//        }
+//
+//        if (searchResult.getBestFitBiggerThenRequired().isPresent()) {
+//            ArticleOrientation a = searchResult.getBestFitBiggerThenRequired().get();
+//            b.append("MAX:").append(Stream.of(a.getWidth(), a.getHeight(), a.getLength()).map(Object::toString).collect(Collectors.joining(",")));
+//        } else {
+//            b.append("MAX:").append(Stream.of(0, 0, 0).map(Object::toString).collect(Collectors.joining(",")));
+//        }
+//        b.append("\r\n");
+//        LOGGER.info(b.toString());
+        System.out.println(System.nanoTime() - start);
         return searchResult;
     }
 

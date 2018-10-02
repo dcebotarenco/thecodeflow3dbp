@@ -1,13 +1,15 @@
 package com.codeflow.domain.algorithm.airforce.topology.corner;
 
+import com.codeflow.domain.algorithm.airforce.topology.TopViewTopology;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-class CornerImpl implements Corner {
+public class CornerImpl implements Corner {
     private Double width;
     private Double length;
+    private TopViewTopology topViewTopology;
 
-    CornerImpl(Double width, Double length) {
+    public CornerImpl(Double width, Double length) {
         this.width = width;
         this.length = length;
     }
@@ -30,6 +32,31 @@ class CornerImpl implements Corner {
     @Override
     public void updateWidth(Double width) {
         this.width = width;
+    }
+
+    @Override
+    public void setTopology(TopViewTopology topViewTopology) {
+        this.topViewTopology = topViewTopology;
+    }
+
+    @Override
+    public boolean hasCornerOnLeft() {
+        return topViewTopology.hasCornerOnLeft(this);
+    }
+
+    @Override
+    public boolean hasCornerOnRight() {
+        return topViewTopology.hasCornerOnRight(this);
+    }
+
+    @Override
+    public Corner getLeft() {
+        return topViewTopology.getLeftCorner(this);
+    }
+
+    @Override
+    public Corner getRight() {
+        return topViewTopology.getRightCorner(this);
     }
 
     @Override
@@ -56,9 +83,7 @@ class CornerImpl implements Corner {
 
     @Override
     public String toString() {
-        return "Corner{" +
-                "width=" + width +
-                ", length=" + length +
-                '}';
+        return "[" + width +
+                "," + length + "]";
     }
 }

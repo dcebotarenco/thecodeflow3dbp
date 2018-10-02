@@ -1,65 +1,65 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.packing.PackingService;
+import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
-import com.codeflow.domain.container.orientation.ContainerOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 
-public class NoBoxesOnTheLeftAction implements Action {
+public class NoBoxesOnTheLeftAction extends AbstractAction implements Action {
 
-    //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
-//                System.out.println("SITUATION-2: NO BOXES ON THE LEFT SIDE");
-//                lenx = smallestZ.CumX;
-//                lenz = smallestZ.Post.CumZ - smallestZ.CumZ;
-//                lpz = remainpz - smallestZ.CumZ;
-//                FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-//                CheckFound();
-//
-//                if (layerDone) {
-//                    //System.out.println("S2 layer done");
-//                    break;
-//                }
-//                if (evened) {
-//                    continue;
-//                }
-//
-//                itemsToPack.get(cboxi).CoordY = packedy;
-//                itemsToPack.get(cboxi).CoordZ = smallestZ.CumZ;
-//                if (cboxx == smallestZ.CumX) {
-//                    itemsToPack.get(cboxi).CoordX = 0;
-//
-//                    if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-//                        smallestZ.CumZ = smallestZ.Post.CumZ;
-//                        smallestZ.CumX = smallestZ.Post.CumX;
-//                        trash = smallestZ.Post;
-//                        smallestZ.Post = smallestZ.Post.Post;
-//
-//                        if (smallestZ.Post != null) {
-//                            smallestZ.Post.Pre = smallestZ;
-//                        }
-//                    } else {
-//                        smallestZ.CumZ = smallestZ.CumZ + cboxz;
-//                    }
-//                } else {
-//                    itemsToPack.get(cboxi).CoordX = smallestZ.CumX - cboxx;
-//
-//                    if (smallestZ.CumZ + cboxz == smallestZ.Post.CumZ) {
-//                        smallestZ.CumX = smallestZ.CumX - cboxx;
-//                    } else {
-//                        smallestZ.Post.Pre = new ScrapPad();
-//
-//                        smallestZ.Post.Pre.Post = smallestZ.Post;
-//                        smallestZ.Post.Pre.Pre = smallestZ;
-//                        smallestZ.Post = smallestZ.Post.Pre;
-//                        smallestZ.Post.CumX = smallestZ.CumX;
-//                        smallestZ.CumX = smallestZ.CumX - cboxx;
-//                        smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
-//                    }
-//                }
-//                //System.out.println("S2 Volumecheck");
+    private final PackingService packingService;
 
+    NoBoxesOnTheLeftAction(SearchingService searchingService,
+                           PackingService packingService) {
+        super(searchingService);
+        this.packingService = packingService;
+    }
 
     @Override
     public void act(Corner cornerWithSmallestLength, ContainerOrientation containerOrientation, Layer layer) {
-
+//        double requiredWidth = cornerWithSmallestLength.getWidth();
+//        double maxLength = containerOrientation.getRemainLength() - cornerWithSmallestLength.getLength();
+//        Corner cornerFromRight = topologyService.getCornerFromRight();
+//        double requiredLength = cornerFromRight.getLength() - cornerWithSmallestLength.getLength();
+//        Gap requiredGapImpl = new GapImpl(requiredWidth, layer.getHeight(), requiredLength);
+//        Gap maxGapImpl = new GapImpl(requiredWidth, containerOrientation.getRemainHeight(), maxLength);
+//        SearchResult searchResult = getSearchingService().findBoxTypes(requiredGapImpl, maxGapImpl);
+//
+//
+//        ArticleOrientation article;
+//        if (searchResult.getBestFitInRequired().isPresent()) {
+//            article = searchResult.getBestFitInRequired().get();
+//        } else if (searchResult.getBestFitBiggerThenRequired().isPresent()) {
+//            article = searchResult.getBestFitBiggerThenRequired().get();
+////            layer.addLayerInLayer(layerFactory.create(article.getHeight() - layer.getHeight(),
+////                    cornerWithSmallestLength.getLength(), null));
+//
+//        } else {
+//            layer.even();
+//            return;
+//        }
+//
+//        Position position;
+//        Corner rightCorner = topologyService.getCornerFromRight();
+//        if (article.getWidth().equals(cornerWithSmallestLength.getWidth())) {
+//            position = positionFactory.create(0D, containerOrientation.getPackedHeight(), cornerWithSmallestLength.getLength());
+//            if (cornerWithSmallestLength.getLength() + article.getLength() == rightCorner.getLength()) {
+//                topologyService.addCornerBeforeSmallest(
+////                        cornerFactory.create(rightCorner.getWidth(), rightCorner.getLength()));
+//            } else {
+//                topologyService.updateLength(cornerWithSmallestLength, cornerWithSmallestLength.getLength() + article.getLength());
+//            }
+//        } else {
+//            position = positionFactory.create(cornerWithSmallestLength.getWidth() - article.getWidth(),
+//                    containerOrientation.getPackedHeight(), cornerWithSmallestLength.getLength());
+//            if (cornerWithSmallestLength.getLength() + article.getLength() == rightCorner.getLength()) {
+//                topologyService.updateWidth(cornerWithSmallestLength, cornerWithSmallestLength.getWidth() - article.getWidth());
+//            } else {
+//
+//            }
+//        }
+//
+//        packingService.pack(containerOrientation, article, position);
     }
 }

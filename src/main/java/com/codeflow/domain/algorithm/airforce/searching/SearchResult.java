@@ -1,6 +1,6 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
-import com.codeflow.domain.article.orientation.ArticleOrientation;
+import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

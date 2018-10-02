@@ -1,55 +1,64 @@
 package com.codeflow.domain.algorithm.airforce.actions;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.packing.PackingService;
+import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
-import com.codeflow.domain.container.orientation.ContainerOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 
-public class NoBoxesOnTheRightAction implements Action {
-        //*** SITUATION-3: NO BOXES ON THE RIGHT SIDE ***
-//
-//                lenx = smallestZ.CumX - smallestZ.Pre.CumX;
-//                lenz = smallestZ.Pre.CumZ - smallestZ.CumZ;
-//                lpz = remainpz - smallestZ.CumZ;
-//                FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-//                CheckFound();
-//
-//                if (layerDone) {
-//                    //System.out.println("S3 layer done");
-//                    break;
-//                }
-//                if (evened) {
-//                    continue;
-//                }
-//
-//                itemsToPack.get(cboxi).CoordY = packedy;
-//                itemsToPack.get(cboxi).CoordZ = smallestZ.CumZ;
-//                itemsToPack.get(cboxi).CoordX = smallestZ.Pre.CumX;
-//
-//                if (cboxx == smallestZ.CumX - smallestZ.Pre.CumX) {
-//                    if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-//                        smallestZ.Pre.CumX = smallestZ.CumX;
-//                        smallestZ.Pre.Post = null;
-//                    } else {
-//                        smallestZ.CumZ = smallestZ.CumZ + cboxz;
-//                    }
-//                } else {
-//                    if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ) {
-//                        smallestZ.Pre.CumX = smallestZ.Pre.CumX + cboxx;
-//                    } else {
-//                        smallestZ.Pre.Post = new ScrapPad();
-//
-//                        smallestZ.Pre.Post.Pre = smallestZ.Pre;
-//                        smallestZ.Pre.Post.Post = smallestZ;
-//                        smallestZ.Pre = smallestZ.Pre.Post;
-//                        smallestZ.Pre.CumX = smallestZ.Pre.Pre.CumX + cboxx;
-//                        smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
-//                    }
-//                }
-//                //System.out.println("S3 Volumecheck");
+public class NoBoxesOnTheRightAction extends AbstractAction implements Action {
+    private final PackingService packingService;
 
+    NoBoxesOnTheRightAction(SearchingService searchingService,
+                            PackingService packingService) {
+        super(searchingService);
+        this.packingService = packingService;
+    }
 
     @Override
     public void act(Corner cornerWithSmallestLength, ContainerOrientation containerOrientation, Layer layer) {
-
+//        Corner cornerFromLeft = topologyService.getCornerFromLeft();
+//        double requiredWidth = cornerWithSmallestLength.getWidth() - cornerFromLeft.getWidth();
+//        double requiredLength = cornerFromLeft.getLength() - cornerWithSmallestLength.getLength();
+//
+//        double maxLength = containerOrientation.getRemainLength() - cornerWithSmallestLength.getLength();
+//
+//        Gap requiredGapImpl = getGapFactoryImpl().create(requiredWidth, layer.getHeight(), requiredLength);
+//        Gap maxGapImpl = getGapFactoryImpl().create(requiredWidth, containerOrientation.getRemainHeight(), maxLength);
+//        SearchResult searchResult = getSearchingService().findBoxTypes(requiredGapImpl, maxGapImpl);
+//
+//        Position position = positionFactory.create(cornerFromLeft.getWidth(), containerOrientation.getPackedHeight(), cornerWithSmallestLength.getLength());
+//
+//        ArticleOrientation article;
+//        if (searchResult.getBestFitInRequired().isPresent()) {
+//            article = searchResult.getBestFitInRequired().get();
+//        } else if (searchResult.getBestFitBiggerThenRequired().isPresent()) {
+//            article = searchResult.getBestFitBiggerThenRequired().get();
+//            layer.addLayerInLayer(layerFactory.create(article.getHeight() - layer.getHeight(),
+//                    cornerWithSmallestLength.getLength(), null));
+//        } else {
+//            topologyService.updateWidth(cornerFromLeft, cornerWithSmallestLength.getWidth());
+//            topologyService.remove(cornerWithSmallestLength);
+//            return;
+//        }
+//
+//        if (article.getWidth().equals(cornerWithSmallestLength.getWidth() - cornerFromLeft.getWidth())) {
+//            if ((cornerWithSmallestLength.getLength() + article.getLength()) == (cornerFromLeft.getLength())) {
+//                topologyService.updateWidth(cornerFromLeft, cornerWithSmallestLength.getWidth());
+//                topologyService.remove(cornerWithSmallestLength);
+//            } else {
+//                topologyService.updateLength(cornerWithSmallestLength, cornerWithSmallestLength.getLength() + article.getLength());
+//            }
+//        } else {
+//            if ((cornerWithSmallestLength.getLength() + article.getLength()) == (cornerFromLeft.getLength())) {
+//                topologyService.updateWidth(cornerFromLeft, cornerFromLeft.getWidth() + article.getWidth());
+//            } else {
+//                topologyService.addCornerBeforeSmallest(cornerFactory.create(cornerFromLeft.getWidth() + article.getWidth(),
+//                        cornerWithSmallestLength.getLength() + article.getLength()));
+//            }
+//        }
+//
+//
+//        packingService.pack(containerOrientation, article, position);
     }
 }

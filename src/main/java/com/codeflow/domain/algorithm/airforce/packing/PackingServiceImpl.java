@@ -1,27 +1,21 @@
 package com.codeflow.domain.algorithm.airforce.packing;
 
-import com.codeflow.domain.article.ArticleService;
-import com.codeflow.domain.article.orientation.ArticleOrientation;
-import com.codeflow.domain.boxtype.BoxType;
-import com.codeflow.domain.boxtype.BoxTypeRepository;
-import com.codeflow.domain.container.orientation.ContainerOrientation;
+import com.codeflow.domain.articletype.ArticleService;
+import com.codeflow.domain.articletype.orientation.ArticleOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.position.Position;
 
-class PackingServiceImpl implements PackingService {
+public class PackingServiceImpl implements PackingService {
 
-    private BoxTypeRepository<BoxType<ArticleOrientation>> boxTypeRepository;
     private ArticleService articleService;
 
-    PackingServiceImpl(BoxTypeRepository<BoxType<ArticleOrientation>> boxTypeRepository,
-                       ArticleService articleService) {
-        this.boxTypeRepository = boxTypeRepository;
+    public PackingServiceImpl(ArticleService articleService) {
         this.articleService = articleService;
     }
 
     @Override
     public void pack(ContainerOrientation containerOrientation, ArticleOrientation articleOrientation, Position position) {
-        BoxType<ArticleOrientation> articleOrientationBoxType = boxTypeRepository.findByOrientation(articleOrientation);
-        articleService.pack(articleOrientationBoxType, position);
+        articleService.pack(articleOrientation, position);
         containerOrientation.pack(articleOrientation);
     }
 }

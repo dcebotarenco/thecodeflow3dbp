@@ -1,7 +1,8 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
 import com.codeflow.domain.SharedTest;
-import com.codeflow.domain.article.Article;
+import com.codeflow.domain.articletype.ArticleType;
+import com.codeflow.domain.articletype.ArticleTypeImpl;
 import com.codeflow.domain.gap.Gap;
 import com.codeflow.domain.orientation.Orientation;
 import org.junit.Assert;
@@ -45,20 +46,23 @@ public class SearchingBasedOnFiles extends SharedTest {
                 Integer n = givenEntry.getKey();
 
                 List<String> articleLines = input.getArticles().get(n);
-                config.getArticleRepository().clear();
+                articleTypeRepository.clear();
+                List<ArticleType> types = new ArrayList<>();
                 for (String articleLine : articleLines) {
-                    Long id = (long) articleLines.indexOf(articleLine);
                     List<Double> aValues = Arrays.stream(articleLine.split(",")).map(Double::valueOf).collect(Collectors.toList());
-                    Article article = config.getArticleFactory().create(id, aValues.get(0), aValues.get(1), aValues.get(2));
-                    config.getArticleRepository().saveReceived(article);
+                    ArticleType articleType = new ArticleTypeImpl(aValues.get(0), aValues.get(1), aValues.get(2));
+                    types.add(articleType);
                 }
+                Map<ArticleType, List<ArticleType>> typesGroup = types.stream().collect(Collectors.groupingBy(t -> t));
+
+                typesGroup.forEach((k, v) -> articleTypeRepository.saveType(k, (long) v.size()));
 
                 System.out.println("Processing " + n);
                 List<Double> givenValues = Arrays.stream(givenEntry.getValue().get(0).split(",")).map(Double::valueOf).collect(Collectors.toList());
 
                 Gap maxGapImpl = gap(givenValues.get(0), givenValues.get(1), givenValues.get(2));
                 Gap requiredGapImpl = gap(givenValues.get(0), givenValues.get(3), givenValues.get(4));
-                SearchResult searchResult = config.getSearchingService().findBoxTypes(requiredGapImpl, maxGapImpl);
+                SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGapImpl, maxGapImpl);
                 List<String> then = input.getThenData().get(n);
                 assertBestFit(then.get(0), searchResult);
                 assertBestFitBiggerThenReq(then.get(1), searchResult);
@@ -101,7 +105,6 @@ public class SearchingBasedOnFiles extends SharedTest {
             }
         });
     }
-
 
 
     private void assertBestFitBiggerThenReq(SearchResult searchResult, Double w, Double h, Double l) {

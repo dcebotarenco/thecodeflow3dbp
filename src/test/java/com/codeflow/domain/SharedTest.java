@@ -1,65 +1,54 @@
 package com.codeflow.domain;
 
-import com.codeflow.application.configuration.DefaultConfiguration;
-import com.codeflow.domain.article.Article;
-import com.codeflow.domain.container.Container;
+import com.codeflow.domain.articletype.*;
+import com.codeflow.domain.containertype.ContainerRepository;
+import com.codeflow.domain.containertype.ContainerRepositoryImpl;
+import com.codeflow.domain.containertype.ContainerType;
+import com.codeflow.domain.containertype.ContainerTypeImpl;
 import com.codeflow.domain.gap.Gap;
+import com.codeflow.domain.gap.GapImpl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.util.List;
-import java.util.Random;
 
 public class SharedTest {
 
-    protected static DefaultConfiguration config;
+    protected static ContainerRepository containerRepository;
+    protected static ArticleTypeRepository articleTypeRepository;
+    protected static ArticleService articleService;
+
 
     @BeforeClass
     public static void beforeClass() {
-        config = new DefaultConfiguration();
+        containerRepository = new ContainerRepositoryImpl();
+        articleTypeRepository = new ArticleRepositoryImpl();
+        articleService = new ArticleServiceImpl(articleTypeRepository);
     }
 
-    public static Container container(Integer id, Integer w, Integer h, Integer l) {
-        Container container = config.getContainerFactory().create(id.longValue(), w.doubleValue(), h.doubleValue(), l.doubleValue());
-        config.getContainerRepository().save(container);
-        return config.getContainerRepository().container();
-    }
-
-    public static Container container(Integer w, Integer h, Integer l) {
-        Random r = new Random();
-        int random = r.nextInt(100 + 1);
-        Long id = (long) random;
-        Container container = config.getContainerFactory().create(id, w.doubleValue(), h.doubleValue(), l.doubleValue());
-        config.getContainerRepository().save(container);
-        return config.getContainerRepository().container();
+    public static ContainerType container(Integer w, Integer h, Integer l) {
+        ContainerType container = new ContainerTypeImpl(w.doubleValue(), h.doubleValue(), l.doubleValue());
+        containerRepository.save(container);
+        return containerRepository.container();
 
     }
 
-    public static List<Article> articles(Integer w, Integer h, Integer l, Integer number) {
-        for (Integer i = 0; i < number; i++) {
-            Article article = config.getArticleFactory().create(i.longValue(), w.doubleValue(), h.doubleValue(), l.doubleValue());
-            config.getArticleRepository().saveReceived(article);
-        }
-        return config.getArticleRepository().receivedArticles();
+    public static List<ArticleType> articles(Integer w, Integer h, Integer l, Integer number) {
+        articleTypeRepository.saveType(new ArticleTypeImpl(w.doubleValue(), h.doubleValue(), l.doubleValue()), number.longValue());
+        return articleTypeRepository.unpackedTypes();
     }
 
     public static Gap gap(Integer w, Integer h, Integer l) {
-        Random r = new Random();
-        int random = r.nextInt(100 + 1);
-        Long id = (long) random;
-        return config.getGapFactory().create(id, w.doubleValue(), h.doubleValue(), l.doubleValue());
+        return new GapImpl(w.doubleValue(), h.doubleValue(), l.doubleValue());
     }
 
     public static Gap gap(Double w, Double h, Double l) {
-        Random r = new Random();
-        int random = r.nextInt(100 + 1);
-        Long id = (long) random;
-        return config.getGapFactory().create(id, w, h, l);
+        return new GapImpl(w, h, l);
     }
 
     @Before
     public void clearRepos() {
-        config.getArticleRepository().clear();
-        config.getContainerRepository().clear();
+        articleTypeRepository.clear();
+        containerRepository.clear();
     }
 }

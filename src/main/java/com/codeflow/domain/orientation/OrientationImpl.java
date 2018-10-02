@@ -1,42 +1,41 @@
 package com.codeflow.domain.orientation;
 
-import com.codeflow.domain.dimension.Dimensions;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-class OrientationImpl implements Orientation {
+public class OrientationImpl implements Orientation {
 
-    private Dimensions dimensions;
+    private final Double width;
+    private final Double height;
+    private final Double length;
+    private final Double volume;
 
-    OrientationImpl(Dimensions dimensions) {
-        this.dimensions = dimensions;
-    }
-
-    @Override
-    public Dimensions getDimensions() {
-        return dimensions;
+    public OrientationImpl(Double width, Double height, Double length) {
+        this.width = width;
+        this.height = height;
+        this.length = length;
+        this.volume = width * height * length;
     }
 
     @Override
     public Double getWidth() {
-        return getDimensions().getWidth();
-    }
-
-    @Override
-    public Double getLength() {
-        return getDimensions().getLength();
+        return width;
     }
 
     @Override
     public Double getHeight() {
-        return getDimensions().getHeight();
+        return height;
+    }
+
+    @Override
+    public Double getLength() {
+        return length;
     }
 
     @Override
     public Double getVolume() {
-        return getDimensions().getVolume();
+        return volume;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -47,28 +46,37 @@ class OrientationImpl implements Orientation {
         OrientationImpl that = (OrientationImpl) o;
 
         return new EqualsBuilder()
-                .append(dimensions, that.dimensions)
+                .append(width, that.width)
+                .append(height, that.height)
+                .append(length, that.length)
+                .append(volume, that.volume)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(dimensions)
+                .append(width)
+                .append(height)
+                .append(length)
+                .append(volume)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return "Orientation{" +
-                "dimensions3D=" + dimensions +
+        return "OrientationImpl{" +
+                "width=" + width +
+                ", height=" + height +
+                ", length=" + length +
+                ", volume=" + volume +
                 '}';
     }
 
     public boolean fit(Orientation orientation) {
-        return this.getDimensions().getWidth() >= orientation.getDimensions().getWidth() &&
-                this.getDimensions().getHeight() >= orientation.getDimensions().getHeight() &&
-                this.getDimensions().getLength() >= orientation.getDimensions().getLength();
+        return this.getWidth() >= orientation.getWidth() &&
+                this.getHeight() >= orientation.getHeight() &&
+                this.getLength() >= orientation.getLength();
     }
 
 }

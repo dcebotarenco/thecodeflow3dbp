@@ -3,15 +3,17 @@ package com.codeflow.application;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class ContainerDTO {
+public class ArticleTypeDTO {
     private Double width;
     private Double length;
     private Double height;
+    private Long number;
 
-    public ContainerDTO(Double width, Double length, Double height) {
+    public ArticleTypeDTO(Double width, Double length, Double height, Long number) {
         this.width = width;
         this.length = length;
         this.height = height;
+        this.number = number;
     }
 
 
@@ -27,18 +29,33 @@ public class ContainerDTO {
         return height;
     }
 
+    public Long getNumber() {
+        return number;
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleTypeDTO{" +
+                "width=" + width +
+                ", length=" + length +
+                ", height=" + height +
+                ", number=" + number +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        ContainerDTO that = (ContainerDTO) o;
+        ArticleTypeDTO that = (ArticleTypeDTO) o;
 
         return new EqualsBuilder()
                 .append(width, that.width)
                 .append(length, that.length)
                 .append(height, that.height)
+                .append(number, that.number)
                 .isEquals();
     }
 
@@ -48,15 +65,7 @@ public class ContainerDTO {
                 .append(width)
                 .append(length)
                 .append(height)
+                .append(number)
                 .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "ContainerDTO{" +
-                "width=" + width +
-                ", length=" + length +
-                ", height=" + height +
-                '}';
     }
 }

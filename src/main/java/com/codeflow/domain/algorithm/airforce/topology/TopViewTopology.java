@@ -19,5 +19,13 @@ public interface TopViewTopology {
 
     void addFirst(Corner corner);
 
+    void addAfter(Corner target, Corner toAdd);
+
+    void addBefore(Corner target, Corner toAdd);
+
     Corner findWithSmallestLength();
+
+    void remove(Corner corner);
+
+    void removeAndAllOnRight(Corner smallestZ);
 }

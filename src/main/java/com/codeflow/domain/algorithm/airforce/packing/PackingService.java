@@ -1,7 +1,7 @@
 package com.codeflow.domain.algorithm.airforce.packing;
 
-import com.codeflow.domain.article.orientation.ArticleOrientation;
-import com.codeflow.domain.container.orientation.ContainerOrientation;
+import com.codeflow.domain.articletype.orientation.ArticleOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.position.Position;
 
 public interface PackingService {

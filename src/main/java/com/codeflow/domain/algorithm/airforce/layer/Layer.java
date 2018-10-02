@@ -13,4 +13,6 @@ public interface Layer {
     void even();
 
     boolean isDone();
+
+    void increaseLayerThickness(Double articleHeight);
 }

@@ -1,9 +1,17 @@
 package com.codeflow.application;
 
-import com.codeflow.application.configuration.DefaultConfiguration;
 import com.codeflow.domain.algorithm.AlgorithmService;
 import com.codeflow.domain.algorithm.airforce.AirForceAlgorithm;
-import com.codeflow.domain.container.Container;
+import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
+import com.codeflow.domain.algorithm.airforce.packing.PackingServiceImpl;
+import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceImpl;
+import com.codeflow.domain.articletype.ArticleRepositoryImpl;
+import com.codeflow.domain.articletype.ArticleServiceImpl;
+import com.codeflow.domain.articletype.ArticleTypeImpl;
+import com.codeflow.domain.articletype.ArticleTypeRepository;
+import com.codeflow.domain.containertype.ContainerRepositoryImpl;
+import com.codeflow.domain.containertype.ContainerType;
+import com.codeflow.domain.containertype.ContainerTypeImpl;
 import com.codeflow.infrastructure.filereader.FileReader;
 import com.codeflow.infrastructure.filereader.InputDTOAssembler;
 import org.slf4j.Logger;
@@ -19,30 +27,28 @@ public class Main {
     public static void main(String[] args) throws IOException {
         LOGGER.info("Starting..");
         FileReader fileReader = new FileReader(new InputDTOAssembler());
-        InputDTO inputDTO = fileReader.read(Paths.get("D:\\personal\\3dbp\\projects\\3d-bin-act-master\\test\\dpp01.txt"));
+        InputDTO inputDTO = fileReader.read(Paths.get("./src/test/resources/input/mpp03.txt"));
         LOGGER.info("Received {}", inputDTO);
-        DefaultConfiguration config = new DefaultConfiguration();
-        inputDTO.getArticleDTOList().stream().map(dto -> config.getArticleFactory().create(dto.getId(),
-                dto.getWidth(),
-                dto.getLength(),
-                dto.getHeight())).forEach(config.getArticleRepository()::saveReceived);
+        ArticleTypeRepository articleTypeRepository = new ArticleRepositoryImpl();
+        ArticleServiceImpl articleService = new ArticleServiceImpl(articleTypeRepository);
+        ContainerRepositoryImpl containerRepository = new ContainerRepositoryImpl();
 
-        Container container = config.getContainerFactory().create(inputDTO.getContainerDTO().getId(),
-                inputDTO.getContainerDTO().getWidth(),
-                inputDTO.getContainerDTO().getLength(),
-                inputDTO.getContainerDTO().getHeight());
-        config.getContainerRepository().save(container);
+        for (ArticleTypeDTO articleTypeDTO : inputDTO.getArticleTypeDTOList()) {
+            articleTypeRepository.saveType(new ArticleTypeImpl(articleTypeDTO.getWidth(),
+                    articleTypeDTO.getHeight(),
+                    articleTypeDTO.getLength()), articleTypeDTO.getNumber());
+        }
+
+        ContainerType container = new ContainerTypeImpl(inputDTO.getContainerDTO().getWidth(),
+                inputDTO.getContainerDTO().getHeight(),
+                inputDTO.getContainerDTO().getLength());
+        containerRepository.save(container);
 
         AlgorithmService algorithmService = new AlgorithmService();
-        LOGGER.info("Executing with {} and {}", container, config.getArticleRepository().receivedArticles());
-        algorithmService.execute(new AirForceAlgorithm(config.getLayerService(),
-                config.getTopologyService(),
-                config.getActionService(),
-                config.getArticleRepository(),
-                config.getContainerRepository(),
-                config.getArticleService()));
-
-
+        LOGGER.info("Executing with {} and {}", container, articleTypeRepository.receivedArticleTypes());
+        algorithmService.execute(new AirForceAlgorithm(new LayerServiceImpl(),
+                containerRepository, articleService
+                , new SearchingServiceImpl(articleService), new PackingServiceImpl(articleService)));
     }
 
 }

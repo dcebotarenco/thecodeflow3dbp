@@ -1,7 +1,7 @@
 package com.codeflow.domain.algorithm.airforce.layer;
 
 import com.codeflow.domain.SharedTest;
-import com.codeflow.domain.container.Container;
+import com.codeflow.domain.containertype.ContainerType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,12 +11,11 @@ public class LayerServiceTest extends SharedTest {
 
     @Test
     public void listCandidatesBookExample() {
-        Container container = container(104, 96, 84);
+        ContainerType container = container(104, 96, 84);
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
         articles(40, 52, 36, 3);
-        System.out.println(config.getArticleRepository().receivedArticles().size());
-        List<Layer> layers = config.getLayerService().listCandidates(container.getOrientations().get(0), config.getArticleRepository().receivedArticles());
+        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(0), articleTypeRepository.receivedArticleTypes());
         Assert.assertEquals(7, layers.size());
         layerAssert(layers, 0, 24, 56);
         layerAssert(layers, 1, 36, 72);
@@ -30,18 +29,15 @@ public class LayerServiceTest extends SharedTest {
 
     @Test
     public void listCandidatesDpp01() {
-        config.getArticleRepository().clear();
-        Container container = container(104, 96, 84);
+        ContainerType container = container(104, 96, 84);
         articles(70, 104, 24, 4);
         articles(14, 104, 48, 2);
-        System.out.println(config.getArticleRepository().receivedArticles().size());
-        List<Layer> layers = config.getLayerService().listCandidates(container.getOrientations().get(0), config.getArticleRepository().receivedArticles());
+        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(0), articleTypeRepository.receivedArticleTypes());
         Assert.assertEquals(4, layers.size());
         layerAssert(layers, 0, 24, 20);
         layerAssert(layers, 1, 14, 40);
         layerAssert(layers, 2, 70, 44);
         layerAssert(layers, 3, 48, 88);
-        config.getArticleRepository().clear();
     }
 
     private void layerAssert(List<Layer> layers, Integer index, Integer dimension, Integer evaluationValue) {

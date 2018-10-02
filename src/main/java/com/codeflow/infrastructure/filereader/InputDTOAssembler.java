@@ -1,27 +1,26 @@
 package com.codeflow.infrastructure.filereader;
 
-import com.codeflow.application.ArticleDTO;
+import com.codeflow.application.ArticleTypeDTO;
 import com.codeflow.application.ContainerDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class InputDTOAssembler {
-    ContainerDTO createContainer(Long id, List<String> containerLine) {
-        return new ContainerDTO(Long.valueOf(id),
-                Double.valueOf(containerLine.get(0)),
+    ContainerDTO createContainer(List<String> containerLine) {
+        return new ContainerDTO(Double.valueOf(containerLine.get(0)),
                 Double.valueOf(containerLine.get(1)),
                 Double.valueOf(containerLine.get(2)));
     }
 
-    ArticleDTO createArticle(List<String> articleLine) {
-        return new ArticleDTO(Long.valueOf(articleLine.get(0)),
-                Double.valueOf(articleLine.get(1)),
-                Double.valueOf(articleLine.get(2)),
-                Double.valueOf(articleLine.get(3)));
-    }
 
-    List<ArticleDTO> createArticles(List<List<String>> articleLines) {
-        return articleLines.stream().map(this::createArticle).collect(Collectors.toList());
+    List<ArticleTypeDTO> createArticles(List<List<String>> articleLines) {
+        return articleLines.stream().map(line -> {
+            Double w = Double.valueOf(line.get(1));
+            Double h = Double.valueOf(line.get(2));
+            Double l = Double.valueOf(line.get(3));
+            Long number = Long.valueOf(line.get(4).trim());
+            return new ArticleTypeDTO(w, h, l, number);
+        }).collect(Collectors.toList());
     }
 }
