@@ -1,7 +1,6 @@
 package com.codeflow.domain.containertype.orientation;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
-import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.orientation.Orientation;
@@ -21,8 +20,6 @@ public interface ContainerOrientation extends Orientation {
     void pack(Layer articleOrientation);
 
     boolean allVolumePacked();
-
-    boolean fit(ArticleType articleType);
 
     ContainerType getBoxType();
 

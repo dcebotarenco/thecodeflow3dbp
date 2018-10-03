@@ -17,8 +17,13 @@ public class ArticleRepositoryImpl implements ArticleTypeRepository {
 
     @Override
     public void saveType(ArticleType a, Long number) {
-        this.receivedArticleTypes.put(a, number);
-        this.remainingToPack.put(a, number);
+        if (receivedArticleTypes.get(a) == null) {
+            receivedArticleTypes.put(a, number);
+            remainingToPack.put(a, number);
+        } else {
+            receivedArticleTypes.put(a, receivedArticleTypes.get(a) + number);
+            remainingToPack.put(a, receivedArticleTypes.get(a) + number);
+        }
     }
 
     @Override
@@ -35,7 +40,12 @@ public class ArticleRepositoryImpl implements ArticleTypeRepository {
     public void savePack(ArticleType articleType) {
         Long sizeToPack = this.remainingToPack.get(articleType);
         if (sizeToPack > 0) {
-            this.remainingToPack.put(articleType, sizeToPack - 1);
+            long newSize = sizeToPack - 1;
+            if (newSize > 0) {
+                this.remainingToPack.put(articleType, sizeToPack - 1);
+            } else {
+                this.remainingToPack.remove(articleType);
+            }
         } else {
             throw new IllegalStateException("Cannot pack");
         }
@@ -54,6 +64,11 @@ public class ArticleRepositoryImpl implements ArticleTypeRepository {
     public void clear() {
         receivedArticleTypes.clear();
         remainingToPack.clear();
+    }
+
+    @Override
+    public Map<ArticleType, Long> remainingToPack() {
+        return remainingToPack;
     }
 
 }

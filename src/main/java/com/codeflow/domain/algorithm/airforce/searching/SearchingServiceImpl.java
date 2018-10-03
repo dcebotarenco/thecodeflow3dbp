@@ -59,25 +59,7 @@ public class SearchingServiceImpl implements SearchingService {
         if (biggerThenRequiredGapHeight.size() > 0) {
             searchBiggerAndClosestToRequiredHeight(requiredGap, searchResult, biggerThenRequiredGapHeight);
         }
-////        LOGGER.info("Search result [{}]", searchResult);
-//        StringBuilder b = new StringBuilder();
-//        b.append("BOX_FOUND:");
-//        if (searchResult.getBestFitInRequired().isPresent()) {
-//            ArticleOrientation a = searchResult.getBestFitInRequired().get();
-//            b.append("REQ:").append(Stream.of(a.getWidth(), a.getHeight(), a.getLength()).map(Object::toString).collect(Collectors.joining(",")));
-//        } else {
-//            b.append("REQ:").append(Stream.of(0, 0, 0).map(Object::toString).collect(Collectors.joining(",")));
-//        }
-//
-//        if (searchResult.getBestFitBiggerThenRequired().isPresent()) {
-//            ArticleOrientation a = searchResult.getBestFitBiggerThenRequired().get();
-//            b.append("MAX:").append(Stream.of(a.getWidth(), a.getHeight(), a.getLength()).map(Object::toString).collect(Collectors.joining(",")));
-//        } else {
-//            b.append("MAX:").append(Stream.of(0, 0, 0).map(Object::toString).collect(Collectors.joining(",")));
-//        }
-//        b.append("\r\n");
-//        LOGGER.info(b.toString());
-        System.out.println(System.nanoTime() - start);
+//        System.out.println(System.nanoTime() - start);
         return searchResult;
     }
 

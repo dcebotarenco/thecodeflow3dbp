@@ -48,4 +48,9 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleType> unpackedTypes() {
         return articleTypeRepository.unpackedTypes();
     }
+
+    @Override
+    public Map<ArticleType, Long> remainingToPack() {
+        return articleTypeRepository.remainingToPack();
+    }
 }

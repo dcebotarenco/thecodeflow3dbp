@@ -19,4 +19,6 @@ public interface ArticleService {
     Map<ArticleType, Long> articleTypes();
 
     List<ArticleType> unpackedTypes();
+
+    Map<ArticleType, Long> remainingToPack();
 }

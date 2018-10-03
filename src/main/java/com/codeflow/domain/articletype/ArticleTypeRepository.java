@@ -17,4 +17,6 @@ public interface ArticleTypeRepository {
     void reset();
 
     void clear();
+
+    Map<ArticleType, Long> remainingToPack();
 }

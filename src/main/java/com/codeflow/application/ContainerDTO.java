@@ -8,10 +8,10 @@ public class ContainerDTO {
     private Double length;
     private Double height;
 
-    public ContainerDTO(Double width, Double length, Double height) {
+    public ContainerDTO(Double width, Double height, Double length) {
         this.width = width;
-        this.length = length;
         this.height = height;
+        this.length = length;
     }
 
 

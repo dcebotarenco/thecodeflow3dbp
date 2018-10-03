@@ -1,7 +1,6 @@
 package com.codeflow.domain.containertype.orientation;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
-import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.orientation.Orientation;
@@ -88,13 +87,6 @@ public class ContainerOrientationImpl implements ContainerOrientation {
     @Override
     public boolean allVolumePacked() {
         return (getVolume() - packedVolume) == 0D;
-    }
-
-    @Override
-    public boolean fit(ArticleType articleType) {
-        return this.getWidth() >= articleType.getWidth() &&
-                this.getHeight() >= articleType.getHeight() &&
-                this.getLength() >= articleType.getLength();
     }
 
     @Override

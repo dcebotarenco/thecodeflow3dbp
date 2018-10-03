@@ -144,13 +144,13 @@ public class AirForceAlgorithm implements Algorithm {
                         remainpz = containerOrientation.getLength();
                     }
 
-                    Optional<Layer> foundLayer = layerService.findLayer(containerOrientation, remainpy, articleService.articleTypes());
+                    Optional<Layer> foundLayer = layerService.findLayer(containerOrientation, remainpy, articleService.remainingToPack());
                     if (!foundLayer.isPresent()) {
                         packing = false;
-                        System.out.println("FOUND LAYER:" + 0.);
+                        System.out.println(remainpy + "FOUND LAYER:" + 0.);
                     } else {
                         layerThickness = foundLayer.get().getHeight();
-                        System.out.println("FOUND LAYER:" + layerThickness);
+                        System.out.println(remainpy + "FOUND LAYER:" + layerThickness);
                         if (layerThickness > remainpy) {
                             packing = false;
                         }
