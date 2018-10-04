@@ -27,7 +27,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         LOGGER.info("Starting..");
         FileReader fileReader = new FileReader(new InputDTOAssembler());
-        InputDTO inputDTO = fileReader.read(Paths.get("./src/test/resources/input/dpp02.txt"));
+        InputDTO inputDTO = fileReader.read(Paths.get("./src/test/resources/input/rnd05.txt"));
         LOGGER.info("Received {}", inputDTO);
         ArticleTypeRepository articleTypeRepository = new ArticleRepositoryImpl();
         ArticleServiceImpl articleService = new ArticleServiceImpl(articleTypeRepository);

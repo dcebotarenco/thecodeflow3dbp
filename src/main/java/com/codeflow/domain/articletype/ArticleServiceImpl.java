@@ -21,6 +21,8 @@ public class ArticleServiceImpl implements ArticleService {
     public void pack(ArticleOrientation articleOrientation, Position position) {
         articleTypeRepository.savePack(articleOrientation.getBoxType());
         packedTypes.put(position, articleOrientation);
+        System.out.println(String.format("PACK: %s %s %s %s %s %s", position.getX(), position.getY(), position.getZ(), articleOrientation.getWidth(), articleOrientation.getHeight(), articleOrientation.getLength()));
+
     }
 
     @Override

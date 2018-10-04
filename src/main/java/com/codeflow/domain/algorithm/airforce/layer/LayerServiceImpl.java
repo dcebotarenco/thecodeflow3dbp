@@ -1,6 +1,7 @@
 package com.codeflow.domain.algorithm.airforce.layer;
 
 import com.codeflow.domain.articletype.ArticleType;
+import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.orientation.Orientation;
@@ -77,13 +78,17 @@ public class LayerServiceImpl implements LayerService {
 
     @Override
     public Optional<Layer> findLayer(ContainerOrientation containerOrientation, Double requiredHeight, Map<ArticleType, Long> articleTypes) {
-
+        //TODO: Find layer is influenced by order of article types in the file. Preferable to remove Linked Sets.
         List<Layer> layers = new ArrayList<>();
-        List<Double> distinctHeights = articleTypes.entrySet().stream().flatMap(e -> e.getKey().getOrientations().stream())
+
+        List<Double> collect = articleTypes.keySet().stream().flatMap(a -> Stream.of(a.getWidth(), a.getHeight(), a.getLength())).distinct().collect(Collectors.toList());
+
+        List<ArticleOrientation> articleOrientations = articleTypes.entrySet().stream().flatMap(e -> e.getKey().getOrientations().stream())
                 .filter(o -> o.getWidth() <= containerOrientation.getWidth() &&
                         o.getHeight() <= requiredHeight &&
-                        o.getLength() <= containerOrientation.getLength())
-                .map(Orientation::getHeight).distinct()
+                        o.getLength() <= containerOrientation.getLength()).collect(Collectors.toList());
+
+        List<Double> distinctHeights = articleOrientations.stream().map(Orientation::getHeight).distinct()
                 .collect(Collectors.toList());
 
         for (Double height : distinctHeights) {
@@ -96,8 +101,7 @@ public class LayerServiceImpl implements LayerService {
                     }).reduce((d1, d2) -> d1 + d2).orElse(0D);
             layers.add(new LayerImpl(height, containerOrientation.getLength(), eval));
         }
-        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparing(reverseOrder(Comparator.comparingDouble(Layer::getHeight))));
-//        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparingDouble(Layer::getHeight));
+        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparingDouble(l -> collect.indexOf(l.getHeight())));
         return layers.stream().findFirst();
     }
 }

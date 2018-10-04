@@ -9,10 +9,10 @@ public class ArticleTypeDTO {
     private Double height;
     private Long number;
 
-    public ArticleTypeDTO(Double width, Double length, Double height, Long number) {
+    public ArticleTypeDTO(Double width, Double height, Double length, Long number) {
         this.width = width;
-        this.length = length;
         this.height = height;
+        this.length = length;
         this.number = number;
     }
 

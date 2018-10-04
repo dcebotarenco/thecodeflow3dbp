@@ -1,6 +1,6 @@
 package com.codeflow.domain.articletype;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,8 +11,8 @@ public class ArticleRepositoryImpl implements ArticleTypeRepository {
     private Map<ArticleType, Long> remainingToPack;
 
     public ArticleRepositoryImpl() {
-        this.receivedArticleTypes = new HashMap<>();
-        this.remainingToPack = new HashMap<>();
+        this.receivedArticleTypes = new LinkedHashMap<>();
+        this.remainingToPack = new LinkedHashMap<>();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ArticleRepositoryImpl implements ArticleTypeRepository {
 
     @Override
     public Map<ArticleType, Long> receivedArticleTypes() {
-        return new HashMap<>(receivedArticleTypes);
+        return new LinkedHashMap<>(receivedArticleTypes);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ArticleRepositoryImpl implements ArticleTypeRepository {
 
     @Override
     public void reset() {
-        this.remainingToPack = new HashMap<>(receivedArticleTypes);
+        this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
     }
 
     public void clear() {

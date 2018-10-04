@@ -70,6 +70,7 @@ public class AirForceAlgorithm implements Algorithm {
     private long packedItemCount;
     private long bestVariant;
     private long variant;
+    private long ii;
 
 
     private boolean packing;
@@ -176,8 +177,8 @@ public class AirForceAlgorithm implements Algorithm {
             }
         }
 
-        System.out.println(bestIteration);
-        System.out.println(bestVariant);
+//        System.out.println(bestIteration);
+//        System.out.println(bestVariant);
         return null;
     }
 
@@ -187,6 +188,7 @@ public class AirForceAlgorithm implements Algorithm {
         double lenx;
         double lenz;
         double lpz;
+        ii = 0;
 
         if (layerThickness == 0) {
             //System.out.println("layerThickness == 0");
@@ -198,6 +200,7 @@ public class AirForceAlgorithm implements Algorithm {
         //System.out.println("quit" + quit);
 
         for (; ; ) {
+            ii++;
             Corner smallestZ = topViewTopology.findWithSmallestLength();
             //System.out.println("findsmallestz called");
             //System.out.println(quit);
@@ -350,8 +353,8 @@ public class AirForceAlgorithm implements Algorithm {
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
                         position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), packedy, smallestZ.getLength());
                     } else {
-                        position = new PositionImpl(smallestZ.getLeft().getWidth() - article.getWidth(), packedy, smallestZ.getLength());
-                        topViewTopology.addBefore(smallestZ, new CornerImpl(smallestZ.getLeft().getWidth() + article.getWidth(), article.getLength()));
+                        position = new PositionImpl(smallestZ.getLeft().getWidth(), packedy, smallestZ.getLength());
+                        topViewTopology.addBefore(smallestZ, new CornerImpl(smallestZ.getLeft().getWidth() + article.getWidth(), smallestZ.getLength() + article.getLength()));
                     }
                 } else {
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getLeft().getLength()) {
@@ -417,12 +420,12 @@ public class AirForceAlgorithm implements Algorithm {
         evened = false;
 //        dbgFoundBox(boxi, boxx, boxy, boxz, bboxi, bboxx, bboxy, bboxz);
         if (searchResult.getBestFitInRequired().isPresent()) {
-            System.out.println("FITS REQUIRED" + (variant + 1) + (itelayer + 1));
+            System.out.println("FITS REQUIRED" + (variant + 1) + (itelayer + 1) + " " + ii);
             return searchResult.getBestFitInRequired().get();
         } else {
             if ((searchResult.getBestFitBiggerThenRequired().isPresent()) &&
                     (layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
-                System.out.println("FITS MAX" + (variant + 1) + (itelayer + 1));
+                System.out.println("FITS MAX" + (variant + 1) + (itelayer + 1) + " " + ii);
                 if (layerinlayer == 0) {
                     prelayer = layerThickness;
                     lilz = smallestZ.getLength();
