@@ -1,24 +1,24 @@
-package com.codeflow.application;
+package com.codeflow.application.client;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
-public class InputDTO {
-    ContainerDTO containerDTO;
-    List<ArticleTypeDTO> articleTypeDTOList;
+public class Input {
+    Container container;
+    List<ArticleType> articleTypeDTOList;
 
-    public InputDTO(ContainerDTO containerDTO, List<ArticleTypeDTO> articleTypeDTOList) {
-        this.containerDTO = containerDTO;
+    public Input(Container container, List<ArticleType> articleTypeDTOList) {
+        this.container = container;
         this.articleTypeDTOList = articleTypeDTOList;
     }
 
-    public ContainerDTO getContainerDTO() {
-        return containerDTO;
+    public Container getContainer() {
+        return container;
     }
 
-    public List<ArticleTypeDTO> getArticleTypeDTOList() {
+    public List<ArticleType> getArticleTypeDTOList() {
         return articleTypeDTOList;
     }
 
@@ -28,26 +28,26 @@ public class InputDTO {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        InputDTO inputDTO = (InputDTO) o;
+        Input input = (Input) o;
 
         return new EqualsBuilder()
-                .append(containerDTO, inputDTO.containerDTO)
-                .append(articleTypeDTOList, inputDTO.articleTypeDTOList)
+                .append(container, input.container)
+                .append(articleTypeDTOList, input.articleTypeDTOList)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(containerDTO)
+                .append(container)
                 .append(articleTypeDTOList)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return "InputDTO{" +
-                "containerDTO=" + containerDTO +
+        return "Input{" +
+                "container=" + container +
                 ", articleDTOList=" + articleTypeDTOList +
                 '}';
     }

@@ -1,15 +1,15 @@
-package com.codeflow.application;
+package com.codeflow.application.client;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class ArticleTypeDTO {
+public class ArticleType {
     private Double width;
     private Double length;
     private Double height;
     private Long number;
 
-    public ArticleTypeDTO(Double width, Double height, Double length, Long number) {
+    public ArticleType(Double width, Double height, Double length, Long number) {
         this.width = width;
         this.height = height;
         this.length = length;
@@ -35,7 +35,7 @@ public class ArticleTypeDTO {
 
     @Override
     public String toString() {
-        return "ArticleTypeDTO{" +
+        return "ArticleType{" +
                 "width=" + width +
                 ", length=" + length +
                 ", height=" + height +
@@ -49,7 +49,7 @@ public class ArticleTypeDTO {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        ArticleTypeDTO that = (ArticleTypeDTO) o;
+        ArticleType that = (ArticleType) o;
 
         return new EqualsBuilder()
                 .append(width, that.width)

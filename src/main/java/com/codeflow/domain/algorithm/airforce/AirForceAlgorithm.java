@@ -12,15 +12,21 @@ import com.codeflow.domain.algorithm.airforce.topology.TopViewTopologyImpl;
 import com.codeflow.domain.algorithm.airforce.topology.corner.Corner;
 import com.codeflow.domain.algorithm.airforce.topology.corner.CornerImpl;
 import com.codeflow.domain.articletype.ArticleService;
+import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerRepository;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.gap.Gap;
 import com.codeflow.domain.gap.GapImpl;
+import com.codeflow.domain.iteration.IterationResult;
+import com.codeflow.domain.iteration.IterationResultRepository;
 import com.codeflow.domain.position.Position;
 import com.codeflow.domain.position.PositionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -38,6 +44,7 @@ import java.util.Optional;
  */
 public class AirForceAlgorithm implements Algorithm {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AirForceAlgorithm.class);
     private Double bestVolume;
     private Boolean packingBest;
     private double totalItemVolume;
@@ -47,6 +54,7 @@ public class AirForceAlgorithm implements Algorithm {
     private ArticleService articleService;
     private SearchingService searchingService;
     private PackingService packingService;
+    private IterationResultRepository iterationResultRepository;
 
 
     /******/
@@ -81,12 +89,14 @@ public class AirForceAlgorithm implements Algorithm {
 
     public AirForceAlgorithm(LayerService layerService,
                              ContainerRepository containerRepository,
-                             ArticleService articleService, SearchingService searchingService, PackingService packingService) {
+                             ArticleService articleService, SearchingService searchingService, PackingService packingService,
+                             IterationResultRepository iterationResultRepository) {
         this.layerService = layerService;
         this.containerRepository = containerRepository;
         this.articleService = articleService;
         this.searchingService = searchingService;
         this.packingService = packingService;
+        this.iterationResultRepository = iterationResultRepository;
     }
 
     @Override
@@ -162,6 +172,7 @@ public class AirForceAlgorithm implements Algorithm {
                     bestVolume = packedVolume;
                     bestVariant = variant;
                     bestIteration = itelayer;
+                    iterationResultRepository.save(bestVariant, bestIteration, new IterationResult(containerOrientation, articleService.getPackedTypes(), articleService.remainingToPack()));
 //                bestPackedItemCount = packedItemCount;
                 }
 
@@ -177,9 +188,25 @@ public class AirForceAlgorithm implements Algorithm {
             }
         }
 
-//        System.out.println(bestIteration);
-//        System.out.println(bestVariant);
-        return null;
+        IterationResult byResult = iterationResultRepository.findByResult(bestVariant, bestIteration);
+        IterationResult translateResult = byResult.translate();
+        return new Result(translateResult);
+    }
+
+    private void report(IterationResult byResult) {
+
+
+        System.out.println();
+        System.out.println();
+        int i = 1;
+        for (Map.Entry<Position, ArticleOrientation> entry : byResult.getPacked().entrySet()) {
+            Position p = entry.getKey();
+            ArticleOrientation a = entry.getValue();
+            ArticleType boxType = a.getBoxType();
+            System.out.printf("%.0f %.0f %.0f %.0f %.0f %.0f %.0f %.0f %.0f\n", boxType.getWidth(), boxType.getHeight(), boxType.getLength(), p.getX(), p.getY(), p.getZ(), a.getWidth(), a.getHeight(), a.getLength());
+            i++;
+        }
+
     }
 
 

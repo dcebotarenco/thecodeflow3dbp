@@ -5,6 +5,7 @@ import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.orientation.Orientation;
 import com.codeflow.domain.orientation.OrientationImpl;
+import com.codeflow.domain.translator.Translator;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -16,10 +17,12 @@ public class ContainerOrientationImpl implements ContainerOrientation {
     private Double remainHeight;
     private Double remainLength;
     private ContainerType boxType;
+    private Translator translator;
 
-    public ContainerOrientationImpl(Double width, Double height, Double length, ContainerType boxType) {
+    public ContainerOrientationImpl(Double width, Double height, Double length, ContainerType boxType, Translator translator) {
         this(new OrientationImpl(width, height, length));
         this.boxType = boxType;
+        this.translator = translator;
     }
 
     public ContainerOrientationImpl(Orientation orientation) {
@@ -28,6 +31,10 @@ public class ContainerOrientationImpl implements ContainerOrientation {
         this.packedHeight = 0D;
         this.remainHeight = orientation.getHeight();
         this.remainLength = orientation.getLength();
+    }
+
+    public Translator getTranslator() {
+        return translator;
     }
 
     @Override

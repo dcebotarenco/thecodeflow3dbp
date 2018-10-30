@@ -3,7 +3,7 @@ package com.codeflow.domain.articletype;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.position.Position;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     public ArticleServiceImpl(ArticleTypeRepository articleTypeRepository) {
         this.articleTypeRepository = articleTypeRepository;
-        this.packedTypes = new HashMap<>();
+        this.packedTypes = new LinkedHashMap<>();
     }
 
     @Override
@@ -54,5 +54,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Map<ArticleType, Long> remainingToPack() {
         return articleTypeRepository.remainingToPack();
+    }
+
+    @Override
+    public Map<Position, ArticleOrientation> getPackedTypes() {
+        return new LinkedHashMap<>(packedTypes);
     }
 }

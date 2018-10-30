@@ -21,4 +21,6 @@ public interface ArticleService {
     List<ArticleType> unpackedTypes();
 
     Map<ArticleType, Long> remainingToPack();
+
+    Map<Position, ArticleOrientation> getPackedTypes();
 }
