@@ -1,7 +1,7 @@
 package com.codeflow.domain.algorithm.airforce;
 
 import com.codeflow.domain.algorithm.Algorithm;
-import com.codeflow.domain.algorithm.Result;
+import com.codeflow.domain.algorithm.PackResult;
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.algorithm.airforce.packing.PackingService;
@@ -100,7 +100,7 @@ public class AirForceAlgorithm implements Algorithm {
     }
 
     @Override
-    public Result run() {
+    public PackResult run() {
 
         // Initialize
         bestVolume = 0.0;
@@ -190,7 +190,10 @@ public class AirForceAlgorithm implements Algorithm {
 
         IterationResult byResult = iterationResultRepository.findByResult(bestVariant, bestIteration);
         IterationResult translateResult = byResult.translate();
-        return new Result(translateResult);
+
+        report(translateResult);
+
+        return new PackResult(translateResult);
     }
 
     private void report(IterationResult byResult) {

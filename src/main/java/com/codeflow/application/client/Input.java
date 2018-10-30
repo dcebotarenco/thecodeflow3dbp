@@ -7,19 +7,19 @@ import java.util.List;
 
 public class Input {
     Container container;
-    List<ArticleType> articleTypeDTOList;
+    List<ArticleType> articleTypes;
 
-    public Input(Container container, List<ArticleType> articleTypeDTOList) {
+    public Input(Container container, List<ArticleType> articleTypes) {
         this.container = container;
-        this.articleTypeDTOList = articleTypeDTOList;
+        this.articleTypes = articleTypes;
     }
 
     public Container getContainer() {
         return container;
     }
 
-    public List<ArticleType> getArticleTypeDTOList() {
-        return articleTypeDTOList;
+    public List<ArticleType> getArticleTypes() {
+        return articleTypes;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Input {
 
         return new EqualsBuilder()
                 .append(container, input.container)
-                .append(articleTypeDTOList, input.articleTypeDTOList)
+                .append(articleTypes, input.articleTypes)
                 .isEquals();
     }
 
@@ -40,7 +40,7 @@ public class Input {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(container)
-                .append(articleTypeDTOList)
+                .append(articleTypes)
                 .toHashCode();
     }
 
@@ -48,7 +48,7 @@ public class Input {
     public String toString() {
         return "Input{" +
                 "container=" + container +
-                ", articleDTOList=" + articleTypeDTOList +
+                ", articleDTOList=" + articleTypes +
                 '}';
     }
 }

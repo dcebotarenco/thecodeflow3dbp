@@ -5,7 +5,7 @@ import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.position.Position;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class IterationResult {
@@ -32,7 +32,7 @@ public class IterationResult {
     }
 
     public IterationResult translate() {
-        Map<Position, ArticleOrientation> packed = new HashMap<>();
+        Map<Position, ArticleOrientation> packed = new LinkedHashMap<>();
         for (Map.Entry<Position, ArticleOrientation> entry : this.getPacked().entrySet()) {
             Position pp = entry.getKey();
             ArticleOrientation aa = entry.getValue();

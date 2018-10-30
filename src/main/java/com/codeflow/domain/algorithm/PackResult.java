@@ -10,12 +10,16 @@ import java.util.Set;
 
 import static com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text.NEW_LINE;
 
-public class Result {
+public class PackResult {
     private IterationResult translateResult;
 
-    public Result(IterationResult translateResult) {
+    public PackResult(IterationResult translateResult) {
 
         this.translateResult = translateResult;
+    }
+
+    public Map<Position, ArticleOrientation> getPacked() {
+        return translateResult.getPacked();
     }
 
     public String toString() {

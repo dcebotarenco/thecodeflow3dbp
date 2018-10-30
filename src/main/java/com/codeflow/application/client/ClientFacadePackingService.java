@@ -1,8 +1,7 @@
 package com.codeflow.application.client;
 
-import com.codeflow.application.PackResult;
 import com.codeflow.domain.algorithm.AlgorithmService;
-import com.codeflow.domain.algorithm.Result;
+import com.codeflow.domain.algorithm.PackResult;
 import com.codeflow.domain.algorithm.airforce.AirForceAlgorithm;
 import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
 import com.codeflow.domain.algorithm.airforce.packing.PackingServiceImpl;
@@ -22,27 +21,31 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-public class ClientFacade {
+public class ClientFacadePackingService {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ClientFacade.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientFacadePackingService.class);
 
-    PackResult pack(File file) throws IOException {
+    public Result pack(Path path) throws IOException {
         FileReader fileReader = new FileReader(new InputDTOAssembler());
-        Input input = fileReader.read(file.toPath());
+        Input input = fileReader.read(path);
         return pack(input);
     }
 
-    PackResult pack(Input input) {
+    public Result pack(File file) throws IOException {
+        return pack(file.toPath());
+    }
+
+    public Result pack(Input input) {
         ArticleTypeRepository articleTypeRepository = new ArticleRepositoryImpl();
         ArticleServiceImpl articleService = new ArticleServiceImpl(articleTypeRepository);
         ContainerRepositoryImpl containerRepository = new ContainerRepositoryImpl();
-        for (ArticleType articleType : input.getArticleTypeDTOList()) {
+        for (ArticleType articleType : input.getArticleTypes()) {
             articleTypeRepository.saveType(new ArticleTypeImpl(articleType.getWidth(),
                     articleType.getHeight(),
                     articleType.getLength()), articleType.getNumber());
         }
-
         ContainerType container = new ContainerTypeImpl(input.getContainer().getWidth(),
                 input.getContainer().getHeight(),
                 input.getContainer().getLength());
@@ -50,10 +53,10 @@ public class ClientFacade {
 
         AlgorithmService algorithmService = new AlgorithmService();
         LOGGER.info("Executing with {} and {}", container, articleTypeRepository.receivedArticleTypes());
-        Result result = algorithmService.execute(new AirForceAlgorithm(new LayerServiceImpl(),
+        PackResult packResult = algorithmService.execute(new AirForceAlgorithm(new LayerServiceImpl(),
                 containerRepository, articleService
                 , new SearchingServiceImpl(articleService),
                 new PackingServiceImpl(articleService), new IterationResultRepository()));
-        return new PackResult(result);
+        return new ResultMapper().map(packResult);
     }
 }
