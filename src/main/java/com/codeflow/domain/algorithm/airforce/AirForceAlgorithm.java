@@ -45,9 +45,6 @@ import java.util.Optional;
 public class AirForceAlgorithm implements Algorithm {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AirForceAlgorithm.class);
-    private Double bestVolume;
-    private Boolean packingBest;
-    private double totalItemVolume;
 
     private LayerService layerService;
     private final ContainerRepository containerRepository;
@@ -57,34 +54,12 @@ public class AirForceAlgorithm implements Algorithm {
     private IterationResultRepository iterationResultRepository;
 
 
-    /******/
-
-    private double packedVolume;
-    private double percentageContainerUsed;
-    private double packedy;
-
-    private double layerThickness;
-    private double remainpy;
-    private double remainpz;
-    private double layerinlayer;
-    private double prepackedy;
-    private double preremainpy;
-    private double prelayer;
-    private double lilz;
+    //    private Run run;
+//    private Iteration iterationPerLayer;
+//    private PackingLayerProcess packingLayerProcess;
 
 
-    private long itelayer;
-    private long bestIteration;
-    private long packedItemCount;
-    private long bestVariant;
-    private long variant;
-    private long ii;
-
-
-    private boolean packing;
-    private boolean hundredPercentPacked;
-    private boolean layerDone;
-    private boolean evened;
+    private boolean evenedPerSearch;
 
 
     public AirForceAlgorithm(LayerService layerService,
@@ -101,94 +76,78 @@ public class AirForceAlgorithm implements Algorithm {
 
     @Override
     public PackResult run() {
-
-        // Initialize
-        bestVolume = 0.0;
-        packingBest = false;
-        totalItemVolume = articleService.totalItemVolume();
+        Run run = new Run();
+        run.totalItemVolume = articleService.totalItemVolume();
 
         for (ContainerOrientation containerOrientation : containerRepository.container().getOrientations()) {
-            variant = containerRepository.container().getOrientations().indexOf(containerOrientation);
+            long containerIndex = containerRepository.container().getOrientations().indexOf(containerOrientation);
             articleService.reset();
             List<Layer> layers = layerService.listCandidates(containerOrientation, articleService.articleTypes());
             for (Layer layer : layers) {
-                if (containerOrientation.allVolumePacked() || articleService.allPacked()) {
-                    break;
-                }
-                packedVolume = 0;
-                packedy = 0;
-                packing = true;
-                //System.out.println("Assign 2 =" + layers.get(layersIndex).LayerDim);
-                layerThickness = layer.getHeight();
-                itelayer = layers.indexOf(layer);
-                remainpy = containerOrientation.getHeight();
-                remainpz = containerOrientation.getLength();
-                packedItemCount = 0;
-//            dbgLayer(layerThickness, remainpz, layers.get(layersIndex).LayerEval);
-
+                long currentIndexOfLayer = layers.indexOf(layer);
+                Iteration iterationPerLayer = new Iteration(layer, containerOrientation, containerIndex, currentIndexOfLayer);
                 articleService.reset();
                 do {
+                    PackingLayerProcess packingLayerProcess = new PackingLayerProcess();
                     //System.out.println("While iterations");
-                    layerinlayer = 0;
-                    layerDone = false;
 
-                    PackLayer(containerOrientation);
+                    PackLayer(containerOrientation, run, iterationPerLayer, packingLayerProcess);
 
-                    packedy = packedy + layerThickness;
-                    remainpy = containerOrientation.getHeight() - packedy;
+                    iterationPerLayer.packedy = iterationPerLayer.packedy + iterationPerLayer.layerThickness;
+                    iterationPerLayer.remainpy = containerOrientation.getHeight() - iterationPerLayer.packedy;
 
-                    if (layerinlayer != 0) {
+                    if (packingLayerProcess.layerinlayer != 0) {
 //                        System.out.println("There is Layer in Layer");
-                        prepackedy = packedy;
-                        preremainpy = remainpy;
-                        remainpy = layerThickness - prelayer;
-                        packedy = packedy - layerThickness + prelayer;
-                        remainpz = lilz;
+                        packingLayerProcess.prepackedy = iterationPerLayer.packedy;
+                        packingLayerProcess.preremainpy = iterationPerLayer.remainpy;
+                        iterationPerLayer.remainpy = iterationPerLayer.layerThickness - packingLayerProcess.prelayer;
+                        iterationPerLayer.packedy = iterationPerLayer.packedy - iterationPerLayer.layerThickness + packingLayerProcess.prelayer;
+                        iterationPerLayer.remainpz = packingLayerProcess.lilz;
                         //System.out.println("Assign 3 =" + layerinlayer);
-                        layerThickness = layerinlayer;
-                        layerDone = false;
-                        System.out.println("LAYER IN LAYER" + (variant + 1) + (itelayer + 1));
-                        PackLayer(containerOrientation);
+                        iterationPerLayer.layerThickness = packingLayerProcess.layerinlayer;
+                        packingLayerProcess.layerDone = false;
+                        System.out.println("LAYER IN LAYER" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1));
+                        PackLayer(containerOrientation, run, iterationPerLayer, packingLayerProcess);
 
-                        packedy = prepackedy;
-                        remainpy = preremainpy;
-                        remainpz = containerOrientation.getLength();
+                        iterationPerLayer.packedy = packingLayerProcess.prepackedy;
+                        iterationPerLayer.remainpy = packingLayerProcess.preremainpy;
+                        iterationPerLayer.remainpz = containerOrientation.getLength();
                     }
 
-                    Optional<Layer> foundLayer = layerService.findLayer(containerOrientation, remainpy, articleService.remainingToPack());
+                    Optional<Layer> foundLayer = layerService.findLayer(containerOrientation, iterationPerLayer.remainpy, articleService.remainingToPack());
                     if (!foundLayer.isPresent()) {
-                        packing = false;
-                        System.out.println(remainpy + "FOUND LAYER:" + 0.);
+                        iterationPerLayer.packing = false;
+                        System.out.println(iterationPerLayer.remainpy + "FOUND LAYER:" + 0.);
                     } else {
-                        layerThickness = foundLayer.get().getHeight();
-                        System.out.println(remainpy + "FOUND LAYER:" + layerThickness);
-                        if (layerThickness > remainpy) {
-                            packing = false;
+                        iterationPerLayer.layerThickness = foundLayer.get().getHeight();
+                        System.out.println(iterationPerLayer.remainpy + "FOUND LAYER:" + iterationPerLayer.layerThickness);
+                        if (iterationPerLayer.layerThickness > iterationPerLayer.remainpy) {
+                            iterationPerLayer.packing = false;
                         }
                     }
-                } while (packing);
+                } while (iterationPerLayer.packing);
 
-                if ((packedVolume > bestVolume)) {
-                    bestVolume = packedVolume;
-                    bestVariant = variant;
-                    bestIteration = itelayer;
-                    iterationResultRepository.save(bestVariant, bestIteration, new IterationResult(containerOrientation, articleService.getPackedTypes(), articleService.remainingToPack()));
+                if ((iterationPerLayer.packedVolume > run.bestVolume)) {
+                    run.bestVolume = iterationPerLayer.packedVolume;
+                    run.bestVariantPerRequest = iterationPerLayer.currentIndexOfContainerOrientation;
+                    run.bestIterationPerRequest = iterationPerLayer.currentIndexOfLayer;
+                    iterationResultRepository.save(run.bestVariantPerRequest, run.bestIterationPerRequest, new IterationResult(containerOrientation, articleService.getPackedTypes(), articleService.remainingToPack()));
 //                bestPackedItemCount = packedItemCount;
                 }
 
-                if (hundredPercentPacked) {
+                if (run.hundredPercentPackedPerSearch) {
                     break;
                 }
 
-                percentageContainerUsed = bestVolume * 100 / containerOrientation.getVolume();
+                iterationPerLayer.percentageContainerUsed = run.bestVolume * 100 / containerOrientation.getVolume();
 
             }
-            if (hundredPercentPacked) {
+            if (run.hundredPercentPackedPerSearch) {
                 break;
             }
         }
 
-        IterationResult byResult = iterationResultRepository.findByResult(bestVariant, bestIteration);
+        IterationResult byResult = iterationResultRepository.findByResult(run.bestVariantPerRequest, run.bestIterationPerRequest);
         IterationResult translateResult = byResult.translate();
 
         report(translateResult);
@@ -213,16 +172,16 @@ public class AirForceAlgorithm implements Algorithm {
     }
 
 
-    private void PackLayer(ContainerOrientation containerOrientation) {
+    private void PackLayer(ContainerOrientation containerOrientation, Run run, Iteration iterationPerLayer, PackingLayerProcess packingLayerProcess) {
 //        System.out.println("Packlayer called");
         double lenx;
         double lenz;
         double lpz;
-        ii = 0;
+        packingLayerProcess.packAttempts = 0;
 
-        if (layerThickness == 0) {
+        if (iterationPerLayer.layerThickness == 0) {
             //System.out.println("layerThickness == 0");
-            packing = false;
+            iterationPerLayer.packing = false;
             return;
         }
         TopViewTopology topViewTopology = new TopViewTopologyImpl(new CornerImpl(containerOrientation.getWidth(), 0.));
@@ -230,7 +189,7 @@ public class AirForceAlgorithm implements Algorithm {
         //System.out.println("quit" + quit);
 
         for (; ; ) {
-            ii++;
+            packingLayerProcess.packAttempts++;
             Corner smallestZ = topViewTopology.findWithSmallestLength();
             //System.out.println("findsmallestz called");
             //System.out.println(quit);
@@ -239,61 +198,61 @@ public class AirForceAlgorithm implements Algorithm {
                 //*** SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES ***
 //                System.out.println("SITUATION-1: NO BOXES ON THE RIGHT AND LEFT SIDES");
                 lenx = smallestZ.getWidth();
-                lpz = remainpz - smallestZ.getLength();
+                lpz = iterationPerLayer.remainpz - smallestZ.getLength();
 
 
                 SearchResult searchResult = FindBox(lenx, //hmx
-                        layerThickness, //hy
-                        remainpy, //hmy
+                        iterationPerLayer.layerThickness, //hy
+                        iterationPerLayer.remainpy, //hmy
                         lpz, //hz
                         lpz);//hmz
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, iterationPerLayer, packingLayerProcess);
 
-                if (layerDone) {
-                    System.out.println("layer done" + (variant + 1) + (itelayer + 1));
+                if (packingLayerProcess.layerDone) {
+                    System.out.println("layer done" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1));
                     break;
                 }
-                if (evened) {
-                    //System.out.println("S1 layer evened");
+                if (evenedPerSearch) {
+                    //System.out.println("S1 layer evenedPerSearch");
                     continue;
                 }
 
-                packingService.pack(containerOrientation, article, new PositionImpl(0D, packedy, smallestZ.getLength()));
+                packingService.pack(containerOrientation, article, new PositionImpl(0D, iterationPerLayer.packedy, smallestZ.getLength()));
                 if (article.getWidth().equals(smallestZ.getWidth())) {
                     smallestZ.updateLength(smallestZ.getLength() + article.getLength());
                 } else {
                     topViewTopology.addBefore(smallestZ, new CornerImpl(article.getWidth(), smallestZ.getLength() + article.getLength()));
                 }
                 //System.out.println("S1 Volumecheck");
-                VolumeCheck(article, containerOrientation);
+                VolumeCheck(article, containerOrientation, iterationPerLayer, run);
             } else if (!smallestZ.hasCornerOnLeft()) {
 //                System.out.println(scrapfirst);
                 //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
 //                System.out.println("SITUATION-2: NO BOXES ON THE LEFT SIDE");
                 lenx = smallestZ.getWidth();
                 lenz = smallestZ.getRight().getLength() - smallestZ.getLength();
-                lpz = remainpz - smallestZ.getLength();
-                SearchResult searchResult = FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
+                lpz = iterationPerLayer.remainpz - smallestZ.getLength();
+                SearchResult searchResult = FindBox(lenx, iterationPerLayer.layerThickness, iterationPerLayer.remainpy, lenz, lpz);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, iterationPerLayer, packingLayerProcess);
 
-                if (layerDone) {
-                    System.out.println("layer done" + (variant + 1) + (itelayer + 1));
+                if (packingLayerProcess.layerDone) {
+                    System.out.println("layer done" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1));
                     break;
                 }
-                if (evened) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
                 Position position;
                 if (article.getWidth().equals(smallestZ.getWidth())) {
-                    position = new PositionImpl(0D, packedy, smallestZ.getLength());
+                    position = new PositionImpl(0D, iterationPerLayer.packedy, smallestZ.getLength());
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getRight().getLength()) {
                         topViewTopology.remove(smallestZ);
                     } else {
                         smallestZ.updateLength(smallestZ.getLength() + article.getLength());
                     }
                 } else {
-                    position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), packedy, smallestZ.getLength());
+                    position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
 
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getRight().getLength()) {
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
@@ -304,7 +263,7 @@ public class AirForceAlgorithm implements Algorithm {
                 }
                 packingService.pack(containerOrientation, article, position);
                 //System.out.println("S2 Volumecheck");
-                VolumeCheck(article, containerOrientation);
+                VolumeCheck(article, containerOrientation, iterationPerLayer, run);
             } else if (!smallestZ.hasCornerOnRight()) {
 //                System.out.println(scrapfirst);
 //                System.out.println("SITUATION-3: NO BOXES ON THE RIGHT SIDE");
@@ -312,19 +271,19 @@ public class AirForceAlgorithm implements Algorithm {
 
                 lenx = smallestZ.getWidth() - smallestZ.getLeft().getWidth();
                 lenz = smallestZ.getLeft().getLength() - smallestZ.getLength();
-                lpz = remainpz - smallestZ.getLength();
-                SearchResult searchResult = FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
+                lpz = iterationPerLayer.remainpz - smallestZ.getLength();
+                SearchResult searchResult = FindBox(lenx, iterationPerLayer.layerThickness, iterationPerLayer.remainpy, lenz, lpz);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, iterationPerLayer, packingLayerProcess);
 
-                if (layerDone) {
-                    System.out.println("layer done" + (variant + 1) + (itelayer + 1));
+                if (packingLayerProcess.layerDone) {
+                    System.out.println("layer done" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1));
                     break;
                 }
-                if (evened) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
-                packingService.pack(containerOrientation, article, new PositionImpl(smallestZ.getLeft().getWidth(), packedy, smallestZ.getLength()));
+                packingService.pack(containerOrientation, article, new PositionImpl(smallestZ.getLeft().getWidth(), iterationPerLayer.packedy, smallestZ.getLength()));
                 if (article.getWidth() == smallestZ.getWidth() - smallestZ.getLeft().getWidth()) {
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getLeft().getLength()) {
                         smallestZ.getLeft().updateWidth(smallestZ.getWidth());
@@ -340,7 +299,7 @@ public class AirForceAlgorithm implements Algorithm {
                     }
                 }
                 //System.out.println("S3 Volumecheck");
-                VolumeCheck(article, containerOrientation);
+                VolumeCheck(article, containerOrientation, iterationPerLayer, run);
             } else if (smallestZ.getLeft().getLength().equals(smallestZ.getRight().getLength())) {
 //                System.out.println(scrapfirst);
 //                System.out.println("SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER");
@@ -349,22 +308,22 @@ public class AirForceAlgorithm implements Algorithm {
                 //*** SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER ***
                 lenx = smallestZ.getWidth() - smallestZ.getLeft().getWidth();
                 lenz = smallestZ.getLeft().getLength() - smallestZ.getLength();
-                lpz = remainpz - smallestZ.getLength();
+                lpz = iterationPerLayer.remainpz - smallestZ.getLength();
 
-                SearchResult searchResult = FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
+                SearchResult searchResult = FindBox(lenx, iterationPerLayer.layerThickness, iterationPerLayer.remainpy, lenz, lpz);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, iterationPerLayer, packingLayerProcess);
 
-                if (layerDone) {
-                    System.out.println("layer done" + (variant + 1) + (itelayer + 1));
+                if (packingLayerProcess.layerDone) {
+                    System.out.println("layer done" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1));
                     break;
                 }
-                if (evened) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
                 Position position;
                 if (article.getWidth() == smallestZ.getWidth() - smallestZ.getLeft().getWidth()) {
-                    position = new PositionImpl(smallestZ.getLeft().getWidth(), packedy, smallestZ.getLength());
+                    position = new PositionImpl(smallestZ.getLeft().getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
 
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getRight().getLength()) {
                         smallestZ.getLeft().updateWidth(smallestZ.getRight().getWidth());
@@ -381,25 +340,25 @@ public class AirForceAlgorithm implements Algorithm {
                 } else if (smallestZ.getLeft().getWidth() < containerOrientation.getWidth() - smallestZ.getWidth()) {
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getLeft().getLength()) {
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
-                        position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), packedy, smallestZ.getLength());
+                        position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
                     } else {
-                        position = new PositionImpl(smallestZ.getLeft().getWidth(), packedy, smallestZ.getLength());
+                        position = new PositionImpl(smallestZ.getLeft().getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
                         topViewTopology.addBefore(smallestZ, new CornerImpl(smallestZ.getLeft().getWidth() + article.getWidth(), smallestZ.getLength() + article.getLength()));
                     }
                 } else {
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getLeft().getLength()) {
                         smallestZ.getLeft().updateWidth(smallestZ.getLeft().getWidth() + article.getWidth());
-                        position = new PositionImpl(smallestZ.getLeft().getWidth(), packedy, smallestZ.getLength());
+                        position = new PositionImpl(smallestZ.getLeft().getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
 
                     } else {
-                        position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), packedy, smallestZ.getLength());
+                        position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
                         topViewTopology.addAfter(smallestZ, new CornerImpl(smallestZ.getWidth(), smallestZ.getLength() + article.getLength()));
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
                     }
                 }
                 packingService.pack(containerOrientation, article, position);
                 //System.out.println("S4A Volumecheck");
-                VolumeCheck(article, containerOrientation);
+                VolumeCheck(article, containerOrientation, iterationPerLayer, run);
             } else {
 //                System.out.println(scrapfirst);
 //                System.out.println("SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER");
@@ -407,19 +366,19 @@ public class AirForceAlgorithm implements Algorithm {
 
                 lenx = smallestZ.getWidth() - smallestZ.getLeft().getWidth();
                 lenz = smallestZ.getLeft().getLength() - smallestZ.getLength();
-                lpz = remainpz - smallestZ.getLength();
-                SearchResult searchResult = FindBox(lenx, layerThickness, remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
+                lpz = iterationPerLayer.remainpz - smallestZ.getLength();
+                SearchResult searchResult = FindBox(lenx, iterationPerLayer.layerThickness, iterationPerLayer.remainpy, lenz, lpz);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, iterationPerLayer, packingLayerProcess);
 
-                if (layerDone) {
-                    System.out.println("layer done" + (variant + 1) + (itelayer + 1));
+                if (packingLayerProcess.layerDone) {
+                    System.out.println("layer done" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1));
                     break;
                 }
-                if (evened) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
-                Position position = new PositionImpl(smallestZ.getLeft().getWidth(), packedy, smallestZ.getLength());
+                Position position = new PositionImpl(smallestZ.getLeft().getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
                 if (article.getWidth() == (smallestZ.getWidth() - smallestZ.getLeft().getWidth())) {
                     if ((smallestZ.getLength() + article.getLength()) == smallestZ.getLeft().getLength()) {
                         smallestZ.getLeft().updateWidth(smallestZ.getWidth());
@@ -431,7 +390,7 @@ public class AirForceAlgorithm implements Algorithm {
                     if ((smallestZ.getLength() + article.getLength()) == smallestZ.getLeft().getLength()) {
                         smallestZ.getLeft().updateWidth(smallestZ.getLeft().getWidth() + article.getWidth());
                     } else if (smallestZ.getLength() + article.getLength() == smallestZ.getRight().getLength()) {
-                        position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), packedy, smallestZ.getLength());
+                        position = new PositionImpl(smallestZ.getWidth() - article.getWidth(), iterationPerLayer.packedy, smallestZ.getLength());
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
                     } else {
                         topViewTopology.addBefore(smallestZ, new CornerImpl(smallestZ.getLeft().getWidth() + article.getWidth(), smallestZ.getLength() + article.getLength()));
@@ -440,38 +399,38 @@ public class AirForceAlgorithm implements Algorithm {
                 packingService.pack(containerOrientation, article, position);
 
                 //System.out.println("S4B Volumecheck");
-                VolumeCheck(article, containerOrientation);
+                VolumeCheck(article, containerOrientation, iterationPerLayer, run);
             }
         }
         //System.out.println("Bye packlayer");
     }
 
-    private ArticleOrientation CheckFound(SearchResult searchResult, Corner smallestZ, TopViewTopology topViewTopology) {
-        evened = false;
+    private ArticleOrientation CheckFound(SearchResult searchResult, Corner smallestZ, TopViewTopology topViewTopology, Iteration iterationPerLayer, PackingLayerProcess packingLayerProcess) {
+        evenedPerSearch = false;
 //        dbgFoundBox(boxi, boxx, boxy, boxz, bboxi, bboxx, bboxy, bboxz);
         if (searchResult.getBestFitInRequired().isPresent()) {
-            System.out.println("FITS REQUIRED" + (variant + 1) + (itelayer + 1) + " " + ii);
+            System.out.println("FITS REQUIRED" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1) + " " + packingLayerProcess.packAttempts);
             return searchResult.getBestFitInRequired().get();
         } else {
             if ((searchResult.getBestFitBiggerThenRequired().isPresent()) &&
-                    (layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
-                System.out.println("FITS MAX" + (variant + 1) + (itelayer + 1) + " " + ii);
-                if (layerinlayer == 0) {
-                    prelayer = layerThickness;
-                    lilz = smallestZ.getLength();
+                    (packingLayerProcess.layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
+                System.out.println("FITS MAX" + (iterationPerLayer.currentIndexOfContainerOrientation + 1) + (iterationPerLayer.currentIndexOfLayer + 1) + " " + packingLayerProcess.packAttempts);
+                if (packingLayerProcess.layerinlayer == 0) {
+                    packingLayerProcess.prelayer = iterationPerLayer.layerThickness;
+                    packingLayerProcess.lilz = smallestZ.getLength();
                 }
                 ArticleOrientation bestFitBiggerThenRequired = searchResult.getBestFitBiggerThenRequired().get();
 //                System.out.println("Layer In Layer");
-                layerinlayer = layerinlayer + bestFitBiggerThenRequired.getHeight() - layerThickness;
+                packingLayerProcess.layerinlayer = packingLayerProcess.layerinlayer + bestFitBiggerThenRequired.getHeight() - iterationPerLayer.layerThickness;
 
                 //System.out.println("Assign 1 =" + bboxy);
-                layerThickness = bestFitBiggerThenRequired.getHeight();
+                iterationPerLayer.layerThickness = bestFitBiggerThenRequired.getHeight();
                 return bestFitBiggerThenRequired;
             } else {
                 if (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()) {
-                    layerDone = true;
+                    packingLayerProcess.layerDone = true;
                 } else {
-                    evened = true;
+                    evenedPerSearch = true;
 
                     if (!smallestZ.hasCornerOnLeft()) {
                         topViewTopology.remove(smallestZ);
@@ -497,7 +456,7 @@ public class AirForceAlgorithm implements Algorithm {
         }
     }
 
-    private void VolumeCheck(ArticleOrientation article, ContainerOrientation containerOrientation) {
+    private void VolumeCheck(ArticleOrientation foundArticle, ContainerOrientation containerOrientation, Iteration iterationPerLayer, Run run) {
 
 //        itemsToPack.get(cboxi).IsPacked = true;
 //        itemsToPack.get(cboxi).PackDimX = cboxx;
@@ -507,12 +466,12 @@ public class AirForceAlgorithm implements Algorithm {
 //        //System.out.println("Packed Volume" + packedVolume);
 //        Item item = itemsToPack.get(cboxi);
 //        dbgPack(item.CoordX, item.CoordY, item.CoordZ, item.PackDimX, item.PackDimY, item.PackDimZ);
-        packedVolume = packedVolume + article.getVolume();
-        packedItemCount++;
+        iterationPerLayer.packedVolume = iterationPerLayer.packedVolume + foundArticle.getVolume();
+        iterationPerLayer.packedItemCount++;
 
-        if (packedVolume == containerOrientation.getVolume() || packedVolume == totalItemVolume) {
-            packing = false;
-            hundredPercentPacked = true;
+        if (iterationPerLayer.packedVolume == containerOrientation.getVolume() || iterationPerLayer.packedVolume == run.totalItemVolume) {
+            iterationPerLayer.packing = false;
+            run.hundredPercentPackedPerSearch = true;
         }
     }
 
