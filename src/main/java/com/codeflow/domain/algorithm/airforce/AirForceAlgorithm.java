@@ -7,12 +7,12 @@ import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.iteration.IterationResult;
-import com.codeflow.domain.iteration.IterationResultRepository;
+import com.codeflow.domain.iteration.IterationSessionRepository;
 import com.codeflow.domain.position.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Our model packs as many boxes as possible in a given container while selecting the suitable boxes from a given box set.
@@ -32,22 +32,33 @@ public class AirForceAlgorithm implements Algorithm {
     private static final Logger LOGGER = LoggerFactory.getLogger(AirForceAlgorithm.class);
 
     private LayerService layerService;
-    private IterationResultRepository iterationResultRepository;
+    private IterationSessionRepository iterationSessionRepository;
 
     public AirForceAlgorithm() {
         this.layerService = new LayerServiceImpl();
-        this.iterationResultRepository = new IterationResultRepository();
+        this.iterationSessionRepository = new IterationSessionRepository();
     }
 
 
     @Override
     public PackResult run(AlgorithmInputData algorithmInputData) {
-        Run run = new Run(algorithmInputData, layerService, iterationResultRepository);
+        Run run = new Run(algorithmInputData, layerService, iterationSessionRepository);
         run.start();
-        IterationResult byResult = iterationResultRepository.findByResult(run.bestVariantPerRequest, run.bestIterationPerRequest);
-        IterationResult translateResult = byResult.translate();
+        IterationResult translateResult = findBestResult();
         report(translateResult);
         return new PackResult(translateResult);
+    }
+
+    private IterationResult findBestResult() {
+        List<IterationSession> sessions = iterationSessionRepository.getSessions();
+        ArrayList<IterationSession> iterationSessions = new ArrayList<>(sessions);
+        iterationSessions.sort(Comparator.comparingDouble((IterationSession s) -> s.packedVolume).reversed());
+        Optional<IterationSession> best = iterationSessions.stream().findFirst();
+        if (best.isPresent()) {
+            return new IterationResult(best.get()).translate();
+        } else {
+            throw new IllegalStateException("No best Result");
+        }
     }
 
     private void report(IterationResult byResult) {

@@ -1,10 +1,12 @@
 package com.codeflow.domain.algorithm.airforce;
 
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.searching.SearchResult;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceImpl;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.gap.Gap;
 import com.codeflow.domain.position.Position;
 
@@ -18,9 +20,41 @@ public class IterationSession {
     private Map<Position, ArticleOrientation> packedTypes;
     private Map<ArticleType, Long> remainingToPack;
 
+    public ContainerOrientation containerOrientation;
+    public Layer layer;
+    public double packedVolume;
+    public double packedy;
+    public boolean packing;
+    public double layerThickness;
+    public double remainpy;
+    public double remainpz;
+    public long packedItemCount;
+    public double percentageContainerUsed;
+    public long currentIndexOfContainerOrientation;
+    public long currentIndexOfLayer;
+
     public IterationSession(Map<ArticleType, Long> receivedArticleTypes) {
         this.packedTypes = new LinkedHashMap<>();
         this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
+    }
+
+    public IterationSession(Map<ArticleType, Long> receivedArticleTypes,
+                            Layer layer, ContainerOrientation containerOrientation,
+                            long containerOrientationIndex,
+                            long currentIndexOfLayer) {
+        this.packedTypes = new LinkedHashMap<>();
+        this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
+        this.packedVolume = 0;
+        this.packedy = 0;
+        this.packing = true;
+        this.layer = layer;
+        this.layerThickness = layer.getHeight();
+        this.containerOrientation = containerOrientation;
+        this.remainpy = containerOrientation.getHeight();
+        this.remainpz = containerOrientation.getLength();
+        this.packedItemCount = 0;
+        this.currentIndexOfContainerOrientation = containerOrientationIndex;
+        this.currentIndexOfLayer = currentIndexOfLayer;
     }
 
     public List<ArticleType> unpackedTypes() {

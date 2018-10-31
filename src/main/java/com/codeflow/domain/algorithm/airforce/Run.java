@@ -4,28 +4,26 @@ import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
-import com.codeflow.domain.iteration.IterationResultRepository;
+import com.codeflow.domain.iteration.IterationSessionRepository;
 
 import java.util.List;
 
 public class Run {
 
     private final LayerService layerService;
-    private final IterationResultRepository iterationResultRepository;
+    private final IterationSessionRepository iterationSessionRepository;
     private AlgorithmInputData algorithmInputData;
     public Double bestVolume;
     public Double totalItemVolume;
-    public long bestIterationPerRequest;
-    public long bestVariantPerRequest;
     public boolean hundredPercentPackedPerSearch;
 
 
     public Run(AlgorithmInputData algorithmInputData,
                LayerService layerService,
-               IterationResultRepository iterationResultRepository) {
+               IterationSessionRepository iterationSessionRepository) {
         this.algorithmInputData = algorithmInputData;
         this.layerService = layerService;
-        this.iterationResultRepository = iterationResultRepository;
+        this.iterationSessionRepository = iterationSessionRepository;
         this.bestVolume = 0.0;
     }
 
@@ -35,19 +33,23 @@ public class Run {
 
     public void start() {
         this.totalItemVolume = totalVolume();
-
         ContainerType containerType = algorithmInputData.getContainerType();
         for (ContainerOrientation containerOrientation : containerType.getOrientations()) {
             long containerIndex = containerType.getOrientations().indexOf(containerOrientation);
             List<Layer> layers = layerService.listCandidates(containerOrientation, algorithmInputData.getArticleTypes());
             for (Layer layer : layers) {
                 long currentIndexOfLayer = layers.indexOf(layer);
-                IterationSession iterationSession = new IterationSession(algorithmInputData.getArticleTypes());
                 Iteration iterationPerLayer = new Iteration(
-                        iterationSession,
+                        new IterationSession(
+                                algorithmInputData.getArticleTypes(),
+                                layer,
+                                containerOrientation,
+                                containerIndex,
+                                currentIndexOfLayer
+                        ),
                         layerService,
-                        iterationResultRepository,
-                        layer, this, containerOrientation, containerIndex, currentIndexOfLayer);
+                        iterationSessionRepository,
+                        this);
                 iterationPerLayer.run();
                 if (this.hundredPercentPackedPerSearch) {
                     break;

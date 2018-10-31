@@ -1,5 +1,6 @@
 package com.codeflow.domain.iteration;
 
+import com.codeflow.domain.algorithm.airforce.IterationSession;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
@@ -12,11 +13,23 @@ public class IterationResult {
     private final ContainerOrientation containerOrientation;
     private final Map<Position, ArticleOrientation> packed;
     private final Map<ArticleType, Long> articleTypeLongMap;
+    private IterationSession session;
 
     public IterationResult(ContainerOrientation containerOrientation, Map<Position, ArticleOrientation> packed, Map<ArticleType, Long> articleTypeLongMap) {
         this.packed = packed;
         this.articleTypeLongMap = articleTypeLongMap;
         this.containerOrientation = containerOrientation;
+    }
+
+    public IterationResult(IterationSession session) {
+        this.session = session;
+        this.packed = session.getPackedTypes();
+        this.articleTypeLongMap = session.getRemainingToPack();
+        this.containerOrientation = session.containerOrientation;
+    }
+
+    public IterationSession getSession() {
+        return session;
     }
 
     public Map<Position, ArticleOrientation> getPacked() {
