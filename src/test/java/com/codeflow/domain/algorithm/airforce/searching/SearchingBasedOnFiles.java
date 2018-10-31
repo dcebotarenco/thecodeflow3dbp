@@ -1,6 +1,7 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
 import com.codeflow.domain.SharedTest;
+import com.codeflow.domain.algorithm.airforce.IterationSession;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.ArticleTypeImpl;
 import com.codeflow.domain.gap.Gap;
@@ -62,7 +63,8 @@ public class SearchingBasedOnFiles extends SharedTest {
 
                 Gap maxGapImpl = gap(givenValues.get(0), givenValues.get(1), givenValues.get(2));
                 Gap requiredGapImpl = gap(givenValues.get(0), givenValues.get(3), givenValues.get(4));
-                SearchResult searchResult = new SearchingServiceImpl(articleService).findBoxTypes(requiredGapImpl, maxGapImpl);
+
+                SearchResult searchResult = new SearchingServiceImpl(new IterationSession(articleTypeRepository.receivedArticleTypes()).unpackedTypes()).findBoxTypes(requiredGapImpl, maxGapImpl);
                 List<String> then = input.getThenData().get(n);
                 assertBestFit(then.get(0), searchResult);
                 assertBestFitBiggerThenReq(then.get(1), searchResult);

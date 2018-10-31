@@ -1,6 +1,5 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
-import com.codeflow.domain.articletype.ArticleService;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.boxtype.BoxType;
@@ -19,10 +18,10 @@ public class SearchingServiceImpl implements SearchingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchingServiceImpl.class);
 
-    private ArticleService articleService;
+    private List<ArticleType> boxTypes;
 
-    public SearchingServiceImpl(ArticleService articleService) {
-        this.articleService = articleService;
+    public SearchingServiceImpl(List<ArticleType> boxTypes) {
+        this.boxTypes = boxTypes;
     }
 
     /**
@@ -43,7 +42,6 @@ public class SearchingServiceImpl implements SearchingService {
 //        LOGGER.info("FIND_BOX:{},{},{},{},{}", maxGap.getWidth(), maxGap.getHeight(), maxGap.getLength(), requiredGap.getHeight(), requiredGap.getLength());
 //        LOGGER.info("Searching box for requiredGap[{}] and maxGap [{}]", requiredGap, maxGap);
         SearchResult searchResult = new SearchResult();
-        List<ArticleType> boxTypes = articleService.unpackedTypes();
         List<ArticleOrientation> allOrientationsOfAllBoxTypes = boxTypes.stream().map(BoxType::getOrientations).flatMap(Collection::stream).collect(Collectors.toList());
 
         //Filter orientations that does not fit in maximum gap;

@@ -1,8 +1,5 @@
 package com.codeflow.domain.algorithm;
 
-public class AlgorithmService {
-
-    public PackResult execute(Algorithm algorithm) {
-        return algorithm.run();
-    }
+public interface AlgorithmService {
+    PackResult execute(Algorithm algorithm);
 }

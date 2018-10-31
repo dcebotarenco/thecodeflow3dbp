@@ -10,11 +10,11 @@ public class SearchResult {
     private ArticleOrientation bestFitInRequired;
     private ArticleOrientation bestFitBiggerThenRequired;
 
-    void addBestFitInRequired(ArticleOrientation orientation) {
+    public void addBestFitInRequired(ArticleOrientation orientation) {
         bestFitInRequired = orientation;
     }
 
-    void addBestFitBiggerThenRequired(ArticleOrientation orientation) {
+    public void addBestFitBiggerThenRequired(ArticleOrientation orientation) {
         bestFitBiggerThenRequired = orientation;
     }
 

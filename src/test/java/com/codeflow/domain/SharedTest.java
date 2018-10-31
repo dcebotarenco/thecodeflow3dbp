@@ -1,6 +1,8 @@
 package com.codeflow.domain;
 
-import com.codeflow.domain.articletype.*;
+import com.codeflow.domain.articletype.ArticleRepositoryImpl;
+import com.codeflow.domain.articletype.ArticleTypeImpl;
+import com.codeflow.domain.articletype.ArticleTypeRepository;
 import com.codeflow.domain.containertype.ContainerRepository;
 import com.codeflow.domain.containertype.ContainerRepositoryImpl;
 import com.codeflow.domain.containertype.ContainerType;
@@ -10,20 +12,16 @@ import com.codeflow.domain.gap.GapImpl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import java.util.List;
-
 public class SharedTest {
 
     protected static ContainerRepository containerRepository;
     protected static ArticleTypeRepository articleTypeRepository;
-    protected static ArticleService articleService;
 
 
     @BeforeClass
     public static void beforeClass() {
         containerRepository = new ContainerRepositoryImpl();
         articleTypeRepository = new ArticleRepositoryImpl();
-        articleService = new ArticleServiceImpl(articleTypeRepository);
     }
 
     public static ContainerType container(Integer w, Integer h, Integer l) {
@@ -33,9 +31,8 @@ public class SharedTest {
 
     }
 
-    public static List<ArticleType> articles(Integer w, Integer h, Integer l, Integer number) {
+    public static void articles(Integer w, Integer h, Integer l, Integer number) {
         articleTypeRepository.saveType(new ArticleTypeImpl(w.doubleValue(), h.doubleValue(), l.doubleValue()), number.longValue());
-        return articleTypeRepository.unpackedTypes();
     }
 
     public static Gap gap(Integer w, Integer h, Integer l) {

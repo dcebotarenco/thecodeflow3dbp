@@ -1,19 +1,14 @@
 package com.codeflow.application.client;
 
-import com.codeflow.domain.algorithm.AlgorithmService;
-import com.codeflow.domain.algorithm.PackResult;
-import com.codeflow.domain.algorithm.airforce.AirForceAlgorithm;
-import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
-import com.codeflow.domain.algorithm.airforce.packing.PackingServiceImpl;
-import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceImpl;
+import com.codeflow.application.articletype.ArticleService;
+import com.codeflow.application.articletype.ArticleServiceImpl;
+import com.codeflow.application.containertype.ContainerService;
+import com.codeflow.application.containertype.ContainerServiceImpl;
+import com.codeflow.domain.algorithm.*;
 import com.codeflow.domain.articletype.ArticleRepositoryImpl;
-import com.codeflow.domain.articletype.ArticleServiceImpl;
-import com.codeflow.domain.articletype.ArticleTypeImpl;
 import com.codeflow.domain.articletype.ArticleTypeRepository;
+import com.codeflow.domain.containertype.ContainerRepository;
 import com.codeflow.domain.containertype.ContainerRepositoryImpl;
-import com.codeflow.domain.containertype.ContainerType;
-import com.codeflow.domain.containertype.ContainerTypeImpl;
-import com.codeflow.domain.iteration.IterationResultRepository;
 import com.codeflow.infrastructure.filereader.FileReader;
 import com.codeflow.infrastructure.filereader.InputDTOAssembler;
 import org.slf4j.Logger;
@@ -27,6 +22,28 @@ public class ClientFacadePackingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientFacadePackingService.class);
 
+    private ContainerRepository containerRepository;
+    private ArticleTypeRepository articleTypeRepository;
+    private ArticleService articleService;
+    private ContainerService containerService;
+    private AlgorithmService algorithmService;
+    private AlgorithmRepository<Algorithm> algorithmRepository;
+
+    public ClientFacadePackingService() {
+        articleTypeRepository = new ArticleRepositoryImpl();
+        containerRepository = new ContainerRepositoryImpl();
+        articleService = new ArticleServiceImpl(articleTypeRepository);
+        containerService = new ContainerServiceImpl(containerRepository);
+        algorithmService = new AlgorithmServiceImpl(containerRepository, articleTypeRepository);
+        algorithmRepository = new AlgorithmRepositoryImpl();
+    }
+
+    public ClientFacadePackingService(ArticleService articleService, ContainerService containerService) {
+        this.articleService = articleService;
+        this.containerService = containerService;
+    }
+
+
     public Result pack(Path path) throws IOException {
         FileReader fileReader = new FileReader(new InputDTOAssembler());
         Input input = fileReader.read(path);
@@ -38,25 +55,12 @@ public class ClientFacadePackingService {
     }
 
     public Result pack(Input input) {
-        ArticleTypeRepository articleTypeRepository = new ArticleRepositoryImpl();
-        ArticleServiceImpl articleService = new ArticleServiceImpl(articleTypeRepository);
-        ContainerRepositoryImpl containerRepository = new ContainerRepositoryImpl();
         for (ArticleType articleType : input.getArticleTypes()) {
-            articleTypeRepository.saveType(new ArticleTypeImpl(articleType.getWidth(),
-                    articleType.getHeight(),
-                    articleType.getLength()), articleType.getNumber());
+            articleService.create(articleType);
         }
-        ContainerType container = new ContainerTypeImpl(input.getContainer().getWidth(),
-                input.getContainer().getHeight(),
-                input.getContainer().getLength());
-        containerRepository.save(container);
-
-        AlgorithmService algorithmService = new AlgorithmService();
-        LOGGER.info("Executing with {} and {}", container, articleTypeRepository.receivedArticleTypes());
-        PackResult packResult = algorithmService.execute(new AirForceAlgorithm(new LayerServiceImpl(),
-                containerRepository, articleService
-                , new SearchingServiceImpl(articleService),
-                new PackingServiceImpl(articleService), new IterationResultRepository()));
+        containerService.create(input.getContainer());
+        Algorithm algorithm = algorithmRepository.getAirForceAlgorithm();
+        PackResult packResult = algorithmService.execute(algorithm);
         return new ResultMapper().map(packResult);
     }
 }

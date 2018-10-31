@@ -1,14 +1,11 @@
 package com.codeflow.domain.containertype.orientation;
 
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
-import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.orientation.Orientation;
 import com.codeflow.domain.translator.Translator;
 
 public interface ContainerOrientation extends Orientation {
-
-    Double getPackedVolume();
 
     Double getPackedHeight();
 
@@ -16,11 +13,7 @@ public interface ContainerOrientation extends Orientation {
 
     Double getRemainLength();
 
-    void pack(ArticleOrientation articleOrientation);
-
     void pack(Layer articleOrientation);
-
-    boolean allVolumePacked();
 
     Translator getTranslator();
 
