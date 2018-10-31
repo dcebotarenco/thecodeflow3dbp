@@ -19,9 +19,7 @@ public class IterationSession {
 
     private Map<Position, ArticleOrientation> packedTypes;
     private Map<ArticleType, Long> remainingToPack;
-
-    public ContainerOrientation containerOrientation;
-    public Layer layer;
+    public final Double totalVolume;
     public double packedVolume;
     public double packedy;
     public boolean packing;
@@ -30,31 +28,34 @@ public class IterationSession {
     public double remainpz;
     public long packedItemCount;
     public double percentageContainerUsed;
-    public long currentIndexOfContainerOrientation;
-    public long currentIndexOfLayer;
+    public boolean hundredPercentPacked;
+    private ContainerOrientation containerOrientation;
 
     public IterationSession(Map<ArticleType, Long> receivedArticleTypes) {
         this.packedTypes = new LinkedHashMap<>();
         this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
+        this.totalVolume = totalVolume(receivedArticleTypes);
     }
 
     public IterationSession(Map<ArticleType, Long> receivedArticleTypes,
-                            Layer layer, ContainerOrientation containerOrientation,
-                            long containerOrientationIndex,
-                            long currentIndexOfLayer) {
+                            Layer layer,
+                            ContainerOrientation containerOrientation) {
         this.packedTypes = new LinkedHashMap<>();
         this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
         this.packedVolume = 0;
         this.packedy = 0;
         this.packing = true;
-        this.layer = layer;
         this.layerThickness = layer.getHeight();
         this.containerOrientation = containerOrientation;
         this.remainpy = containerOrientation.getHeight();
         this.remainpz = containerOrientation.getLength();
         this.packedItemCount = 0;
-        this.currentIndexOfContainerOrientation = containerOrientationIndex;
-        this.currentIndexOfLayer = currentIndexOfLayer;
+        this.totalVolume = totalVolume(receivedArticleTypes);
+        this.hundredPercentPacked = false;
+    }
+
+    public Double totalVolume(Map<ArticleType, Long> articles) {
+        return articles.entrySet().stream().map(t -> t.getKey().getVolume() * t.getValue()).reduce((v1, v2) -> v1 + v2).orElse(0D);
     }
 
     public List<ArticleType> unpackedTypes() {
@@ -85,6 +86,10 @@ public class IterationSession {
 
     public Map<ArticleType, Long> getRemainingToPack() {
         return remainingToPack;
+    }
+
+    public ContainerOrientation getContainerOrientation() {
+        return containerOrientation;
     }
 
     public SearchResult findBoxTypes(List<ArticleType> articleTypes, Gap requiredGapImpl, Gap maxGapImpl) {

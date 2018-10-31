@@ -25,7 +25,7 @@ public class IterationResult {
         this.session = session;
         this.packed = session.getPackedTypes();
         this.articleTypeLongMap = session.getRemainingToPack();
-        this.containerOrientation = session.containerOrientation;
+        this.containerOrientation = session.getContainerOrientation();
     }
 
     public IterationSession getSession() {

@@ -13,10 +13,6 @@ public class Run {
     private final LayerService layerService;
     private final IterationSessionRepository iterationSessionRepository;
     private AlgorithmInputData algorithmInputData;
-    public Double bestVolume;
-    public Double totalItemVolume;
-    public boolean hundredPercentPackedPerSearch;
-
 
     public Run(AlgorithmInputData algorithmInputData,
                LayerService layerService,
@@ -24,38 +20,29 @@ public class Run {
         this.algorithmInputData = algorithmInputData;
         this.layerService = layerService;
         this.iterationSessionRepository = iterationSessionRepository;
-        this.bestVolume = 0.0;
     }
 
-    public Double totalVolume() {
-        return algorithmInputData.getArticleTypes().entrySet().stream().map(t -> t.getKey().getVolume() * t.getValue()).reduce((v1, v2) -> v1 + v2).orElse(0D);
-    }
 
     public void start() {
-        this.totalItemVolume = totalVolume();
+        boolean hundredPercentPackedPerSearch = false;
         ContainerType containerType = algorithmInputData.getContainerType();
         for (ContainerOrientation containerOrientation : containerType.getOrientations()) {
-            long containerIndex = containerType.getOrientations().indexOf(containerOrientation);
             List<Layer> layers = layerService.listCandidates(containerOrientation, algorithmInputData.getArticleTypes());
             for (Layer layer : layers) {
-                long currentIndexOfLayer = layers.indexOf(layer);
-                Iteration iterationPerLayer = new Iteration(
+                Iteration iteration = new Iteration(
                         new IterationSession(
                                 algorithmInputData.getArticleTypes(),
                                 layer,
-                                containerOrientation,
-                                containerIndex,
-                                currentIndexOfLayer
-                        ),
-                        layerService,
-                        iterationSessionRepository,
-                        this);
-                iterationPerLayer.run();
-                if (this.hundredPercentPackedPerSearch) {
+                                containerOrientation),
+                        layerService);
+                IterationSession output = iteration.start();
+                iterationSessionRepository.save(output);
+                if (output.hundredPercentPacked) {
+                    hundredPercentPackedPerSearch = true;
                     break;
                 }
             }
-            if (this.hundredPercentPackedPerSearch) {
+            if (hundredPercentPackedPerSearch) {
                 break;
             }
         }

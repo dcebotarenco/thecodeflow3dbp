@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static java.util.Collections.reverseOrder;
+
 /**
  * Our model packs as many boxes as possible in a given container while selecting the suitable boxes from a given box set.
  * This property makes our approach more realistic. The model is also able to act rectangular boxes in any orientation.
@@ -52,7 +54,7 @@ public class AirForceAlgorithm implements Algorithm {
     private IterationResult findBestResult() {
         List<IterationSession> sessions = iterationSessionRepository.getSessions();
         ArrayList<IterationSession> iterationSessions = new ArrayList<>(sessions);
-        iterationSessions.sort(Comparator.comparingDouble((IterationSession s) -> s.packedVolume).reversed());
+        iterationSessions.sort(reverseOrder(Comparator.comparingDouble(s -> s.packedVolume)));
         Optional<IterationSession> best = iterationSessions.stream().findFirst();
         if (best.isPresent()) {
             return new IterationResult(best.get()).translate();

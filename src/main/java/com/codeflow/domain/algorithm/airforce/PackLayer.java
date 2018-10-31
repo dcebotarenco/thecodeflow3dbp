@@ -29,21 +29,19 @@ public class PackLayer {
     private IterationSession iterationSession;
     private LayerService layerService;
     private ContainerOrientation containerOrientation;
-    private Run run;
 
     public PackLayer(IterationSession iterationSession,
-                     LayerService layerService,
-                     Run run) {
+                     ContainerOrientation containerOrientation,
+                     LayerService layerService) {
         this.layerinlayer = 0;
         this.layerDone = false;
         this.iterationSession = iterationSession;
         this.layerService = layerService;
-        this.containerOrientation = iterationSession.containerOrientation;
-        this.run = run;
+        this.containerOrientation = containerOrientation;
     }
 
     public void run() {
-        PackLayer(this);
+        PackLayer();
 
         iterationSession.packedy = iterationSession.packedy + iterationSession.layerThickness;
         iterationSession.remainpy = containerOrientation.getHeight() - iterationSession.packedy;
@@ -58,8 +56,8 @@ public class PackLayer {
             //System.out.println("Assign 3 =" + layerinlayer);
             iterationSession.layerThickness = this.layerinlayer;
             this.layerDone = false;
-            System.out.println("LAYER IN LAYER" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
-            PackLayer(this);
+//            System.out.println("LAYER IN LAYER" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
+            PackLayer();
 
             iterationSession.packedy = this.prepackedy;
             iterationSession.remainpy = this.preremainpy;
@@ -79,12 +77,12 @@ public class PackLayer {
         }
     }
 
-    private void PackLayer(PackLayer packLayer) {
+    private void PackLayer() {
 //        System.out.println("Packlayer called");
         double lenx;
         double lenz;
         double lpz;
-        packLayer.packAttempts = 0;
+        packAttempts = 0;
 
         if (iterationSession.layerThickness == 0) {
             //System.out.println("layerThickness == 0");
@@ -96,7 +94,7 @@ public class PackLayer {
         //System.out.println("quit" + quit);
 
         for (; ; ) {
-            packLayer.packAttempts++;
+            packAttempts++;
             Corner smallestZ = topViewTopology.findWithSmallestLength();
             //System.out.println("findsmallestz called");
             //System.out.println(quit);
@@ -113,13 +111,13 @@ public class PackLayer {
                         iterationSession.remainpy, //hmy
                         lpz, //hz
                         lpz);//hmz
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, packLayer);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
 
-                if (packLayer.layerDone) {
-                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
+                if (layerDone) {
+//                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
                     break;
                 }
-                if (packLayer.evenedPerSearch) {
+                if (evenedPerSearch) {
                     //System.out.println("S1 layer evenedPerSearch");
                     continue;
                 }
@@ -130,7 +128,7 @@ public class PackLayer {
                     topViewTopology.addBefore(smallestZ, new CornerImpl(article.getWidth(), smallestZ.getLength() + article.getLength()));
                 }
                 //System.out.println("S1 Volumecheck");
-                VolumeCheck(article, containerOrientation, run);
+                VolumeCheck(article, containerOrientation);
             } else if (!smallestZ.hasCornerOnLeft()) {
 //                System.out.println(scrapfirst);
                 //*** SITUATION-2: NO BOXES ON THE LEFT SIDE ***
@@ -139,13 +137,13 @@ public class PackLayer {
                 lenz = smallestZ.getRight().getLength() - smallestZ.getLength();
                 lpz = iterationSession.remainpz - smallestZ.getLength();
                 SearchResult searchResult = FindBox(lenx, iterationSession.layerThickness, iterationSession.remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, packLayer);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
 
-                if (packLayer.layerDone) {
-                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
+                if (layerDone) {
+//                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
                     break;
                 }
-                if (packLayer.evenedPerSearch) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
@@ -169,7 +167,7 @@ public class PackLayer {
                 }
                 iterationSession.pack(article, position);
                 //System.out.println("S2 Volumecheck");
-                VolumeCheck(article, containerOrientation, run);
+                VolumeCheck(article, containerOrientation);
             } else if (!smallestZ.hasCornerOnRight()) {
 //                System.out.println(scrapfirst);
 //                System.out.println("SITUATION-3: NO BOXES ON THE RIGHT SIDE");
@@ -179,13 +177,13 @@ public class PackLayer {
                 lenz = smallestZ.getLeft().getLength() - smallestZ.getLength();
                 lpz = iterationSession.remainpz - smallestZ.getLength();
                 SearchResult searchResult = FindBox(lenx, iterationSession.layerThickness, iterationSession.remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, packLayer);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
 
-                if (packLayer.layerDone) {
-                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
+                if (layerDone) {
+//                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
                     break;
                 }
-                if (packLayer.evenedPerSearch) {
+                if (evenedPerSearch) {
                     continue;
                 }
                 iterationSession.pack(article, new PositionImpl(smallestZ.getLeft().getWidth(), iterationSession.packedy, smallestZ.getLength()));
@@ -204,7 +202,7 @@ public class PackLayer {
                     }
                 }
                 //System.out.println("S3 Volumecheck");
-                VolumeCheck(article, containerOrientation, run);
+                VolumeCheck(article, containerOrientation);
             } else if (smallestZ.getLeft().getLength().equals(smallestZ.getRight().getLength())) {
 //                System.out.println(scrapfirst);
 //                System.out.println("SUBSITUATION-4A: SIDES ARE EQUAL TO EACH OTHER");
@@ -216,13 +214,13 @@ public class PackLayer {
                 lpz = iterationSession.remainpz - smallestZ.getLength();
 
                 SearchResult searchResult = FindBox(lenx, iterationSession.layerThickness, iterationSession.remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, packLayer);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
 
-                if (packLayer.layerDone) {
-                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
+                if (layerDone) {
+//                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
                     break;
                 }
-                if (packLayer.evenedPerSearch) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
@@ -263,7 +261,7 @@ public class PackLayer {
                 }
                 iterationSession.pack(article, position);
                 //System.out.println("S4A Volumecheck");
-                VolumeCheck(article, containerOrientation, run);
+                VolumeCheck(article, containerOrientation);
             } else {
 //                System.out.println(scrapfirst);
 //                System.out.println("SUBSITUATION-4B: SIDES ARE NOT EQUAL TO EACH OTHER");
@@ -273,13 +271,13 @@ public class PackLayer {
                 lenz = smallestZ.getLeft().getLength() - smallestZ.getLength();
                 lpz = iterationSession.remainpz - smallestZ.getLength();
                 SearchResult searchResult = FindBox(lenx, iterationSession.layerThickness, iterationSession.remainpy, lenz, lpz);
-                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology, packLayer);
+                ArticleOrientation article = CheckFound(searchResult, smallestZ, topViewTopology);
 
-                if (packLayer.layerDone) {
-                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
+                if (layerDone) {
+//                    System.out.println("layer done" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1));
                     break;
                 }
-                if (packLayer.evenedPerSearch) {
+                if (evenedPerSearch) {
                     continue;
                 }
 
@@ -304,38 +302,38 @@ public class PackLayer {
                 iterationSession.pack(article, position);
 
                 //System.out.println("S4B Volumecheck");
-                VolumeCheck(article, containerOrientation, run);
+                VolumeCheck(article, containerOrientation);
             }
         }
         //System.out.println("Bye packlayer");
     }
 
-    private ArticleOrientation CheckFound(SearchResult searchResult, Corner smallestZ, TopViewTopology topViewTopology, PackLayer packLayer) {
-        packLayer.evenedPerSearch = false;
+    private ArticleOrientation CheckFound(SearchResult searchResult, Corner smallestZ, TopViewTopology topViewTopology) {
+        evenedPerSearch = false;
 //        dbgFoundBox(boxi, boxx, boxy, boxz, bboxi, bboxx, bboxy, bboxz);
         if (searchResult.getBestFitInRequired().isPresent()) {
-            System.out.println("FITS REQUIRED" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1) + " " + packLayer.packAttempts);
+//            System.out.println("FITS REQUIRED" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1) + " " + packLayer.packAttempts);
             return searchResult.getBestFitInRequired().get();
         } else {
             if ((searchResult.getBestFitBiggerThenRequired().isPresent()) &&
-                    (packLayer.layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
-                System.out.println("FITS MAX" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1) + " " + packLayer.packAttempts);
-                if (packLayer.layerinlayer == 0) {
-                    packLayer.prelayer = iterationSession.layerThickness;
-                    packLayer.lilz = smallestZ.getLength();
+                    (layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
+//                System.out.println("FITS MAX" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1) + " " + packLayer.packAttempts);
+                if (layerinlayer == 0) {
+                    prelayer = iterationSession.layerThickness;
+                    lilz = smallestZ.getLength();
                 }
                 ArticleOrientation bestFitBiggerThenRequired = searchResult.getBestFitBiggerThenRequired().get();
 //                System.out.println("Layer In Layer");
-                packLayer.layerinlayer = packLayer.layerinlayer + bestFitBiggerThenRequired.getHeight() - iterationSession.layerThickness;
+                layerinlayer = layerinlayer + bestFitBiggerThenRequired.getHeight() - iterationSession.layerThickness;
 
                 //System.out.println("Assign 1 =" + bboxy);
                 iterationSession.layerThickness = bestFitBiggerThenRequired.getHeight();
                 return bestFitBiggerThenRequired;
             } else {
                 if (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()) {
-                    packLayer.layerDone = true;
+                    layerDone = true;
                 } else {
-                    packLayer.evenedPerSearch = true;
+                    evenedPerSearch = true;
 
                     if (!smallestZ.hasCornerOnLeft()) {
                         topViewTopology.remove(smallestZ);
@@ -361,7 +359,7 @@ public class PackLayer {
         }
     }
 
-    private void VolumeCheck(ArticleOrientation foundArticle, ContainerOrientation containerOrientation, Run run) {
+    private void VolumeCheck(ArticleOrientation foundArticle, ContainerOrientation containerOrientation) {
 
 //        itemsToPack.get(cboxi).IsPacked = true;
 //        itemsToPack.get(cboxi).PackDimX = cboxx;
@@ -374,9 +372,9 @@ public class PackLayer {
         iterationSession.packedVolume = iterationSession.packedVolume + foundArticle.getVolume();
         iterationSession.packedItemCount++;
 
-        if (iterationSession.packedVolume == containerOrientation.getVolume() || iterationSession.packedVolume == run.totalItemVolume) {
+        if (iterationSession.packedVolume == containerOrientation.getVolume() || iterationSession.packedVolume == iterationSession.totalVolume) {
             iterationSession.packing = false;
-            run.hundredPercentPackedPerSearch = true;
+            iterationSession.hundredPercentPacked = true;
         }
     }
 

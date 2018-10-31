@@ -53,7 +53,7 @@ public class LayerServiceImpl implements LayerService {
     static final Logger LOGGER = LoggerFactory.getLogger(LayerServiceImpl.class);
 
     /**
-     * Having up to 6 possible {@link Orientation} we try to run through all of them to see if current {@link ArticleType} have an {@link Orientation}
+     * Having up to 6 possible {@link Orientation} we try to start through all of them to see if current {@link ArticleType} have an {@link Orientation}
      * that might fit in empty {@link ContainerType}.
      *
      * @return list of {@link Orientation} of in what current {@link ArticleType} can fil the {@link ContainerType}

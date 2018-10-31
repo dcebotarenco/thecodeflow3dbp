@@ -1,34 +1,34 @@
 package com.codeflow.domain.algorithm.airforce;
 
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
-import com.codeflow.domain.iteration.IterationSessionRepository;
 
 public class Iteration {
     private final LayerService layerService;
     private IterationSession session;
-    private IterationSessionRepository iterationSessionRepository;
-    private Run run;
 
-
-    public Iteration(
-            IterationSession session,
-            LayerService layerService,
-            IterationSessionRepository iterationSessionRepository,
-            Run run) {
+    public Iteration(IterationSession session,
+                     LayerService layerService) {
         this.session = session;
         this.layerService = layerService;
-        this.iterationSessionRepository = iterationSessionRepository;
-        this.run = run;
     }
 
-    public void run() {
+    public IterationSession start() {
         do {
-            PackLayer packLayer = new PackLayer(session, layerService, run);
+            pack();
+            PackLayer packLayer = new PackLayer(session, session.getContainerOrientation(), layerService);
             packLayer.run();
 
-        } while (session.packing);
+        } while (notStopped());
 
-        this.session.percentageContainerUsed = run.bestVolume * 100 / session.containerOrientation.getVolume();
-        iterationSessionRepository.save(session);
+        this.session.percentageContainerUsed = this.session.packedVolume * 100 / session.getContainerOrientation().getVolume();
+        return session;
+    }
+
+    public void pack() {
+
+    }
+
+    boolean notStopped() {
+        return session.packing;
     }
 }
