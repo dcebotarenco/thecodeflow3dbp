@@ -32,8 +32,9 @@ public class Run {
                 Iteration iteration = new Iteration(
                         new IterationSession(
                                 algorithmInputData.getArticleTypes(),
-                                layer,
                                 containerOrientation),
+                        layer,
+                        containerOrientation,
                         layerService);
                 IterationSession output = iteration.start();
                 iterationSessionRepository.save(output);

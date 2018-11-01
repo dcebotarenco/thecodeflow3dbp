@@ -1,6 +1,5 @@
 package com.codeflow.domain.algorithm.airforce;
 
-import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.searching.SearchResult;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceImpl;
@@ -21,11 +20,10 @@ public class IterationSession {
     private Map<ArticleType, Long> remainingToPack;
     public final Double totalVolume;
     public double packedVolume;
-    public double packedy;
+    private double packedy;
     public boolean packing;
-    public double layerThickness;
-    public double remainpy;
-    public double remainpz;
+    private double remainpy;
+    private double remainpz;
     public long packedItemCount;
     public double percentageContainerUsed;
     public boolean hundredPercentPacked;
@@ -38,14 +36,12 @@ public class IterationSession {
     }
 
     public IterationSession(Map<ArticleType, Long> receivedArticleTypes,
-                            Layer layer,
                             ContainerOrientation containerOrientation) {
         this.packedTypes = new LinkedHashMap<>();
         this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
         this.packedVolume = 0;
         this.packedy = 0;
         this.packing = true;
-        this.layerThickness = layer.getHeight();
         this.containerOrientation = containerOrientation;
         this.remainpy = containerOrientation.getHeight();
         this.remainpz = containerOrientation.getLength();
@@ -90,6 +86,18 @@ public class IterationSession {
 
     public ContainerOrientation getContainerOrientation() {
         return containerOrientation;
+    }
+
+    public double getRemainpz() {
+        return remainpz;
+    }
+
+    public double getRemainpy() {
+        return remainpy;
+    }
+
+    public double getPackedy() {
+        return packedy;
     }
 
     public SearchResult findBoxTypes(List<ArticleType> articleTypes, Gap requiredGapImpl, Gap maxGapImpl) {
