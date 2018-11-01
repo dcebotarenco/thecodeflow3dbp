@@ -21,7 +21,7 @@ import static java.util.Collections.reverseOrder;
  * dimension of the current {@link Orientation} of the {@link ContainerType} with their individual {@link Layer#getEvaluationValue}.
  * The {@link List} is created for each {@link Orientation} of the {@link ContainerType}.
  * Each entry is a possible {@link Layer} thickness value for iterations with the current {@link Orientation}
- * of the {@link ContainerType} to start the packing.
+ * of the {@link ContainerType} to execute the packing.
  * </p>
  * <p>The {@link Layer#getEvaluationValue} represents how close all other boxes are to this layer height if we selected
  * this value as a layer thickness for the packing. The model calculates these {@link Layer#getEvaluationValue} as follows:
@@ -53,7 +53,7 @@ public class LayerServiceImpl implements LayerService {
     static final Logger LOGGER = LoggerFactory.getLogger(LayerServiceImpl.class);
 
     /**
-     * Having up to 6 possible {@link Orientation} we try to start through all of them to see if current {@link ArticleType} have an {@link Orientation}
+     * Having up to 6 possible {@link Orientation} we try to execute through all of them to see if current {@link ArticleType} have an {@link Orientation}
      * that might fit in empty {@link ContainerType}.
      *
      * @return list of {@link Orientation} of in what current {@link ArticleType} can fil the {@link ContainerType}

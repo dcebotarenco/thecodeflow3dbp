@@ -18,21 +18,13 @@ public class IterationSession {
 
     private Map<Position, ArticleOrientation> packedTypes;
     private Map<ArticleType, Long> remainingToPack;
-    public final Double totalVolume;
-    public double packedVolume;
-    private double packedy;
-    public boolean packing;
-    private double remainpy;
-    private double remainpz;
-    public long packedItemCount;
-    public double percentageContainerUsed;
+    private double packedVolume;
     public boolean hundredPercentPacked;
     private ContainerOrientation containerOrientation;
 
     public IterationSession(Map<ArticleType, Long> receivedArticleTypes) {
         this.packedTypes = new LinkedHashMap<>();
         this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
-        this.totalVolume = totalVolume(receivedArticleTypes);
     }
 
     public IterationSession(Map<ArticleType, Long> receivedArticleTypes,
@@ -40,19 +32,11 @@ public class IterationSession {
         this.packedTypes = new LinkedHashMap<>();
         this.remainingToPack = new LinkedHashMap<>(receivedArticleTypes);
         this.packedVolume = 0;
-        this.packedy = 0;
-        this.packing = true;
         this.containerOrientation = containerOrientation;
-        this.remainpy = containerOrientation.getHeight();
-        this.remainpz = containerOrientation.getLength();
-        this.packedItemCount = 0;
-        this.totalVolume = totalVolume(receivedArticleTypes);
         this.hundredPercentPacked = false;
     }
 
-    public Double totalVolume(Map<ArticleType, Long> articles) {
-        return articles.entrySet().stream().map(t -> t.getKey().getVolume() * t.getValue()).reduce((v1, v2) -> v1 + v2).orElse(0D);
-    }
+
 
     public List<ArticleType> unpackedTypes() {
         return remainingToPack.entrySet().stream().filter(e -> e.getValue() > 0).map(Map.Entry::getKey).collect(Collectors.toList());
@@ -88,16 +72,13 @@ public class IterationSession {
         return containerOrientation;
     }
 
-    public double getRemainpz() {
-        return remainpz;
+
+    public double getPackedVolume() {
+        return packedVolume;
     }
 
-    public double getRemainpy() {
-        return remainpy;
-    }
-
-    public double getPackedy() {
-        return packedy;
+    public void setPackedVolume(double packedVolume) {
+        this.packedVolume = packedVolume;
     }
 
     public SearchResult findBoxTypes(List<ArticleType> articleTypes, Gap requiredGapImpl, Gap maxGapImpl) {

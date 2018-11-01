@@ -1,8 +1,8 @@
 package com.codeflow.domain.algorithm;
 
+import com.codeflow.domain.algorithm.airforce.Iteration;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
-import com.codeflow.domain.iteration.IterationResult;
 import com.codeflow.domain.position.Position;
 
 import java.util.Map;
@@ -11,20 +11,20 @@ import java.util.Set;
 import static com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text.NEW_LINE;
 
 public class PackResult {
-    private IterationResult translateResult;
+    private Iteration iteration;
 
-    public PackResult(IterationResult translateResult) {
+    public PackResult(Iteration iteration) {
 
-        this.translateResult = translateResult;
+        this.iteration = iteration;
     }
 
     public Map<Position, ArticleOrientation> getPacked() {
-        return translateResult.getPacked();
+        return iteration.getPackedArticles();
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        Set<Map.Entry<Position, ArticleOrientation>> entries = translateResult.getPacked().entrySet();
+        Set<Map.Entry<Position, ArticleOrientation>> entries = iteration.getPackedArticles().entrySet();
         for (Map.Entry<Position, ArticleOrientation> entry : entries) {
             ArticleOrientation a = entry.getValue();
             Position p = entry.getKey();

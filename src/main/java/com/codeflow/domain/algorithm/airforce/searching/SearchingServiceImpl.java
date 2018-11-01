@@ -57,7 +57,7 @@ public class SearchingServiceImpl implements SearchingService {
         if (biggerThenRequiredGapHeight.size() > 0) {
             searchBiggerAndClosestToRequiredHeight(requiredGap, searchResult, biggerThenRequiredGapHeight);
         }
-//        System.out.println(System.nanoTime() - start);
+//        System.out.println(System.nanoTime() - execute);
         return searchResult;
     }
 

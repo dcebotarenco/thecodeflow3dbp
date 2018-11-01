@@ -6,12 +6,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Unique dimension of the boxes less than then y dimension of the current orientation of the pallet with their
  * individual evaluation values. It is a possible layer thickness value for iterations with the current orientation of
- * the pallet to start the packing.The evaluation value of a dimension represents how close all other boxes are to this
+ * the pallet to execute the packing.The evaluation value of a dimension represents how close all other boxes are to this
  * layer height if we selected this value as a layer thickness for the packing.
  */
 class LayerImpl implements Layer {
     /**
-     * Each dimension value in this array represents a different layer thickness value with which each iteration can start packing
+     * Each dimension value in this array represents a different layer thickness value with which each iteration can execute packing
      */
     private Double height;
 

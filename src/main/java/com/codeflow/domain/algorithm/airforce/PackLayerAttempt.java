@@ -16,23 +16,21 @@ public class PackLayerAttempt {
 
     public long packAttempts;
     public boolean layerDone;
-    public double layerinlayer;
-    public double prelayer;
-    public double lilz;
+//    public double layerinlayer;
+
+
     public boolean evenedPerSearch;
     public PackLayerAttemptInput input;
-    public double inputVolume;
-    private PackLayerAttemptOutput output;
+    private PackLayerAttemptResult output;
 
-    public PackLayerAttempt(PackLayerAttemptInput input, double inputVolume) {
+    public PackLayerAttempt(PackLayerAttemptInput input) {
         this.input = input;
-        this.inputVolume = inputVolume;
-        this.layerinlayer = 0;
+//        this.layerinlayer = 0;
         this.layerDone = false;
     }
 
-    public PackLayerAttemptOutput start() {
-        this.output = new PackLayerAttemptOutput(input);
+    public PackLayerAttemptResult start() {
+        this.output = new PackLayerAttemptResult(input);
         PackLayer();
         return output;
     }
@@ -44,11 +42,11 @@ public class PackLayerAttempt {
         double lpz;
         packAttempts = 0;
 
-        if (input.layerThickness == 0) {
-            //System.out.println("layerThickness == 0");
-            input.iterationSession.packing = false;
-            return;
-        }
+//        if (input.layerThickness == 0) {
+//            //System.out.println("layerThickness == 0");
+//            input.iterationSession.packing = false;
+//            return;
+//        }
         TopViewTopology topViewTopology = new TopViewTopologyImpl(new CornerImpl(input.containerOrientation.getWidth(), 0.));
         //System.out.println("layerthickness is not not");
         //System.out.println("quit" + quit);
@@ -81,7 +79,7 @@ public class PackLayerAttempt {
                     //System.out.println("S1 layer evenedPerSearch");
                     continue;
                 }
-                input.iterationSession.pack(article, new PositionImpl(0D, input.packedy, smallestZ.getLength()));
+                input.iteration.pack(article, new PositionImpl(0D, input.packedy, smallestZ.getLength()));
                 if (article.getWidth().equals(smallestZ.getWidth())) {
                     smallestZ.updateLength(smallestZ.getLength() + article.getLength());
                 } else {
@@ -125,7 +123,7 @@ public class PackLayerAttempt {
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
                     }
                 }
-                input.iterationSession.pack(article, position);
+                input.iteration.pack(article, position);
                 //System.out.println("S2 Volumecheck");
                 VolumeCheck(article, input.containerOrientation);
             } else if (!smallestZ.hasCornerOnRight()) {
@@ -146,7 +144,7 @@ public class PackLayerAttempt {
                 if (evenedPerSearch) {
                     continue;
                 }
-                input.iterationSession.pack(article, new PositionImpl(smallestZ.getLeft().getWidth(), input.packedy, smallestZ.getLength()));
+                input.iteration.pack(article, new PositionImpl(smallestZ.getLeft().getWidth(), input.packedy, smallestZ.getLength()));
                 if (article.getWidth() == smallestZ.getWidth() - smallestZ.getLeft().getWidth()) {
                     if (smallestZ.getLength() + article.getLength() == smallestZ.getLeft().getLength()) {
                         smallestZ.getLeft().updateWidth(smallestZ.getWidth());
@@ -219,7 +217,7 @@ public class PackLayerAttempt {
                         smallestZ.updateWidth(smallestZ.getWidth() - article.getWidth());
                     }
                 }
-                input.iterationSession.pack(article, position);
+                input.iteration.pack(article, position);
                 //System.out.println("S4A Volumecheck");
                 VolumeCheck(article, input.containerOrientation);
             } else {
@@ -259,7 +257,7 @@ public class PackLayerAttempt {
                         topViewTopology.addBefore(smallestZ, new CornerImpl(smallestZ.getLeft().getWidth() + article.getWidth(), smallestZ.getLength() + article.getLength()));
                     }
                 }
-                input.iterationSession.pack(article, position);
+                input.iteration.pack(article, position);
 
                 //System.out.println("S4B Volumecheck");
                 VolumeCheck(article, input.containerOrientation);
@@ -276,18 +274,18 @@ public class PackLayerAttempt {
             return searchResult.getBestFitInRequired().get();
         } else {
             if ((searchResult.getBestFitBiggerThenRequired().isPresent()) &&
-                    (layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
+                    (output.layerinlayer != 0 || (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()))) {
 //                System.out.println("FITS MAX" + (iterationSession.currentIndexOfContainerOrientation + 1) + (iterationSession.currentIndexOfLayer + 1) + " " + packLayer.packAttempts);
-                if (layerinlayer == 0) {
-                    prelayer = input.layerThickness;
-                    lilz = smallestZ.getLength();
+                if (output.layerinlayer == 0) {
+                    output.prelayer = input.layerThickness;
+                    output.lilz = smallestZ.getLength();
                 }
                 ArticleOrientation bestFitBiggerThenRequired = searchResult.getBestFitBiggerThenRequired().get();
 //                System.out.println("Layer In Layer");
-                layerinlayer = layerinlayer + bestFitBiggerThenRequired.getHeight() - input.layerThickness;
+                output.layerinlayer = output.layerinlayer + bestFitBiggerThenRequired.getHeight() - input.layerThickness;
 
                 //System.out.println("Assign 1 =" + bboxy);
-                input.layerThickness = bestFitBiggerThenRequired.getHeight();
+                output.layerThickness = bestFitBiggerThenRequired.getHeight();
                 return bestFitBiggerThenRequired;
             } else {
                 if (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()) {
@@ -330,18 +328,17 @@ public class PackLayerAttempt {
 //        Item item = itemsToPack.get(cboxi);
 //        dbgPack(item.CoordX, item.CoordY, item.CoordZ, item.PackDimX, item.PackDimY, item.PackDimZ);
 //        input.iterationSession.inputVolume = input.iterationSession.inputVolume + foundArticle.getVolume();
-        inputVolume = inputVolume + foundArticle.getVolume();
-        output.packedVolume = inputVolume;
+        output.packedVolume = output.packedVolume + foundArticle.getVolume();
 
-        if (inputVolume == containerOrientation.getVolume() || inputVolume == input.iterationSession.totalVolume) {
-            input.iterationSession.packing = false;
-            input.iterationSession.hundredPercentPacked = true;
-        }
+//        if (output.packedVolume == containerOrientation.getVolume() || output.packedVolume == input.iterationSession.totalVolume) {
+//            input.iterationSession.packing = false;
+//            input.iterationSession.hundredPercentPacked = true;
+//        }
     }
 
     private SearchResult FindBox(double hmx, double hy, double hmy, double hz, double hmz) {
         Gap requiredGapImpl = new GapImpl(hmx, hy, hz);
         Gap maxGapImpl = new GapImpl(hmx, hmy, hmz);
-        return input.iterationSession.findBoxTypes(input.iterationSession.unpackedTypes(), requiredGapImpl, maxGapImpl);
+        return input.iteration.findBoxTypes(input.iteration.unpackedTypes(), requiredGapImpl, maxGapImpl);
     }
 }

@@ -6,8 +6,7 @@ import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
-import com.codeflow.domain.iteration.IterationResult;
-import com.codeflow.domain.iteration.IterationSessionRepository;
+import com.codeflow.domain.iteration.IterationRepository;
 import com.codeflow.domain.position.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,39 +33,40 @@ public class AirForceAlgorithm implements Algorithm {
     private static final Logger LOGGER = LoggerFactory.getLogger(AirForceAlgorithm.class);
 
     private LayerService layerService;
-    private IterationSessionRepository iterationSessionRepository;
+    private IterationRepository iterationRepository;
 
     public AirForceAlgorithm() {
         this.layerService = new LayerServiceImpl();
-        this.iterationSessionRepository = new IterationSessionRepository();
+        this.iterationRepository = new IterationRepository();
     }
 
 
     @Override
     public PackResult run(AlgorithmInputData algorithmInputData) {
-        Run run = new Run(algorithmInputData, layerService, iterationSessionRepository);
+        Run run = new Run(algorithmInputData, layerService, iterationRepository);
         run.start();
-        IterationResult translateResult = findBestResult();
-        report(translateResult);
-        return new PackResult(translateResult);
+        Iteration bestIteration = findBestResult();
+        Iteration translate = bestIteration.translate();
+        report(translate);
+        return new PackResult(translate);
     }
 
-    private IterationResult findBestResult() {
-        List<IterationSession> sessions = iterationSessionRepository.getSessions();
-        ArrayList<IterationSession> iterationSessions = new ArrayList<>(sessions);
-        iterationSessions.sort(reverseOrder(Comparator.comparingDouble(s -> s.packedVolume)));
-        Optional<IterationSession> best = iterationSessions.stream().findFirst();
+    private Iteration findBestResult() {
+        List<Iteration> iterations = iterationRepository.getIterations();
+        ArrayList<Iteration> toSortIterations = new ArrayList<>(iterations);
+        toSortIterations.sort(reverseOrder(Comparator.comparingDouble(Iteration::getPackedVolume)));
+        Optional<Iteration> best = toSortIterations.stream().findFirst();
         if (best.isPresent()) {
-            return new IterationResult(best.get()).translate();
+            return best.get();
         } else {
             throw new IllegalStateException("No best Result");
         }
     }
 
-    private void report(IterationResult byResult) {
+    private void report(Iteration byResult) {
         System.out.println();
         System.out.println();
-        for (Map.Entry<Position, ArticleOrientation> entry : byResult.getPacked().entrySet()) {
+        for (Map.Entry<Position, ArticleOrientation> entry : byResult.getPackedArticles().entrySet()) {
             Position p = entry.getKey();
             ArticleOrientation a = entry.getValue();
             ArticleType boxType = a.getBoxType();
