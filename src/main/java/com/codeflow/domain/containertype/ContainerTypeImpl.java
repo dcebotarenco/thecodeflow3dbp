@@ -15,6 +15,14 @@ public class ContainerTypeImpl implements ContainerType {
 
     private BoxType<ContainerOrientation> boxType;
 
+    public ContainerTypeImpl(Integer width, Integer height, Integer length) {
+        this(width.doubleValue(), height.doubleValue(), length.doubleValue());
+    }
+
+    public ContainerTypeImpl(Long width, Long height, Long length) {
+        this(width.doubleValue(), height.doubleValue(), length.doubleValue());
+    }
+
     public ContainerTypeImpl(Double width, Double height, Double length) {
         this.boxType = new BoxTypeImpl<>(width, height, length);
         /*As it is*/

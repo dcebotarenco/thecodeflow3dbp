@@ -10,6 +10,10 @@ public class StockImpl implements Stock {
     private ArticleType articleType;
     private Long quantity;
 
+    public StockImpl(ArticleType articleType, Integer quantity) {
+        this(articleType, quantity.longValue());
+    }
+
     public StockImpl(ArticleType articleType, Long quantity) {
         this.articleType = articleType;
         this.quantity = quantity;

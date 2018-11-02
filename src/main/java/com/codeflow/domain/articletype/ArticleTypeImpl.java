@@ -15,6 +15,10 @@ import java.util.List;
 public class ArticleTypeImpl implements ArticleType {
     private BoxType<ArticleOrientation> boxType;
 
+    public ArticleTypeImpl(Integer width, Integer height, Integer length) {
+        this(width.doubleValue(), height.doubleValue(), length.doubleValue());
+    }
+
     public ArticleTypeImpl(Double width, Double height, Double length) {
 
         this.boxType = new BoxTypeImpl<>(width, height, length);

@@ -1,22 +1,48 @@
 package com.codeflow.domain.algorithm.airforce.searching;
 
 import com.codeflow.domain.SharedTest;
+import com.codeflow.domain.articletype.ArticleType;
+import com.codeflow.domain.articletype.ArticleTypeImpl;
+import com.codeflow.domain.containertype.ContainerType;
+import com.codeflow.domain.containertype.ContainerTypeImpl;
 import com.codeflow.domain.gap.Gap;
 import com.codeflow.domain.orientation.Orientation;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchingServiceTest_dpp02_searches extends SharedTest {
 
+    List<ArticleType> articleTypes;
+    ContainerType container;
+
+    @Before
+    public void clearRepos() {
+        articleTypes = new ArrayList<>();
+    }
+
+    void articleTypes(Integer w, Integer h, Integer l) {
+        articleTypes.add(new ArticleTypeImpl(w, h, l));
+    }
+
+    ContainerType container(int w, int h, int l) {
+        container = new ContainerTypeImpl(w, h, l);
+        return container;
+    }
+    
+    
     @Test
     public void findBoxTypes1() {
-        articles(70, 50, 24, 4);
-        articles(70, 54, 24, 4);
-        articles(14, 104, 48, 2);
+        articleTypes(70, 50, 24);
+        articleTypes(70, 54, 24);
+        articleTypes(14, 104, 48);
         Gap maxGap = gap(104, 96, 84);
         Gap requiredGap = gap(104, 50, 84);
 
-        SearchResult searchResult = new SearchingServiceImpl(articleTypeRepository.receivedArticleTypes()).findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleTypes).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 70, 50, 24);
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -25,12 +51,12 @@ public class SearchingServiceTest_dpp02_searches extends SharedTest {
 
     @Test
     public void findBoxTypes2() {
-        articles(70, 50, 24, 4);
-        articles(70, 54, 24, 4);
-        articles(14, 104, 48, 2);
+        articleTypes(70, 50, 24);
+        articleTypes(70, 54, 24);
+        articleTypes(14, 104, 48);
         Gap maxGap = gap(34, 96, 84);
         Gap requiredGap = gap(34, 50, 24);
-        SearchResult searchResult = new SearchingServiceImpl(articleTypeRepository.receivedArticleTypes()).findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleTypes).findBoxTypes(requiredGap, maxGap);
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 24, 50, 70);
         Assert.assertTrue(searchResult.getBestFitBiggerThenRequired().isPresent());
@@ -49,13 +75,13 @@ public class SearchingServiceTest_dpp02_searches extends SharedTest {
 //        14.0,104.0,48.0
 //        14.0,104.0,48.0
 
-        articles(70, 50, 24, 4);
-        articles(70, 54, 24, 3);
-        articles(14, 104, 48, 2);
+        articleTypes(70, 50, 24);
+        articleTypes(70, 54, 24);
+        articleTypes(14, 104, 48);
 //        30.0,96.0,104.0,70.0,24.0
         Gap maxGap = gap(30.0, 96.0, 104.0);
         Gap requiredGap = gap(30.0, 70., 24.);
-        SearchResult searchResult = new SearchingServiceImpl(articleTypeRepository.receivedArticleTypes()).findBoxTypes(requiredGap, maxGap);
+        SearchResult searchResult = new SearchingServiceImpl(articleTypes).findBoxTypes(requiredGap, maxGap);
 //        24.0,70.0,50.0,6.0,0.0,26.0
         Assert.assertTrue(searchResult.getBestFitInRequired().isPresent());
         assertBestFitRequired(searchResult, 24, 70, 50);

@@ -46,7 +46,7 @@ public class SearchingBasedOnFiles extends SharedTest {
                 Integer n = givenEntry.getKey();
 
                 List<String> articleLines = input.getArticles().get(n);
-                articleTypeRepository.clear();
+                List<ArticleType> articleTypes = new ArrayList<>();
                 List<ArticleType> types = new ArrayList<>();
                 for (String articleLine : articleLines) {
                     List<Double> aValues = Arrays.stream(articleLine.split(",")).map(Double::valueOf).collect(Collectors.toList());
@@ -55,7 +55,7 @@ public class SearchingBasedOnFiles extends SharedTest {
                 }
                 Map<ArticleType, List<ArticleType>> typesGroup = types.stream().collect(Collectors.groupingBy(t -> t));
 
-                typesGroup.forEach((k, v) -> articleTypeRepository.saveType(k, (long) v.size()));
+                typesGroup.forEach((k, v) -> articleTypes.add(k));
 
                 System.out.println("Processing " + n);
                 List<Double> givenValues = Arrays.stream(givenEntry.getValue().get(0).split(",")).map(Double::valueOf).collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class SearchingBasedOnFiles extends SharedTest {
                 Gap maxGapImpl = gap(givenValues.get(0), givenValues.get(1), givenValues.get(2));
                 Gap requiredGapImpl = gap(givenValues.get(0), givenValues.get(3), givenValues.get(4));
 
-                SearchResult searchResult = new SearchingServiceImpl(articleTypeRepository.receivedArticleTypes()).findBoxTypes(requiredGapImpl, maxGapImpl);
+                SearchResult searchResult = new SearchingServiceImpl(articleTypes).findBoxTypes(requiredGapImpl, maxGapImpl);
                 List<String> then = input.getThenData().get(n);
                 assertBestFit(then.get(0), searchResult);
                 assertBestFitBiggerThenReq(then.get(1), searchResult);
