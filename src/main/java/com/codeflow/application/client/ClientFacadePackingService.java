@@ -1,14 +1,17 @@
 package com.codeflow.application.client;
 
-import com.codeflow.application.articletype.ArticleService;
-import com.codeflow.application.articletype.ArticleServiceImpl;
-import com.codeflow.application.containertype.ContainerService;
-import com.codeflow.application.containertype.ContainerServiceImpl;
+import com.codeflow.application.client.container.ContainerService;
+import com.codeflow.application.client.container.ContainerServiceImpl;
+import com.codeflow.application.client.stock.Stock;
+import com.codeflow.application.client.stock.StockService;
+import com.codeflow.application.client.stock.StockServiceImpl;
 import com.codeflow.domain.algorithm.*;
 import com.codeflow.domain.articletype.ArticleRepositoryImpl;
 import com.codeflow.domain.articletype.ArticleTypeRepository;
 import com.codeflow.domain.containertype.ContainerRepository;
 import com.codeflow.domain.containertype.ContainerRepositoryImpl;
+import com.codeflow.domain.stock.StockRepository;
+import com.codeflow.domain.stock.StockRepositoryImpl;
 import com.codeflow.infrastructure.filereader.FileReader;
 import com.codeflow.infrastructure.filereader.InputDTOAssembler;
 import org.slf4j.Logger;
@@ -24,25 +27,23 @@ public class ClientFacadePackingService {
 
     private ContainerRepository containerRepository;
     private ArticleTypeRepository articleTypeRepository;
-    private ArticleService articleService;
+    private StockRepository stockRepository;
+    private StockService stockService;
+    private com.codeflow.domain.stock.StockService domainStockService;
     private ContainerService containerService;
     private AlgorithmService algorithmService;
     private AlgorithmRepository<Algorithm> algorithmRepository;
 
     public ClientFacadePackingService() {
         articleTypeRepository = new ArticleRepositoryImpl();
+        stockRepository = new StockRepositoryImpl();
         containerRepository = new ContainerRepositoryImpl();
-        articleService = new ArticleServiceImpl(articleTypeRepository);
+        domainStockService = new com.codeflow.domain.stock.StockServiceImpl(stockRepository);
+        stockService = new StockServiceImpl(domainStockService, articleTypeRepository);
         containerService = new ContainerServiceImpl(containerRepository);
-        algorithmService = new AlgorithmServiceImpl(containerRepository, articleTypeRepository);
+        algorithmService = new AlgorithmServiceImpl(containerRepository, stockRepository);
         algorithmRepository = new AlgorithmRepositoryImpl();
     }
-
-    public ClientFacadePackingService(ArticleService articleService, ContainerService containerService) {
-        this.articleService = articleService;
-        this.containerService = containerService;
-    }
-
 
     public Result pack(Path path) throws IOException {
         FileReader fileReader = new FileReader(new InputDTOAssembler());
@@ -55,8 +56,8 @@ public class ClientFacadePackingService {
     }
 
     public Result pack(Input input) {
-        for (ArticleType articleType : input.getArticleTypes()) {
-            articleService.create(articleType);
+        for (Stock stock : input.getStock()) {
+            stockService.create(stock);
         }
         containerService.create(input.getContainer());
         Algorithm algorithm = algorithmRepository.getAirForceAlgorithm();

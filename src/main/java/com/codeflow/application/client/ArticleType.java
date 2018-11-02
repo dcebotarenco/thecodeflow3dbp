@@ -7,13 +7,11 @@ public class ArticleType {
     private Double width;
     private Double length;
     private Double height;
-    private Long number;
 
-    public ArticleType(Double width, Double height, Double length, Long number) {
+    public ArticleType(Double width, Double height, Double length) {
         this.width = width;
         this.height = height;
         this.length = length;
-        this.number = number;
     }
 
 
@@ -29,9 +27,6 @@ public class ArticleType {
         return height;
     }
 
-    public Long getNumber() {
-        return number;
-    }
 
     @Override
     public String toString() {
@@ -39,7 +34,6 @@ public class ArticleType {
                 "width=" + width +
                 ", length=" + length +
                 ", height=" + height +
-                ", number=" + number +
                 '}';
     }
 
@@ -55,7 +49,6 @@ public class ArticleType {
                 .append(width, that.width)
                 .append(length, that.length)
                 .append(height, that.height)
-                .append(number, that.number)
                 .isEquals();
     }
 
@@ -65,7 +58,6 @@ public class ArticleType {
                 .append(width)
                 .append(length)
                 .append(height)
-                .append(number)
                 .toHashCode();
     }
 }

@@ -8,10 +8,7 @@ import com.codeflow.domain.orientation.Orientation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SearchingServiceImpl implements SearchingService {
@@ -19,6 +16,10 @@ public class SearchingServiceImpl implements SearchingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchingServiceImpl.class);
 
     private List<ArticleType> boxTypes;
+
+    public SearchingServiceImpl(Map<ArticleType, Long> articles) {
+        this.boxTypes = articles.entrySet().stream().filter(e -> e.getValue() > 0).map(Map.Entry::getKey).collect(Collectors.toList());
+    }
 
     public SearchingServiceImpl(List<ArticleType> boxTypes) {
         this.boxTypes = boxTypes;

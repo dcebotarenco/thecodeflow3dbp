@@ -1,8 +1,8 @@
 package com.codeflow.domain.algorithm;
 
-import com.codeflow.domain.algorithm.airforce.Iteration;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
+import com.codeflow.domain.iteration.Iteration;
 import com.codeflow.domain.position.Position;
 
 import java.util.Map;

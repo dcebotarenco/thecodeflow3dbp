@@ -6,8 +6,10 @@ import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
-import com.codeflow.domain.iteration.IterationRepository;
+import com.codeflow.domain.containertype.ContainerType;
+import com.codeflow.domain.iteration.Iteration;
 import com.codeflow.domain.position.Position;
+import com.codeflow.domain.stock.StockRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,26 +35,25 @@ public class AirForceAlgorithm implements Algorithm {
     private static final Logger LOGGER = LoggerFactory.getLogger(AirForceAlgorithm.class);
 
     private LayerService layerService;
-    private IterationRepository iterationRepository;
 
     public AirForceAlgorithm() {
         this.layerService = new LayerServiceImpl();
-        this.iterationRepository = new IterationRepository();
     }
 
 
     @Override
-    public PackResult run(AlgorithmInputData algorithmInputData) {
-        Run run = new Run(algorithmInputData, layerService, iterationRepository);
+    public PackResult run(ContainerType containerType, StockRepository stockRepository) {
+        Run run = new Run(containerType, stockRepository, layerService);
         run.start();
-        Iteration bestIteration = findBestResult();
-        Iteration translate = bestIteration.translate();
-        report(translate);
-        return new PackResult(translate);
+        Iteration bestIteration = findBestResult(run);
+//        report(bestIteration);
+//        Iteration translate = bestIteration.translate();
+//        report(translate);
+        return new PackResult(bestIteration);
     }
 
-    private Iteration findBestResult() {
-        List<Iteration> iterations = iterationRepository.getIterations();
+    private Iteration findBestResult(Run run) {
+        List<Iteration> iterations = run.getIterations();
         ArrayList<Iteration> toSortIterations = new ArrayList<>(iterations);
         toSortIterations.sort(reverseOrder(Comparator.comparingDouble(Iteration::getPackedVolume)));
         Optional<Iteration> best = toSortIterations.stream().findFirst();

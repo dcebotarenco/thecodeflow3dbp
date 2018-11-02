@@ -1,6 +1,7 @@
 package com.codeflow.domain.algorithm.airforce;
 
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
+import com.codeflow.domain.iteration.Iteration;
 
 public class PackLayerAttemptInput {
     public Iteration iteration;

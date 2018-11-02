@@ -8,11 +8,4 @@ public interface Layer {
 
     Double getEvaluationValue();
 
-    void done();
-
-    void even();
-
-    boolean isDone();
-
-    void increaseLayerThickness(Double articleHeight);
 }

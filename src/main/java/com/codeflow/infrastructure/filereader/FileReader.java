@@ -1,9 +1,9 @@
 package com.codeflow.infrastructure.filereader;
 
 
-import com.codeflow.application.client.ArticleType;
-import com.codeflow.application.client.Container;
 import com.codeflow.application.client.Input;
+import com.codeflow.application.client.container.Container;
+import com.codeflow.application.client.stock.Stock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +34,9 @@ public class FileReader {
                     .map(l -> Arrays.asList(l.split("[.|,]")))
                     .collect(Collectors.toList());
 
-            List<ArticleType> articles = inputDTOAssembler.createArticles(articlesLines);
+            List<Stock> stock = inputDTOAssembler.createStock(articlesLines);
             Container container = inputDTOAssembler.createContainer(containerLine);
-            return new Input(container, articles);
+            return new Input(container, stock);
         } else {
             throw new IllegalStateException("No lines found in the file");
         }

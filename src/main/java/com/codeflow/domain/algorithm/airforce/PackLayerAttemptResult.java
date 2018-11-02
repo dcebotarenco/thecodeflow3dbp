@@ -11,7 +11,6 @@ public class PackLayerAttemptResult {
     public PackLayerAttemptResult(PackLayerAttemptInput input) {
         this.layerinlayer = 0;
         this.input = input;
-        this.packedVolume = input.packedVolume;
         this.layerThickness = input.layerThickness;
     }
 }

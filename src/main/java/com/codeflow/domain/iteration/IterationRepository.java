@@ -1,7 +1,5 @@
 package com.codeflow.domain.iteration;
 
-import com.codeflow.domain.algorithm.airforce.Iteration;
-
 import java.util.LinkedList;
 import java.util.List;
 

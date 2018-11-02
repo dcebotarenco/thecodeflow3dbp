@@ -1,4 +1,4 @@
-package com.codeflow.application.client;
+package com.codeflow.application.client.container;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

@@ -64,12 +64,6 @@ class LayerImpl implements Layer {
                 .isEquals();
     }
 
-    @Override
-    public void increaseLayerThickness(Double articleHeight) {
-        Double heightDiff = articleHeight - this.height;
-        layerInLayer = layerInLayer + heightDiff;
-        this.height = articleHeight;
-    }
 
     @Override
     public int hashCode() {
@@ -78,21 +72,6 @@ class LayerImpl implements Layer {
                 .append(length)
                 .append(evaluationValue)
                 .toHashCode();
-    }
-
-    @Override
-    public void done() {
-        isDone = true;
-    }
-
-    @Override
-    public void even() {
-        isEven = true;
-    }
-
-    @Override
-    public boolean isDone() {
-        return isDone;
     }
 
     @Override

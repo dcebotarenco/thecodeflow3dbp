@@ -4,41 +4,43 @@ import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
-import com.codeflow.domain.iteration.IterationRepository;
+import com.codeflow.domain.iteration.Iteration;
+import com.codeflow.domain.iteration.stock.IterationStockImpl;
+import com.codeflow.domain.iteration.stock.IterationStockRepositoryImpl;
+import com.codeflow.domain.stock.StockRepository;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Run {
 
     private final LayerService layerService;
-    private final IterationRepository iterationRepository;
-    private AlgorithmInputData algorithmInputData;
+    private final ContainerType containerType;
+    private StockRepository stockRepository;
+    private List<Iteration> iterations;
 
-    public Run(AlgorithmInputData algorithmInputData,
-               LayerService layerService,
-               IterationRepository iterationRepository) {
-        this.algorithmInputData = algorithmInputData;
+    public Run(ContainerType containerType,
+               StockRepository stockRepository,
+               LayerService layerService) {
+        this.containerType = containerType;
+        this.stockRepository = stockRepository;
+        this.iterations = new LinkedList<>();
         this.layerService = layerService;
-        this.iterationRepository = iterationRepository;
     }
 
 
     public void start() {
         boolean hundredPercentPackedPerSearch = false;
-        ContainerType containerType = algorithmInputData.getContainerType();
         for (ContainerOrientation containerOrientation : containerType.getOrientations()) {
-            List<Layer> layers = layerService.listCandidates(containerOrientation, algorithmInputData.getArticleTypes());
+            List<Layer> layers = layerService.listCandidates(containerOrientation, stockRepository.findAll().values());
             for (Layer layer : layers) {
                 Iteration iteration = new Iteration(
-                        new LinkedHashMap<>(algorithmInputData.getArticleTypes()),
-                        new LinkedHashMap<>(),
+                        new IterationStockImpl(new IterationStockRepositoryImpl(stockRepository)),
                         layer,
                         containerOrientation,
                         layerService);
                 iteration.execute();
-
-                iterationRepository.save(iteration);
+                iterations.add(iteration);
                 if (iteration.isHundredPercentPacked()) {
                     hundredPercentPackedPerSearch = true;
                     break;
@@ -50,4 +52,7 @@ public class Run {
         }
     }
 
+    public List<Iteration> getIterations() {
+        return iterations;
+    }
 }

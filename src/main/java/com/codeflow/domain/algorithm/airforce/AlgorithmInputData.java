@@ -1,26 +1,26 @@
 package com.codeflow.domain.algorithm.airforce;
 
-import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.containertype.ContainerType;
+import com.codeflow.domain.stock.Stock;
 
-import java.util.Map;
+import java.util.List;
 
 public class AlgorithmInputData {
 
-
     private ContainerType containerType;
-    private Map<ArticleType, Long> articleTypes;
+    private List<Stock> stock;
 
-    AlgorithmInputData(ContainerType containerType, Map<ArticleType, Long> articleTypes) {
+    AlgorithmInputData(ContainerType containerType, List<Stock> stock) {
         this.containerType = containerType;
-        this.articleTypes = articleTypes;
+        this.stock = stock;
+    }
+
+    public List<Stock> getStock() {
+        return stock;
     }
 
     public ContainerType getContainerType() {
         return containerType;
     }
 
-    public Map<ArticleType, Long> getArticleTypes() {
-        return articleTypes;
-    }
 }

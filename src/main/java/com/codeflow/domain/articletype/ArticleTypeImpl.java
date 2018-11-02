@@ -32,6 +32,10 @@ public class ArticleTypeImpl implements ArticleType {
         boxType.add(new ArticleOrientationImpl(length, width, height, this));
     }
 
+    public ArticleTypeImpl(ArticleType articleType) {
+        this(articleType.getWidth(), articleType.getHeight(), articleType.getLength());
+    }
+
     @Override
     public Double getWidth() {
         return boxType.getWidth();

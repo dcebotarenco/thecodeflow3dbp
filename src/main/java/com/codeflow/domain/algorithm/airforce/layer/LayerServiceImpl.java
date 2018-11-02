@@ -5,6 +5,7 @@ import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.orientation.Orientation;
+import com.codeflow.domain.stock.Stock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +77,24 @@ public class LayerServiceImpl implements LayerService {
     }
 
 
+    public List<Layer> listCandidates(ContainerOrientation containerOrientation, Collection<Stock> stock) {
+        List<Layer> layers = new ArrayList<>();
+
+        List<Double> distinctHeights = stock.stream().map(s -> s.getArticleType().getOrientations()).flatMap(o -> o.stream()).filter(containerOrientation::fit)
+                .map(Orientation::getHeight).distinct()
+                .collect(Collectors.toList());
+
+        for (Double height : distinctHeights) {
+            Double eval = stock.stream().map(s -> Stream.of(s.getArticleType().getWidth(), s.getArticleType().getHeight(), s.getArticleType().getLength()).map(d -> Math.abs(height - d))
+                    .sorted().findFirst().get() * s.getQuantity()).reduce((d1, d2) -> d1 + d2).orElse(0D);
+            layers.add(new LayerImpl(height, containerOrientation.getLength(), eval));
+        }
+        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparing(reverseOrder(Comparator.comparingDouble(Layer::getHeight))));
+        return layers;
+
+    }
+
+
     @Override
     public Optional<Layer> findLayer(ContainerOrientation containerOrientation, Double requiredHeight, Map<ArticleType, Long> articleTypes) {
         //TODO: Find layer is influenced by order of article types in the file. Preferable to remove Linked Sets.
@@ -98,6 +117,35 @@ public class LayerServiceImpl implements LayerService {
                                 .map(d -> Math.abs(height - d))
                                 .sorted().findFirst().get();
                         return v * entry.getValue();
+                    }).reduce((d1, d2) -> d1 + d2).orElse(0D);
+            layers.add(new LayerImpl(height, containerOrientation.getLength(), eval));
+        }
+        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparingDouble(l -> collect.indexOf(l.getHeight())));
+        return layers.stream().findFirst();
+    }
+
+    @Override
+    public Optional<Layer> findLayer(ContainerOrientation containerOrientation, Double requiredHeight, Collection<Stock> stock) {
+        //TODO: Find layer is influenced by order of article types in the file. Preferable to remove Linked Sets.
+        List<Layer> layers = new ArrayList<>();
+
+        List<Double> collect = stock.stream().flatMap(s -> Stream.of(s.getArticleType().getWidth(), s.getArticleType().getHeight(), s.getArticleType().getLength())).distinct().collect(Collectors.toList());
+
+        List<ArticleOrientation> articleOrientations = stock.stream().flatMap(s -> s.getArticleType().getOrientations().stream())
+                .filter(o -> o.getWidth() <= containerOrientation.getWidth() &&
+                        o.getHeight() <= requiredHeight &&
+                        o.getLength() <= containerOrientation.getLength()).collect(Collectors.toList());
+
+        List<Double> distinctHeights = articleOrientations.stream().map(Orientation::getHeight).distinct()
+                .collect(Collectors.toList());
+
+        for (Double height : distinctHeights) {
+            Double eval = stock.stream()
+                    .map(s -> {
+                        double v = Stream.of(s.getArticleType().getWidth(), s.getArticleType().getHeight(), s.getArticleType().getLength())
+                                .map(d -> Math.abs(height - d))
+                                .sorted().findFirst().get();
+                        return v * s.getQuantity();
                     }).reduce((d1, d2) -> d1 + d2).orElse(0D);
             layers.add(new LayerImpl(height, containerOrientation.getLength(), eval));
         }

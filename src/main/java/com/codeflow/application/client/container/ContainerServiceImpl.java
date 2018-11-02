@@ -1,6 +1,5 @@
-package com.codeflow.application.containertype;
+package com.codeflow.application.client.container;
 
-import com.codeflow.application.client.Container;
 import com.codeflow.domain.containertype.ContainerRepository;
 import com.codeflow.domain.containertype.ContainerTypeImpl;
 
