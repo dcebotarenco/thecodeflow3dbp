@@ -28,7 +28,6 @@ public class Run {
         this.layerService = layerService;
     }
 
-
     public void start() {
         boolean hundredPercentPackedPerSearch = false;
         for (ContainerOrientation containerOrientation : containerType.getOrientations()) {

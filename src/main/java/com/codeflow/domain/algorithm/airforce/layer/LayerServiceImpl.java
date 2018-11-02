@@ -59,23 +59,6 @@ public class LayerServiceImpl implements LayerService {
      *
      * @return list of {@link Orientation} of in what current {@link ArticleType} can fil the {@link ContainerType}
      */
-    public List<Layer> listCandidates(ContainerOrientation containerOrientation, Map<ArticleType, Long> articleTypes) {
-        List<Layer> layers = new ArrayList<>();
-        List<Double> distinctHeights = articleTypes.entrySet().stream().flatMap(e -> e.getKey().getOrientations().stream())
-                .filter(containerOrientation::fit)
-                .map(Orientation::getHeight).distinct()
-                .collect(Collectors.toList());
-
-        for (Double height : distinctHeights) {
-            Double eval = articleTypes.entrySet().stream().map(entry -> Stream.of(entry.getKey().getWidth(), entry.getKey().getHeight(), entry.getKey().getLength())
-                    .map(d -> Math.abs(height - d))
-                    .sorted().findFirst().get() * entry.getValue()).reduce((d1, d2) -> d1 + d2).orElse(0D);
-            layers.add(new LayerImpl(height, containerOrientation.getLength(), eval));
-        }
-        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparing(reverseOrder(Comparator.comparingDouble(Layer::getHeight))));
-        return layers;
-    }
-
 
     public List<Layer> listCandidates(ContainerOrientation containerOrientation, Collection<Stock> stock) {
         List<Layer> layers = new ArrayList<>();
@@ -92,36 +75,6 @@ public class LayerServiceImpl implements LayerService {
         layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparing(reverseOrder(Comparator.comparingDouble(Layer::getHeight))));
         return layers;
 
-    }
-
-
-    @Override
-    public Optional<Layer> findLayer(ContainerOrientation containerOrientation, Double requiredHeight, Map<ArticleType, Long> articleTypes) {
-        //TODO: Find layer is influenced by order of article types in the file. Preferable to remove Linked Sets.
-        List<Layer> layers = new ArrayList<>();
-
-        List<Double> collect = articleTypes.keySet().stream().flatMap(a -> Stream.of(a.getWidth(), a.getHeight(), a.getLength())).distinct().collect(Collectors.toList());
-
-        List<ArticleOrientation> articleOrientations = articleTypes.entrySet().stream().flatMap(e -> e.getKey().getOrientations().stream())
-                .filter(o -> o.getWidth() <= containerOrientation.getWidth() &&
-                        o.getHeight() <= requiredHeight &&
-                        o.getLength() <= containerOrientation.getLength()).collect(Collectors.toList());
-
-        List<Double> distinctHeights = articleOrientations.stream().map(Orientation::getHeight).distinct()
-                .collect(Collectors.toList());
-
-        for (Double height : distinctHeights) {
-            Double eval = articleTypes.entrySet().stream()
-                    .map(entry -> {
-                        double v = Stream.of(entry.getKey().getWidth(), entry.getKey().getHeight(), entry.getKey().getLength())
-                                .map(d -> Math.abs(height - d))
-                                .sorted().findFirst().get();
-                        return v * entry.getValue();
-                    }).reduce((d1, d2) -> d1 + d2).orElse(0D);
-            layers.add(new LayerImpl(height, containerOrientation.getLength(), eval));
-        }
-        layers.sort(Comparator.comparingDouble(Layer::getEvaluationValue).thenComparingDouble(l -> collect.indexOf(l.getHeight())));
-        return layers.stream().findFirst();
     }
 
     @Override
