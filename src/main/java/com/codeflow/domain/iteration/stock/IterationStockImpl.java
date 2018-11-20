@@ -16,6 +16,7 @@ import java.util.Optional;
 
 public class IterationStockImpl implements IterationStock {
 
+    private final Double totalVolume;
     private IterationStockRepository iterationStockRepository;
     private LayerService layerService;
     private double packedVolume;
@@ -25,6 +26,7 @@ public class IterationStockImpl implements IterationStock {
         this.iterationStockRepository = iterationStockRepository;
         this.layerService = layerService;
         this.packedVolume = 0L;
+        this.totalVolume = iterationStockRepository.findAll().values().stream().map(s -> s.getArticleType().getVolume() * s.getQuantity()).reduce((v1, v2) -> v1 + v2).orElse(0D);
     }
 
     public Map<ArticleType, Stock> findAll() {
@@ -45,7 +47,7 @@ public class IterationStockImpl implements IterationStock {
 
     @Override
     public Double totalVolume() {
-        return iterationStockRepository.findAll().values().stream().map(s -> s.getArticleType().getVolume() * s.getQuantity()).reduce((v1, v2) -> v1 + v2).orElse(0D);
+        return totalVolume;
     }
 
     @Override

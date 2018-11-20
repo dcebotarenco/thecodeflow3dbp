@@ -41,7 +41,7 @@ public class Iteration {
         double requiredLayerThicknessToPack = layer.getHeight();
         this.packing = true;
 
-        Double totalArticlesVolume = iterationStock.totalVolume();
+        iterationStock.totalVolume();
 
         do {
             PackLayerAttemptInput packLayerAttemptInput = new PackLayerAttemptInput(this,
@@ -53,7 +53,7 @@ public class Iteration {
                     containerOrientation);
             PackLayerAttempt packLayerAttempt = new PackLayerAttempt(packLayerAttemptInput);
             PackLayerAttemptResult attemptResult = packLayerAttempt.start();
-            analyzePackLayerResult(attemptResult, totalArticlesVolume);
+            checkIfBestIteration();
 
             containerOrientation.pack(attemptResult.foundArticleHeightBiggerThenRequired);
 
@@ -67,16 +67,15 @@ public class Iteration {
                         containerPackedHeight,
                         iterationStock.getPackedVolume(), containerOrientation);
                 PackLayerAttempt layerAttempt = new PackLayerAttempt(attemptInput);
-                analyzePackLayerResult(layerAttempt.start(), totalArticlesVolume);
+                layerAttempt.start();
+                checkIfBestIteration();
             }
 
             Optional<Layer> foundLayer = iterationStock.findNextLayer(containerOrientation, containerOrientation.getRemainHeight());
             if (!foundLayer.isPresent()) {
-//                System.out.println(containerOrientation.getRemainHeight() + "FOUND LAYER:" + 0.);
                 break;
             } else {
                 requiredLayerThicknessToPack = foundLayer.get().getHeight();
-//                System.out.println(containerOrientation.getRemainHeight() + "FOUND LAYER:" + requiredLayerThicknessToPack);
                 if (requiredLayerThicknessToPack > containerOrientation.getRemainHeight()) {
                     break;
                 }
@@ -85,8 +84,8 @@ public class Iteration {
         } while (packing);
     }
 
-    private void analyzePackLayerResult(PackLayerAttemptResult layerAttemptResult, Double totalVolume) {
-        if (layerAttemptResult.packedVolume == containerOrientation.getVolume() || layerAttemptResult.packedVolume == totalVolume) {
+    private void checkIfBestIteration() {
+        if (iterationStock.getPackedVolume() == containerOrientation.getVolume() || iterationStock.getPackedVolume() == iterationStock.totalVolume()) {
             packing = false;
             hundredPercentPacked = true;
         }
@@ -94,7 +93,6 @@ public class Iteration {
 
     public void pack(ArticleOrientation foundArticle, Position position) {
         iterationStock.pack(foundArticle, position);
-//        System.out.println(String.format("PACK: %s %s %s %s %s %s", position.getX(), position.getY(), position.getZ(), foundArticle.getWidth(), foundArticle.getHeight(), foundArticle.getLength()));
     }
 
     public Map<Position, ArticleOrientation> getPackedArticles() {

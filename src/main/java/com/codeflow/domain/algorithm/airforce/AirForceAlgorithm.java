@@ -38,9 +38,13 @@ public class AirForceAlgorithm implements Algorithm {
 
     @Override
     public PackResult run(ContainerType containerType, StockService stockService) {
+
         List<Iteration> iterations = createIterations(containerType, stockService);
+//        BestIterationObserver bestIterationObserver = new BestIterationObserver(iterations);
         Run run = new Run(iterations);
         run.start();
+//        bestIterationObserver.allIterationsRun();
+//        Iteration bestIteration = bestIterationObserver.getBestIteration();
         Iteration bestIteration = findBestResult(run);
         return new PackResult(bestIteration);
     }
