@@ -36,8 +36,8 @@ public class PackLayerAttempt {
         double lpz;
         packAttempts = 0;
 
-//        if (input.layerThickness == 0) {
-//            //System.out.println("layerThickness == 0");
+//        if (input.foundArticleHeightBiggerThenRequired == 0) {
+//            //System.out.println("foundArticleHeightBiggerThenRequired == 0");
 //            input.iterationSession.packing = false;
 //            return;
 //        }
@@ -279,7 +279,7 @@ public class PackLayerAttempt {
                 output.layerinlayer = output.layerinlayer + bestFitBiggerThenRequired.getHeight() - input.layerThickness;
 
                 //System.out.println("Assign 1 =" + bboxy);
-                output.layerThickness = bestFitBiggerThenRequired.getHeight();
+                output.foundArticleHeightBiggerThenRequired = bestFitBiggerThenRequired.getHeight();
                 return bestFitBiggerThenRequired;
             } else {
                 if (!smallestZ.hasCornerOnLeft() && !smallestZ.hasCornerOnRight()) {

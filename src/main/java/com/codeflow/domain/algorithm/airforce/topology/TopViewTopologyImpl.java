@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -35,8 +34,8 @@ public class TopViewTopologyImpl implements TopViewTopology {
     public Corner findWithSmallestLength() {
         LinkedList<Corner> rightCorners = new LinkedList<>(this.rightCorners);
         rightCorners.sort(Comparator.comparingDouble(Corner::getLength));
-        String collect = this.rightCorners.stream().map(c -> c.toString()).collect(Collectors.joining(","));
-        LOGGER.info(collect);
+//        String collect = this.rightCorners.stream().map(c -> c.toString()).collect(Collectors.joining(","));
+//        LOGGER.info(collect);
         return rightCorners.getFirst();
     }
 

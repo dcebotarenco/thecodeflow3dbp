@@ -60,10 +60,10 @@ public class LayerServiceImpl implements LayerService {
      * @return list of {@link Orientation} of in what current {@link ArticleType} can fil the {@link ContainerType}
      */
 
-    public List<Layer> listCandidates(ContainerOrientation containerOrientation, Collection<Stock> stock) {
+    public List<Layer> createLayers(ContainerOrientation containerOrientation, Collection<Stock> stock) {
         List<Layer> layers = new ArrayList<>();
 
-        List<Double> distinctHeights = stock.stream().map(s -> s.getArticleType().getOrientations()).flatMap(o -> o.stream()).filter(containerOrientation::fit)
+        List<Double> distinctHeights = stock.stream().map(s -> s.getArticleType().getOrientations()).flatMap(Collection::stream).filter(containerOrientation::fit)
                 .map(Orientation::getHeight).distinct()
                 .collect(Collectors.toList());
 

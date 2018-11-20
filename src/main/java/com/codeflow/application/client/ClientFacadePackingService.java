@@ -6,6 +6,7 @@ import com.codeflow.application.client.stock.Stock;
 import com.codeflow.application.client.stock.StockService;
 import com.codeflow.application.client.stock.StockServiceImpl;
 import com.codeflow.domain.algorithm.*;
+import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
 import com.codeflow.domain.articletype.ArticleRepositoryImpl;
 import com.codeflow.domain.articletype.ArticleTypeRepository;
 import com.codeflow.domain.containertype.ContainerRepository;
@@ -38,10 +39,10 @@ public class ClientFacadePackingService {
         articleTypeRepository = new ArticleRepositoryImpl();
         stockRepository = new StockRepositoryImpl();
         containerRepository = new ContainerRepositoryImpl();
-        domainStockService = new com.codeflow.domain.stock.StockServiceImpl(stockRepository);
+        domainStockService = new com.codeflow.domain.stock.StockServiceImpl(stockRepository, new LayerServiceImpl());
         stockService = new StockServiceImpl(domainStockService, articleTypeRepository);
         containerService = new ContainerServiceImpl(containerRepository);
-        algorithmService = new AlgorithmServiceImpl(containerRepository, stockRepository);
+        algorithmService = new AlgorithmServiceImpl(containerRepository, domainStockService);
         algorithmRepository = new AlgorithmRepositoryImpl();
     }
 

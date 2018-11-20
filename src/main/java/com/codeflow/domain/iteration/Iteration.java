@@ -4,7 +4,6 @@ import com.codeflow.domain.algorithm.airforce.PackLayerAttempt;
 import com.codeflow.domain.algorithm.airforce.PackLayerAttemptInput;
 import com.codeflow.domain.algorithm.airforce.PackLayerAttemptResult;
 import com.codeflow.domain.algorithm.airforce.layer.Layer;
-import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.algorithm.airforce.searching.SearchResult;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingService;
 import com.codeflow.domain.algorithm.airforce.searching.SearchingServiceImpl;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Iteration {
-    private final LayerService layerService;
     private final Layer layer;
     private final ContainerOrientation containerOrientation;
     private final IterationStock iterationStock;
@@ -31,69 +29,55 @@ public class Iteration {
 
     public Iteration(IterationStock iterationStock,
                      Layer layer,
-                     ContainerOrientation containerOrientation,
-                     LayerService layerService) {
+                     ContainerOrientation containerOrientation) {
         this.iterationStock = iterationStock;
         this.hundredPercentPacked = false;
         this.layer = layer;
         this.containerOrientation = containerOrientation;
-        this.layerService = layerService;
     }
 
     public void execute() {
 
-        double layerThickness = layer.getHeight();
-        double containerRemainingLength = containerOrientation.getLength();
-        double containerRemainingHeight = containerOrientation.getHeight();
-        double packedHeight = 0;
-        double prepackedy;
-        double preremainpy;
+        double requiredLayerThicknessToPack = layer.getHeight();
         this.packing = true;
 
         Double totalArticlesVolume = iterationStock.totalVolume();
 
         do {
             PackLayerAttemptInput packLayerAttemptInput = new PackLayerAttemptInput(this,
-                    layerThickness,
-                    containerRemainingLength,
-                    containerRemainingHeight,
-                    packedHeight,
+                    requiredLayerThicknessToPack,
+                    layer.getLength(),
+                    containerOrientation.getRemainHeight(),
+                    containerOrientation.getPackedHeight(),
                     iterationStock.getPackedVolume(),
                     containerOrientation);
             PackLayerAttempt packLayerAttempt = new PackLayerAttempt(packLayerAttemptInput);
             PackLayerAttemptResult attemptResult = packLayerAttempt.start();
             analyzePackLayerResult(attemptResult, totalArticlesVolume);
 
-            packedHeight = packedHeight + attemptResult.layerThickness;
-            containerRemainingHeight = containerOrientation.getHeight() - packedHeight;
+            containerOrientation.pack(attemptResult.foundArticleHeightBiggerThenRequired);
 
             if (attemptResult.layerinlayer != 0) {
-                prepackedy = packedHeight;
-                preremainpy = containerRemainingHeight;
-                containerRemainingHeight = attemptResult.layerThickness - attemptResult.prelayer;
-                packedHeight = packedHeight - attemptResult.layerThickness + attemptResult.prelayer;
-                layerThickness = attemptResult.layerinlayer;
+                double containerRemainingHeight = attemptResult.foundArticleHeightBiggerThenRequired - requiredLayerThicknessToPack;
+                double containerPackedHeight = containerOrientation.getPackedHeight() - attemptResult.foundArticleHeightBiggerThenRequired + requiredLayerThicknessToPack;
                 PackLayerAttemptInput attemptInput = new PackLayerAttemptInput(this,
-                        layerThickness,
+                        attemptResult.layerinlayer,
                         attemptResult.lilz,
                         containerRemainingHeight,
-                        packedHeight,
+                        containerPackedHeight,
                         iterationStock.getPackedVolume(), containerOrientation);
                 PackLayerAttempt layerAttempt = new PackLayerAttempt(attemptInput);
                 analyzePackLayerResult(layerAttempt.start(), totalArticlesVolume);
-                packedHeight = prepackedy;
-                containerRemainingHeight = preremainpy;
             }
 
-
-            Optional<Layer> foundLayer = layerService.findLayer(containerOrientation, containerRemainingHeight, iterationStock.findAll().values());
+            Optional<Layer> foundLayer = iterationStock.findNextLayer(containerOrientation, containerOrientation.getRemainHeight());
             if (!foundLayer.isPresent()) {
-                System.out.println(containerRemainingHeight + "FOUND LAYER:" + 0.);
+//                System.out.println(containerOrientation.getRemainHeight() + "FOUND LAYER:" + 0.);
                 break;
             } else {
-                layerThickness = foundLayer.get().getHeight();
-                System.out.println(containerRemainingHeight + "FOUND LAYER:" + layerThickness);
-                if (layerThickness > containerRemainingHeight) {
+                requiredLayerThicknessToPack = foundLayer.get().getHeight();
+//                System.out.println(containerOrientation.getRemainHeight() + "FOUND LAYER:" + requiredLayerThicknessToPack);
+                if (requiredLayerThicknessToPack > containerOrientation.getRemainHeight()) {
                     break;
                 }
             }
@@ -110,7 +94,7 @@ public class Iteration {
 
     public void pack(ArticleOrientation foundArticle, Position position) {
         iterationStock.pack(foundArticle, position);
-        System.out.println(String.format("PACK: %s %s %s %s %s %s", position.getX(), position.getY(), position.getZ(), foundArticle.getWidth(), foundArticle.getHeight(), foundArticle.getLength()));
+//        System.out.println(String.format("PACK: %s %s %s %s %s %s", position.getX(), position.getY(), position.getZ(), foundArticle.getWidth(), foundArticle.getHeight(), foundArticle.getLength()));
     }
 
     public Map<Position, ArticleOrientation> getPackedArticles() {

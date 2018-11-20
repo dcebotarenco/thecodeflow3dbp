@@ -1,6 +1,5 @@
 package com.codeflow.domain.containertype.orientation;
 
-import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.containertype.ContainerType;
 import com.codeflow.domain.orientation.Orientation;
 import com.codeflow.domain.orientation.OrientationImpl;
@@ -21,6 +20,14 @@ public class ContainerOrientationImpl implements ContainerOrientation {
         this(new OrientationImpl(width, height, length));
         this.boxType = boxType;
         this.translator = translator;
+    }
+
+    public ContainerOrientationImpl(ContainerOrientation containerOrientation) {
+        this(containerOrientation.getWidth(),
+                containerOrientation.getHeight(),
+                containerOrientation.getLength(),
+                containerOrientation.getBoxType(),
+                containerOrientation.getTranslator());
     }
 
     public ContainerOrientationImpl(Orientation orientation) {
@@ -75,9 +82,11 @@ public class ContainerOrientationImpl implements ContainerOrientation {
         return remainLength;
     }
 
-    public void pack(Layer layer) {
-        packedHeight = packedHeight + layer.getHeight();
-        remainHeight = getHeight() - packedHeight;
+
+    @Override
+    public void pack(Double height) {
+        this.packedHeight += height;
+        this.remainHeight = getHeight() - packedHeight;
     }
 
 

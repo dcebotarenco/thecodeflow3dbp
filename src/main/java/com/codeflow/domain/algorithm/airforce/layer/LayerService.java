@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface LayerService {
 
-    List<Layer> listCandidates(ContainerOrientation containerOrientation, Collection<Stock> stock);
+    List<Layer> createLayers(ContainerOrientation containerOrientation, Collection<Stock> stock);
 
     Optional<Layer> findLayer(ContainerOrientation containerOrientation, Double height, Collection<Stock> stock);
 }

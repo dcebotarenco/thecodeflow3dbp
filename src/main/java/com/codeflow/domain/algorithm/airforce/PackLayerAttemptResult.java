@@ -3,7 +3,7 @@ package com.codeflow.domain.algorithm.airforce;
 public class PackLayerAttemptResult {
     public PackLayerAttemptInput input;
     public double packedVolume;
-    public Double layerThickness;
+    public Double foundArticleHeightBiggerThenRequired;
     public double prelayer;
     public double lilz;
     public double layerinlayer;
@@ -11,6 +11,6 @@ public class PackLayerAttemptResult {
     public PackLayerAttemptResult(PackLayerAttemptInput input) {
         this.layerinlayer = 0;
         this.input = input;
-        this.layerThickness = input.layerThickness;
+        this.foundArticleHeightBiggerThenRequired = input.layerThickness;
     }
 }

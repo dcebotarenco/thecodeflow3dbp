@@ -1,7 +1,10 @@
 package com.codeflow.domain.iteration.stock;
 
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
+import com.codeflow.domain.algorithm.airforce.layer.LayerService;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
 import com.codeflow.domain.position.Position;
 import com.codeflow.domain.stock.Stock;
 import com.codeflow.domain.translator.Translator;
@@ -9,14 +12,18 @@ import com.codeflow.domain.translator.Translator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class IterationStockImpl implements IterationStock {
 
     private IterationStockRepository iterationStockRepository;
+    private LayerService layerService;
     private double packedVolume;
 
-    public IterationStockImpl(IterationStockRepository iterationStockRepository) {
+    public IterationStockImpl(IterationStockRepository iterationStockRepository,
+                              LayerService layerService) {
         this.iterationStockRepository = iterationStockRepository;
+        this.layerService = layerService;
         this.packedVolume = 0L;
     }
 
@@ -32,13 +39,6 @@ public class IterationStockImpl implements IterationStock {
         if (stock.getQuantity() == 0) {
             iterationStockRepository.remove(stock.getArticleType());
         }
-//        Long quantity = stock.getQuantity();
-//        if (quantity > 1) {
-//            stock.withdraw(1);
-//        } else {
-//            stock.withdraw(1);
-//            iterationStockRepository.remove(stock);
-//        }
         iterationStockRepository.save(position, foundArticle);
         packedVolume = packedVolume + foundArticle.getVolume();
     }
@@ -72,5 +72,10 @@ public class IterationStockImpl implements IterationStock {
             translated.put(p, a);
         }
         return translated;
+    }
+
+    @Override
+    public Optional<Layer> findNextLayer(ContainerOrientation containerOrientation, Double containerRemainingHeight) {
+        return layerService.findLayer(containerOrientation, containerRemainingHeight, findAll().values());
     }
 }

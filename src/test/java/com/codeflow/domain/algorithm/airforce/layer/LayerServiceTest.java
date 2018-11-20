@@ -41,7 +41,7 @@ public class LayerServiceTest extends SharedTest {
         stock(14, 104, 48, 2);
         stock(40, 52, 36, 3);
 
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(0), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(0), stock);
         Assert.assertEquals(7, layers.size());
         layerAssert(layers, 0, 24, 56);
         layerAssert(layers, 1, 36, 72);
@@ -58,7 +58,7 @@ public class LayerServiceTest extends SharedTest {
         ContainerType container = container(104, 96, 84);
         stock(70, 104, 24, 4);
         stock(14, 104, 48, 2);
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(0), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(0), stock);
         Assert.assertEquals(4, layers.size());
         layerAssert(layers, 0, 24, 20);
         layerAssert(layers, 1, 14, 40);
@@ -72,7 +72,7 @@ public class LayerServiceTest extends SharedTest {
         stock(70, 50, 24, 4);
         stock(70, 54, 24, 4);
         stock(14, 104, 48, 2);
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(0), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(0), stock);
         Assert.assertEquals(6, layers.size());
         layerAssert(layers, 0, 50, 20);
         layerAssert(layers, 1, 24, 20);
@@ -88,7 +88,7 @@ public class LayerServiceTest extends SharedTest {
         stock(70, 50, 24, 4);
         stock(70, 54, 24, 4);
         stock(14, 104, 48, 2);
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(1), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(1), stock);
         Assert.assertEquals(6, layers.size());
         layerAssert(layers, 0, 50, 20);
         layerAssert(layers, 1, 24, 20);
@@ -104,7 +104,7 @@ public class LayerServiceTest extends SharedTest {
         stock(70, 50, 24, 4);
         stock(70, 54, 24, 4);
         stock(14, 104, 48, 2);
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(2), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(2), stock);
         Assert.assertEquals(5, layers.size());
         layerAssert(layers, 0, 50, 20);
         layerAssert(layers, 1, 24, 20);
@@ -119,7 +119,7 @@ public class LayerServiceTest extends SharedTest {
         stock(70, 50, 24, 4);
         stock(70, 54, 24, 4);
         stock(14, 104, 48, 2);
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(3), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(3), stock);
         Assert.assertEquals(5, layers.size());
         layerAssert(layers, 0, 50, 20);
         layerAssert(layers, 1, 24, 20);
@@ -134,7 +134,7 @@ public class LayerServiceTest extends SharedTest {
         stock(70, 50, 24, 4);
         stock(70, 54, 24, 4);
         stock(14, 104, 48, 2);
-        List<Layer> layers = new LayerServiceImpl().listCandidates(container.getOrientations().get(4), stock);
+        List<Layer> layers = new LayerServiceImpl().createLayers(container.getOrientations().get(4), stock);
         Assert.assertEquals(6, layers.size());
         layerAssert(layers, 0, 50, 20);
         layerAssert(layers, 1, 24, 20);

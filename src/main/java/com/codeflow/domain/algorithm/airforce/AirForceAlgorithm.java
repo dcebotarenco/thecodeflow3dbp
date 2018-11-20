@@ -2,14 +2,16 @@ package com.codeflow.domain.algorithm.airforce;
 
 import com.codeflow.domain.algorithm.Algorithm;
 import com.codeflow.domain.algorithm.PackResult;
-import com.codeflow.domain.algorithm.airforce.layer.LayerService;
-import com.codeflow.domain.algorithm.airforce.layer.LayerServiceImpl;
+import com.codeflow.domain.algorithm.airforce.layer.Layer;
 import com.codeflow.domain.articletype.ArticleType;
 import com.codeflow.domain.articletype.orientation.ArticleOrientation;
 import com.codeflow.domain.containertype.ContainerType;
+import com.codeflow.domain.containertype.orientation.ContainerOrientation;
+import com.codeflow.domain.containertype.orientation.ContainerOrientationImpl;
 import com.codeflow.domain.iteration.Iteration;
+import com.codeflow.domain.iteration.stock.IterationStock;
 import com.codeflow.domain.position.Position;
-import com.codeflow.domain.stock.StockRepository;
+import com.codeflow.domain.stock.StockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,22 +36,29 @@ public class AirForceAlgorithm implements Algorithm {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AirForceAlgorithm.class);
 
-    private LayerService layerService;
-
-    public AirForceAlgorithm() {
-        this.layerService = new LayerServiceImpl();
-    }
-
-
     @Override
-    public PackResult run(ContainerType containerType, StockRepository stockRepository) {
-        Run run = new Run(containerType, stockRepository, layerService);
+    public PackResult run(ContainerType containerType, StockService stockService) {
+        List<Iteration> iterations = createIterations(containerType, stockService);
+        Run run = new Run(iterations);
         run.start();
         Iteration bestIteration = findBestResult(run);
-//        report(bestIteration);
-//        Iteration translate = bestIteration.translate();
-//        report(translate);
         return new PackResult(bestIteration);
+    }
+
+    List<Iteration> createIterations(ContainerType containerType, StockService stockService) {
+        List<Iteration> iterations = new ArrayList<>();
+        for (ContainerOrientation containerOrientation : containerType.getOrientations()) {
+            List<Layer> layers = stockService.createLayers(containerOrientation);
+            for (Layer layer : layers) {
+                IterationStock iterationStock = stockService.createIterationStock();
+                Iteration iteration = new Iteration(
+                        iterationStock,
+                        layer,
+                        new ContainerOrientationImpl(containerOrientation));
+                iterations.add(iteration);
+            }
+        }
+        return iterations;
     }
 
     private Iteration findBestResult(Run run) {
