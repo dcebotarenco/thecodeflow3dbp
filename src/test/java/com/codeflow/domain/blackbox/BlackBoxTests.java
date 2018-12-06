@@ -55,6 +55,11 @@ public class BlackBoxTests {
     }
 
     @Test
+    public void dpp06() throws IOException {
+        assertContent("dpp06.txt");
+    }
+
+    @Test
     public void mpp01() throws IOException {
         assertContent("mpp01.txt");
     }

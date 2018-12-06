@@ -95,7 +95,11 @@ public class Iteration {
         iterationStock.pack(foundArticle, position);
     }
 
-    public Map<Position, ArticleOrientation> getPackedArticles() {
+    public Map<Position, ArticleOrientation> getPackedArticles(){
+        return iterationStock.packedArticles();
+    }
+
+    public Map<Position, ArticleOrientation> getTranslatedPackedArticles() {
         return iterationStock.translate(containerOrientation.getTranslator());
     }
 

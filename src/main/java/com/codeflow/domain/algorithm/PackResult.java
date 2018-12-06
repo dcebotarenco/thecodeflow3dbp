@@ -19,12 +19,12 @@ public class PackResult {
     }
 
     public Map<Position, ArticleOrientation> getPacked() {
-        return iteration.getPackedArticles();
+        return iteration.getTranslatedPackedArticles();
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        Set<Map.Entry<Position, ArticleOrientation>> entries = iteration.getPackedArticles().entrySet();
+        Set<Map.Entry<Position, ArticleOrientation>> entries = iteration.getTranslatedPackedArticles().entrySet();
         for (Map.Entry<Position, ArticleOrientation> entry : entries) {
             ArticleOrientation a = entry.getValue();
             Position p = entry.getKey();

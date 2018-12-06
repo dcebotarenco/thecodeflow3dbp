@@ -46,6 +46,7 @@ public class AirForceAlgorithm implements Algorithm {
 //        bestIterationObserver.allIterationsRun();
 //        Iteration bestIteration = bestIterationObserver.getBestIteration();
         Iteration bestIteration = findBestResult(run);
+//        report(bestIteration);
         return new PackResult(bestIteration);
     }
 
