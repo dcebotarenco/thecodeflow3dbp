@@ -13,8 +13,8 @@ public class Run {
     }
 
     public void start() {
-//        singleThreadRun();
-        multiThreadRun();
+        singleThreadRun();
+//        multiThreadRun();
     }
 
     void singleThreadRun() {
